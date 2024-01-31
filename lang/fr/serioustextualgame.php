@@ -27,6 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Serious Textual Game';
 $string['modulename'] = 'Serious Textual Game';
-$string['serioustextualgamefieldset'] = 'Fieldset';
-$string['serioustextualgamesettings'] = 'Settings';
-$string['serioustextualgamename'] = 'Name';
+$string['serioustextualgamefieldset'] = 'Champs';
+$string['serioustextualgamesettings'] = 'Options';
+$string['serioustextualgamename'] = 'Nom';
