@@ -47,7 +47,7 @@ $modulecontext = context_module::instance($cm->id);
 
 $event = \mod_serioustextualgame\event\course_module_viewed::create(array(
     'objectid' => $moduleinstance->id,
-    'context' => $modulecontext
+    'context' => $modulecontext,
 ));
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('serioustextualgame', $moduleinstance);
