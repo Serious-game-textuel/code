@@ -38,3 +38,4 @@ $string['mod_serioustextualgame'] = 'Serious Textual Game';
 $string['modulenameplural'] = 'Serious Textual Games';
 $string['file_help'] = 'This is the help text for the file field.';
 $string['moodle'] = 'Moodle';
+$string['serioustextualgame:view'] = 'View Serious Textual Game';
