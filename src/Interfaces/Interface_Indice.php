@@ -5,12 +5,8 @@ interface Interface_Indice {
     public function get_id();
 
     public function set_id();
-
-    /**
-     * @return String
-     */
-    public function description();
-
+    public function get_description();
+    public function set_description();
 }
 
 ?>
