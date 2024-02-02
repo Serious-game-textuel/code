@@ -58,13 +58,15 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'serioustextualgamename', 'mod_serioustextualgame');
-
         // Adding the standard "intro" and "introformat" fields.
         if ($CFG->branch >= 29) {
             $this->standard_intro_elements();
         } else {
             $this->add_intro_editor();
         }
+        // Adding your new field here.
+        $mform->addElement('filepicker', 'userfile', get_string('file'), null, array('maxbytes' => $maxbytes, 'accepted_types' => '*'));
+        $mform->addHelpButton('userfile', 'file');
 
         // Adding the rest of mod_serioustextualgame settings, spreading all them into this fieldset
         // ... or adding more fieldsets ('header' elements) if needed for better logic.
