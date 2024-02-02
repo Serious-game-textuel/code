@@ -2,6 +2,15 @@
 
 interface Interface_Action {
 
+
+    public function get_id();
+
+    public function set_id();
+
+    public function get_nom();
+
+    public function set_nom();
+
     /**
      * @return boolean
      */
