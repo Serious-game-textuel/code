@@ -18,6 +18,9 @@ interface Interface_Inventaire {
      */
     public function get_materiels();
 
+    public function ajout_materiel();
+    public function retrait_materiel();
+
 }
 
 ?>

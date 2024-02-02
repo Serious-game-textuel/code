@@ -3,23 +3,27 @@
 require "../Langue.php";
 
 interface Interface_Partie {
+
     public function get_id();
-    public function get_action();
-    public function get_lieu_visite();
-    public function get_heure_debut();
-    public function get_langue();
     public function set_id($id);
-    public function set_action($action);
-    public function set_lieu_visite($lieu_visite);
-    public function set_heure_debut($heure_debut);
-    public function set_langue($langue);
 
+    public function get_morts();
+    public function set_morts();
 
-    /**
-     * @param int $name
-     * @return boolean
-     */
-    public function change_lieu($id);
+    public function get_actions();
+    public function set_actions();
+
+    public function get_lieux_visites();
+    public function set_lieux_visites();
+
+    public function get_heure_debut();
+    public function set_heure_debut();
+
+    public function get_langue();
+    public function set_langue();
+
+    public function get_lieu_actuel();
+    public function set_lieu_actuel();
 
 }
 
