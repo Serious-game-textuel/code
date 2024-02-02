@@ -71,7 +71,7 @@ jobs:
 
       - name: Moodle Code Checker
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpcs --exclude=Generic.Files.LineLength --exclude=moodle.Commenting.InlineComment.NotCapital --exclude=moodle.Commenting.InlineComment.InvalidEndChar
+        run: moodle-plugin-ci phpcs
 
       - name: Validating
         if: ${{ !cancelled() }}

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset name="Moodle Code Checker">
+  <rule ref="Generic.Files.LineLength">
+    <properties>
+      <property name="lineLimit" value="500" />
+    </properties>
+  </rule>
+  <rule ref="moodle.Commenting.InlineComment.NotCapital">
+    <exclude name="Commenting.InlineComment.NotCapital">
+    </exclude>
+  </rule>
+  <rule ref="moodle.Commenting.InlineComment.InvalidEndChar">
+    <exclude name="Commenting.InlineComment.InvalidEndChar">
+    </exclude>
+  </rule>
+  <rule ref="moodle.Files.BoilerplateComment.WrongLine">
+    <properties>
+      <property name="requiredLines" value="0" />
+    </properties>
+  </rule>
+</ruleset>
