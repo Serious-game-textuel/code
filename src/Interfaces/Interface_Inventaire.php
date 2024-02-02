@@ -1,12 +1,10 @@
 <?php
-
-require "./Interface_Materiel.php";
+require(__DIR__.'/../../../../config.php');
+require(__DIR__."./Interface_Materiel.php");
 
 interface Interface_Inventaire {
-
     public function get_id();
     public function set_id($id);
-
 
     /**
      * @param int $name
@@ -17,7 +15,4 @@ interface Interface_Inventaire {
      * @return Interface_Materiel[]
      */
     public function get_materiels();
-
 }
-
-?>

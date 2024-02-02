@@ -1,5 +1,5 @@
 <?php
-
+require(__DIR__.'/../../../../config.php');
 interface Interface_Materiel {
     public function get_id();
     public function get_description();
@@ -10,5 +10,3 @@ interface Interface_Materiel {
     public function set_nom($nom);
     public function set_status($status);
 }
-
-?>

@@ -1,8 +1,9 @@
 <?php
+require(__DIR__.'/../../../../config.php');
+
 interface Interface_Sauvegarde {
     public function get_id();
     public function set_id($id);
-
 
     /**
      * @return void
@@ -13,4 +14,3 @@ interface Interface_Sauvegarde {
      */
     public function charger_sauvegarde();
 }
-?>

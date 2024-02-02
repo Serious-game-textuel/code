@@ -1,6 +1,6 @@
 <?php
-
-require "../Langue.php";
+require(__DIR__.'/../../../../config.php');
+require(__DIR__."../Langue.php");
 
 interface Interface_Partie {
     public function get_id();
@@ -10,17 +10,14 @@ interface Interface_Partie {
     public function get_langue();
     public function set_id($id);
     public function set_action($action);
-    public function set_lieu_visite($lieu_visite);
-    public function set_heure_debut($heure_debut);
+    public function set_lieu_visite($lieuVisite);
+    public function set_heure_debut($heureDebut);
     public function set_langue($langue);
-
 
     /**
      * @param int $name
      * @return boolean
      */
     public function change_lieu($id);
-
 }
 
-?>
