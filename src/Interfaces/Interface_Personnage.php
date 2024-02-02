@@ -2,7 +2,7 @@
 
 require "./Interface_Inventaire.php";
 
-interface interface_Personnage {
+interface Interface_Personnage {
     public function get_id();
     public function get_description();
     public function get_nom();
