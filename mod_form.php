@@ -64,7 +64,7 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
         } else {
             $this->add_intro_editor();
         }
-        // Adding your new field here.
+        $maxbytes = 20 * 1024 * 1024; // 20MB in bytes
         $mform->addElement('filepicker', 'userfile', get_string('file'), null, array('maxbytes' => $maxbytes, 'accepted_types' => '*'));
         $mform->addHelpButton('userfile', 'file');
 
