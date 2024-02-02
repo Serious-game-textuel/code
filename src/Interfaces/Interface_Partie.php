@@ -21,11 +21,6 @@ interface Interface_Partie {
      */
     public function change_lieu($id);
 
-    /**
-     * @param Langue $langue
-     * @return void
-     */
-    public function change_langue($langue);
 }
 
 ?>

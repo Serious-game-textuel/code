@@ -33,12 +33,6 @@ interface Interface_Lieu {
      * @return Interface_Indice[]
      */
     public function get_indices();
-    /**
-     * @param string $status
-     * @param boolean $etat
-     * @return boolean
-     */
-    public function change_status($status, $etat);
 
 
 }
