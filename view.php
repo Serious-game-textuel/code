@@ -64,29 +64,28 @@ echo $OUTPUT->header();
 
 <div id="container" style="background-color: black; color: white; width: 100%; height: 500px; overflow: auto; position: relative;">
     <div id="text" style="padding: 10px;"></div>
-    <div id="inputTextDisplay" style="color: red; padding: 10px;"></div> <!-- Nouvelle div pour le texte saisi -->
     <input type="text" id="inputText" placeholder="Écrivez quelque chose ici..." style="position: absolute; bottom: 0; width: 100%;">
 </div>
 <button onclick="displayInputText()">Valider</button>
 
 <script type = "text/javascript">
-    // affiche un texte dynamiquement tels que chaque caractère s'affiche l'un après l'autre
-    function typeWriter(element, txt) {
+
+    function typeWriter(element, txt, color) {
         if (txt.length > 0) {
-            element.innerHTML += txt.charAt(0);
+            element.innerHTML += `<span style="color:${color};">${txt.charAt(0)}</span>`;
             setTimeout(function () {
-                typeWriter(element, txt.substring(1))
+                typeWriter(element, txt.substring(1), color)
             }, 50);
         }
         else {
             element.innerHTML += "<br>";
         }
     }
-    typeWriter(document.getElementById("text"), "Bonjour, je suis un texte dynamique");
+    typeWriter(document.getElementById("text"), "Bonjour, je suis un texte dynamique", "white");
 
     function displayInputText() {
         var inputText = document.getElementById("inputText").value;
-        typeWriter(document.getElementById("inputTextDisplay"), inputText); // Utilise la nouvelle div pour le texte saisi
+        typeWriter(document.getElementById("text"), inputText, "red"); 
         document.getElementById("inputText").value = ''; 
     }
 </script>
