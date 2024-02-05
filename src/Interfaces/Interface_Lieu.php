@@ -1,9 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require "./Interface_Inventaire.php";
-require "./interface_Personnage.php";
-require "./Interface_Action.php";
-require "./Interface_Indice.php";
+defined('MOODLE_INTERNAL') || die();
+require(__DIR__."./Interface_Inventaire.php");
+require(__DIR__."./interface_Personnage.php");
+require(__DIR__."./Interface_Action.php");
+require(__DIR__."./Interface_Indice.php");
 
 interface Interface_Lieu {
     public function get_id();
@@ -14,7 +29,6 @@ interface Interface_Lieu {
     public function set_description($description);
     public function set_nom($nom);
     public function set_status($status);
-
 
     /**
      * @return Interface_Inventaire
@@ -33,8 +47,4 @@ interface Interface_Lieu {
      * @return Interface_Indice[]
      */
     public function get_indices();
-
-
 }
-
-?>
