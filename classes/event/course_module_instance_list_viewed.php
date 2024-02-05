@@ -23,7 +23,6 @@
  */
 
 namespace mod_serioustextualgame\event;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * The mod_seriousgame instance list viewed event class.

@@ -26,13 +26,13 @@
 
 class course_module_viewed extends \core\event\course_module_viewed {
     protected function init() {
-        $this->data['crud'] = 'r'; // c(reate), r(ead), u(pdate), d(elete)
+        $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'serioustextualgame';
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'serioustextualgame', 'restore' => 'serioustextualgame');
+        return ['db' => 'serioustextualgame', 'restore' => 'serioustextualgame'];
     }
 
     public static function get_other_mapping() {

@@ -50,7 +50,8 @@ echo $OUTPUT->heading($modulenameplural);
 $serioustextualgames = get_all_instances_in_course('serioustextualgame', $course);
 
 if (empty($serioustextualgames)) {
-    notice(get_string('no$serioustextualgameinstances', 'mod_serioustextualgame'), new moodle_url('/course/view.php', ['id' => $course->id]));
+    notice(get_string('no$serioustextualgameinstances', 'mod_serioustextualgame'),
+    new moodle_url('/course/view.php', ['id' => $course->id]));
 }
 
 $table = new html_table();
