@@ -1,5 +1,5 @@
 <?php
-enum Langue {
+enum Language {
     case FR;
     case EN;
 }
