@@ -1,23 +1,38 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 class Game implements Game_Interface {
 
     private int $id;
     private int $deaths;
     private array $actions;
-    private array $visited_locations;
-    private DateTime $start_time;
+    private array $visitedlocations;
+    private DateTime $starttime;
     private Language $language;
-    private Location_Interface $current_location;
+    private Location_Interface $currentlocation;
 
-    public function __construct(int $id, int $deaths, array $actions, array $visited_locations, DateTime $start_time, Language $language, Location_Interface $current_location) {
+    public function __construct(int $id, int $deaths, array $actions, array $visitedlocations, DateTime $starttime,
+     Language $language, Location_Interface $currentlocation) {
         $this->id = $id;
         $this->deaths = $deaths;
         $this->actions = $actions;
-        $this->visited_locations = $visited_locations;
-        $this->start_time = $start_time;
+        $this->visitedlocations = $visitedlocations;
+        $this->starttime = $starttime;
         $this->language = $language;
-        $this->current_location = $current_location;
+        $this->currentlocation = $currentlocation;
     }
 
     public function get_id() {
@@ -47,21 +62,21 @@ class Game implements Game_Interface {
 
 
     public function get_visited_locations() {
-        return $this->visited_locations;
+        return $this->visitedlocations;
     }
-    public function set_visited_locations(array $visited_locations) {
-        $this->visited_locations = $visited_locations;
+    public function set_visited_locations(array $visitedlocations) {
+        $this->visitedlocations = $visitedlocations;
     }
 
     public function add_visited_location(Location_Interface $location) {
-        $this->visited_locations[] = $location;
+        $this->visitedlocations[] = $location;
     }
 
     public function get_start_time() {
-        return $this->start_time;
+        return $this->starttime;
     }
-    public function set_start_time(DateTime $start_time) {
-        $this->start_time = $start_time;
+    public function set_start_time(DateTime $starttime) {
+        $this->starttime = $starttime;
     }
 
     public function get_language() {
@@ -72,12 +87,10 @@ class Game implements Game_Interface {
     }
 
     public function get_current_location() {
-        return $this->current_location;
+        return $this->currentlocation;
     }
-    public function set_current_location(Location_Interface $current_location) {
-        $this->current_location = $current_location;
+    public function set_current_location(Location_Interface $currentlocation) {
+        $this->currentlocation = $currentlocation;
     }
 
 }
-
-?>

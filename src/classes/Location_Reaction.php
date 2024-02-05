@@ -1,14 +1,28 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 class Location_Reaction extends Reaction {
 
-    private Location_Interface $location; // Location affected by the reaction
+    private Location_Interface $location;
 
-    public function __construct(int $id, string $description, string $old_status, string $new_status, Item_Interface $old_item, Item_Interface $new_item, Location_Interface $location) {
-        parent::__construct($id, $description, $old_status, $new_status, $old_item, $new_item);
+    public function __construct(int $id, string $description, string $oldstatus,
+     string $newstatus, Item_Interface $olditem, Item_Interface $newitem, Location_Interface $location) {
+        parent::__construct($id, $description, $oldstatus, $newstatus, $olditem, $newitem);
         $this->location = $location;
     }
-
     public function get_location() {
         return $this->location;
     }
@@ -19,4 +33,3 @@ class Location_Reaction extends Reaction {
 
 }
 
-?>

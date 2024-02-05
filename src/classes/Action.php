@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 class Action implements Action_Interface {
 
@@ -8,17 +22,17 @@ class Action implements Action_Interface {
     private string $connector;
     private array $conditions;
 
-    public function __construct(int $id ,Entity_Interface $entity1, Entity_Interface $entity2, string $connector, array $conditions) {
+    public function __construct(int $id, Entity_Interface $entity1, Entity_Interface $entity2, string $connector,
+     array $conditions) {
         $this->id = $id;
         $this->entity1 = $entity1;
         $this->entity2 = $entity2;
         $this->connector = $connector;
         $this->conditions = $conditions;
     }
- 
+
     public function get_id() {
         return $this->id;
-        
     }
 
     public function set_id(int $id) {
@@ -58,9 +72,5 @@ class Action implements Action_Interface {
     }
 
     public function do_conditions() {
-        
     }
-
 }
-
-?>
