@@ -35,6 +35,12 @@ interface Location_Interface extends Entity_Interface {
      * @return Hint_Interface[]
      */
     public function get_hints();
+    /**
+     * @param Action_Interface $action
+     * @return bool
+     * // This method checks if the actions are valid for the location and called do_condition
+     */
+    public function check_actions( Action_Interface $action);
 
 
 }

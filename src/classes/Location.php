@@ -44,5 +44,9 @@ class Location extends Entity implements Location_Interface {
         return $this->hints;
     }
 
+    public function check_actions(Action_Interface $action) {
+                return in_array($action, $this->actions);
+            }
+            
 
 }
