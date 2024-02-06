@@ -71,18 +71,18 @@ class Condition implements Condition_Interface {
                         }
                         if ($newstatus == "victoire" && $character->get_name() == "joueur") {
                             $game = Game::getinstance();
-                            //get toutes les infos de la partie:
                             $deaths = $game->get_deaths();
-                            $start_time = $game->get_start_time();
-                            $end_time = new DateTime();
-                            $interval = $start_time->diff($end_time);
+                            $starttime = $game->get_start_time();
+                            $endtime = new DateTime();
+                            $interval = $starttime->diff($endtime);
                             $time = $interval->format('%H:%I:%S');
                             $lieux = $game->get_visited_locations();
                             $lieuxvisites = 0;
                             foreach ($lieux as $lieu) {
                                     $lieuxvisites++;
                             }
-                            return "Vous avez gagné en " . $time . " avec " . $deaths . " morts et " . $lieuxvisites . " lieux visités.";
+                            return "Vous avez gagné en " . $time . " avec " . $deaths
+                             . " morts et " . $lieuxvisites . " lieux visités.";
                         }
                     }
                     if ($reaction->get_old_status() != null) {
