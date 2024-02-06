@@ -72,6 +72,8 @@ class Action implements Action_Interface {
     }
 
     public function do_conditions() {
+        $game = Game::getinstance();
+        $game->add_action($this);
         $conditions = $this->get_conditions();
         $conditionstrue = [];
         foreach ($conditions as $condition) {

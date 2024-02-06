@@ -71,8 +71,8 @@ class Game implements Game_Interface {
     public function get_deaths() {
         return $this->deaths;
     }
-    public function set_deaths(int $deaths) {
-        $this->deaths = $deaths;
+    public function add_deaths() {
+        $this->deaths ++;
     }
 
     public function get_actions() {

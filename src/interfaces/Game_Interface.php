@@ -34,10 +34,9 @@ interface Game_Interface {
     public function get_deaths();
 
     /**
-     * @param int $deaths
      * @return void
      */
-    public function set_deaths(int $deaths);
+    public function add_deaths();
 
     /**
      * Returns the list of all the actions previously performed.

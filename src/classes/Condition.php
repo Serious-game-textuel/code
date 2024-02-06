@@ -52,6 +52,7 @@ class Condition implements Condition_Interface {
                         $game = Game::getinstance();
                         $game->set_current_location($newlocation);
                         $game->add_visited_location($newlocation);
+                        $newlocation->check_actions("description");
                     }
                     if ($reaction->get_new_item() != null) {
                         $newitem = $reaction->get_new_item();
@@ -64,6 +65,10 @@ class Condition implements Condition_Interface {
                     if ($reaction->get_new_status() != null) {
                         $newstatus = $reaction->get_new_status();
                         $character->add_status($newstatus);
+                        if ($newstatus == "mort" && $character->get_name() == "joueur") {
+                            $game = Game::getinstance();
+                            $game->add_deaths();
+                        }
                     }
                     if ($reaction->get_old_status() != null) {
                         $oldstatus = $reaction->get_old_status();

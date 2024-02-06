@@ -44,8 +44,20 @@ class Location extends Entity implements Location_Interface {
         return $this->hints;
     }
 
-    public function check_actions(Action_Interface $action) {
-                return in_array($action, $this->actions);
+    public function check_actions(string $action) {
+        $action = explode(" ", $action);
+        $connector = $action[0];
+        $entity1 = $action[1];
+        $entity2 = $action[2];
+        for ($i = 0; $i < count($this->actions); $i++) {
+            if ($this->actions[$i]->get_entity1()->get_name() == $entity1
+                && $this->actions[$i]->get_entity2()->get_name() == $entity2
+                && $this->actions[$i]->get_connector() == $connector) {
+                $this->actions[$i]->do_condition();
+                return true;
+            }
+        }
+        return false;
     }
     public function has_item_location(Item_Interface $item) {
         return $this->inventory->check_item($item);
