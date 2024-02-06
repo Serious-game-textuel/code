@@ -23,6 +23,8 @@ class Game implements Game_Interface {
     private DateTime $starttime;
     private Language $language;
     private Location_Interface $currentlocation;
+    private static $instance = null;
+
 
     public function __construct(int $id, int $deaths, array $actions, array $visitedlocations, DateTime $starttime,
      Language $language, Location_Interface $currentlocation) {
@@ -33,6 +35,30 @@ class Game implements Game_Interface {
         $this->starttime = $starttime;
         $this->language = $language;
         $this->currentlocation = $currentlocation;
+    }
+    public static function getinstance() {
+        if (self::$instance == null) {
+            self::$instance = new Game(
+                0,
+                0,
+                [],
+                [],
+                new DateTime(),
+                Language::FR,
+                new Location(
+                    0,
+                    "Start",
+                    "Start",
+                    [],
+                    new Inventory(0, []),
+                    [],
+                    [],
+                    []
+                )
+            );
+        }
+
+        return self::$instance;
     }
 
     public function get_id() {
@@ -45,8 +71,8 @@ class Game implements Game_Interface {
     public function get_deaths() {
         return $this->deaths;
     }
-    public function set_deaths(int $deaths) {
-        $this->deaths = $deaths;
+    public function add_deaths() {
+        $this->deaths ++;
     }
 
     public function get_actions() {

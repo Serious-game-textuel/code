@@ -22,8 +22,8 @@ abstract class Entity implements Entity_Interface {
 
     private string $name;
 
-    private string $status;
-    public function __construct(int $id, string $description, string $name, string $status) {
+    private array $status;
+    public function __construct(int $id, string $description, string $name, array $status) {
         $this->id = $id;
         $this->description = $description;
         $this->name = $name;
@@ -58,8 +58,16 @@ abstract class Entity implements Entity_Interface {
         return $this->status;
     }
 
-    public function set_status(string $status) {
+    public function set_status(array $status) {
         $this->status = $status;
+    }
+
+    public function add_status(array $status) {
+        $this->status = array_merge($this->status, $status);
+    }
+
+    public function remove_status(array $status) {
+        $this->status = array_diff($this->status, $status);
     }
 
 }

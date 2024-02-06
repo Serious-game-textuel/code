@@ -14,29 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-class Action implements Action_Interface {
+class Leaf_Condition extends Condition {
 
-    private int $id;
     private Entity_Interface $entity1;
     private Entity_Interface $entity2;
     private string $connector;
-    private array $conditions;
+    private string $status;
+    private Condition_Interface $condition;
 
     public function __construct(int $id, Entity_Interface $entity1, Entity_Interface $entity2, string $connector,
-     array $conditions) {
-        $this->id = $id;
+     string $status, Condition_Interface $condition, array $reactions) {
+        parent::__construct($id, $reactions);
         $this->entity1 = $entity1;
         $this->entity2 = $entity2;
         $this->connector = $connector;
-        $this->conditions = $conditions;
-    }
-
-    public function get_id() {
-        return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
+        $this->status = $status;
+        $this->condition = $condition;
     }
 
     public function get_entity1() {
@@ -63,26 +56,22 @@ class Action implements Action_Interface {
         $this->connector = $connector;
     }
 
-    public function get_conditions() {
-        return $this->conditions;
+    public function get_status() {
+        return $this->status;
     }
 
-    public function set_conditions(array $conditions) {
-        $this->conditions = $conditions;
+    public function set_status(string $status) {
+        $this->status = $status;
     }
 
-    public function do_conditions() {
-        $game = Game::getinstance();
-        $game->add_action($this);
-        $conditions = $this->get_conditions();
-        $conditionstrue = [];
-        foreach ($conditions as $condition) {
-            if ($condition->is_true()) {
-                array_push($conditionstrue, $condition);
-            }
-        }
-        foreach ($conditionstrue as $condition) {
-            $condition->do_reactions();
-        }
+    public function get_condition() {
+        return $this->condition;
     }
+
+    public function set_condition(Condition_Interface $condition) {
+        $this->condition = $condition;
+    }
+
+
 }
+

@@ -20,4 +20,10 @@ interface Character_Interface extends Entity_Interface {
      * @return Inventory_Interface
      */
     public function get_inventory();
+
+    /**
+     * @param Item_Interface $item
+     * @return boolean
+     */
+    public function has_item_character(Item_Interface $item);
 }
