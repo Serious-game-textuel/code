@@ -69,6 +69,21 @@ class Condition implements Condition_Interface {
                             $game = Game::getinstance();
                             $game->add_deaths();
                         }
+                        if ($newstatus == "victoire" && $character->get_name() == "joueur") {
+                            $game = Game::getinstance();
+                            //get toutes les infos de la partie:
+                            $deaths = $game->get_deaths();
+                            $start_time = $game->get_start_time();
+                            $end_time = new DateTime();
+                            $interval = $start_time->diff($end_time);
+                            $time = $interval->format('%H:%I:%S');
+                            $lieux = $game->get_visited_locations();
+                            $lieuxvisites = 0;
+                            foreach ($lieux as $lieu) {
+                                    $lieuxvisites++;
+                            }
+                            return "Vous avez gagné en " . $time . " avec " . $deaths . " morts et " . $lieuxvisites . " lieux visités.";
+                        }
                     }
                     if ($reaction->get_old_status() != null) {
                         $oldstatus = $reaction->get_old_status();
@@ -117,9 +132,9 @@ class Condition implements Condition_Interface {
                         return $entity1status != $status;
                     }
                 } else if ($entity2 instanceof Item) {
-                    if ($connector == "possède") {
+                    if ($connector == "possède" || $connector == "a") {
                         return $entity1->has_item_character($entity2);
-                    } else if ($connector == "possède pas") {
+                    } else if ($connector == "possède pas" || $connector == "a pas") {
                         return !$entity1->has_item_character($entity2);
                     }
                 }
@@ -139,9 +154,9 @@ class Condition implements Condition_Interface {
                         return $entity1status != $status;
                     }
                 } else if ($entity2 instanceof Item) {
-                    if ($connector == "possède") {
+                    if ($connector == "possède" || $connector == "a") {
                         return $entity1->has_item_location($entity2);
-                    } else if ($connector == "possède pas") {
+                    } else if ($connector == "possède pas" || $connector == "a pas") {
                         return !$entity1->has_item_location($entity2);
                     }
                 }
@@ -150,9 +165,9 @@ class Condition implements Condition_Interface {
             $condition1 = $this->get_condition1();
             $condition2 = $this->get_condition2();
             $connector1 = $this->get_connector1();
-            if ($connector1 == "AND") {
+            if ($connector1 == "et") {
                 return $condition1->is_true() && $condition2->is_true();
-            } else if ($connector1 == "OR") {
+            } else if ($connector1 == "ou") {
                 return $condition1->is_true() || $condition2->is_true();
             }
             return false;
