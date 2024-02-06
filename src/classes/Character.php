@@ -14,20 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-require(__DIR__."./Interface_Materiel.php");
+class Character extends Entity implements Character_Interface {
 
-interface Interface_Inventaire {
-    public function get_id();
-    public function set_id($id);
+    private Inventory_Interface $inventory;
 
-    /**
-     * @param int $name
-     * @return Interface_Materiel
-     */
-    public function get_materiel($id);
-    /**
-     * @return Interface_Materiel[]
-     */
-    public function get_materiels();
+    public function __construct(int $id, string $description, string $name, string $status, Inventory_Interface $inventory) {
+        parent::__construct($id, $description, $name, $status);
+        $this->inventory = $inventory;
+    }
+    public function get_inventory() {
+        return $this->inventory;
+    }
+
 }

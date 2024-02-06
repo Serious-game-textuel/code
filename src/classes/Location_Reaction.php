@@ -14,13 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Interface_Reaction {
-    public function get_id();
-    public function set_id();
-    public function get_description();
-    public function set_description();
-    public function get_changement_status();
-    public function set_changement_status();
-    public function get_transition_lieux();
-    public function set_transition_lieux();
+class Location_Reaction extends Reaction {
+
+    private Location_Interface $location;
+
+    public function __construct(int $id, string $description, string $oldstatus,
+     string $newstatus, Item_Interface $olditem, Item_Interface $newitem, Location_Interface $location) {
+        parent::__construct($id, $description, $oldstatus, $newstatus, $olditem, $newitem);
+        $this->location = $location;
+    }
+    public function get_location() {
+        return $this->location;
+    }
+
+    public function set_location(Location_Interface $location) {
+        $this->location = $location;
+    }
+
 }
+

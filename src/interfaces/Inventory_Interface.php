@@ -14,9 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
+interface Inventory_Interface {
 
-enum Langue {
-    case FR;
-    case EN;
+    /**
+     * @return int
+     */
+    public function get_id();
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function set_id(int $id);
+
+    /**
+     * @param int $id
+     * @return Item_Interface
+     */
+    public function get_item(int $id);
+
+    /**
+     * @return Item_Interface[]
+     */
+    public function get_items();
+
+    /**
+     * @param Item_Interface $item
+     * @return void
+     */
+    public function add_item(Item_Interface $item);
+
+    /**
+     * @param Item_Interface $item
+     * @return void
+     */
+    public function remove_item(Item_Interface $item);
+
 }

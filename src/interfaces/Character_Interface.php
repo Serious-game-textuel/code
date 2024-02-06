@@ -14,13 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Interface_Materiel {
-    public function get_id();
-    public function get_description();
-    public function get_nom();
-    public function get_status();
-    public function set_id($id);
-    public function set_description($description);
-    public function set_nom($nom);
-    public function set_status($status);
+interface Character_Interface extends Entity_Interface {
+
+    /**
+     * @return Inventory_Interface
+     */
+    public function get_inventory();
 }

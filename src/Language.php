@@ -14,16 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Interface_Sauvegarde {
-    public function get_id();
-    public function set_id($id);
+defined('MOODLE_INTERNAL') || die();
 
-    /**
-     * @return void
-     */
-    public function creer_sauvegarde();
-    /**
-     * @return void
-     */
-    public function charger_sauvegarde();
+enum Language {
+    case FR;
+    case EN;
 }

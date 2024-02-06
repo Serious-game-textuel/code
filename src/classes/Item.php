@@ -14,15 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Interface_Sortie {
+class Item extends Entity implements Item_Interface {
 
-    public function get_id();
-    public function set_id();
-    public function get_nom();
-    public function set_nom();
-
-    /**
-     * @return boolean
-     */
-    public function check_condition();
+    public function __construct(int $id, string $description, string $name, string $status) {
+        parent::__construct($id, $description, $name, $status);
+    }
 }

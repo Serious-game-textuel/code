@@ -14,21 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-require(__DIR__."./Interface_Inventaire.php");
-
-interface Interface_Personnage {
-    public function get_id();
-    public function get_description();
-    public function get_nom();
-    public function get_status();
-    public function set_id( $id );
-    public function set_description( $description );
-    public function set_nom( $nom );
-    public function set_status( $status );
+interface App_Interface {
+    /**
+     * @return Game_Interface
+     */
+    public function get_game();
 
     /**
-     * @return Interface_Inventaire
+     * @param Game_Interface $game
+     *
+     * @return void
      */
-    public function get_inventaire();
+    public function set_game(Game_Interface $game);
+
+    /**
+     * @return Game_Interface
+     */
+    public function get_save();
+
+    /**
+     * @param Game_Interface $save
+     *
+     * @return void
+     */
+    public function set_save(Game_Interface $save);
+
 }
+

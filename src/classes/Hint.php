@@ -14,15 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Interface_Condition {
-    public function get_id();
-    public function set_id();
-    public function get_description();
-    public function set_description();
+class Hint implements Hint_Interface {
+    private int $id;
+    private string $description;
 
-    /**
-     * @return void
-     */
-    public function do_reaction();
+    public function __construct(int $id, string $description) {
+        $this->id = $id;
+        $this->description = $description;
+    }
+
+    public function get_id() {
+        return $this->id;
+    }
+
+    public function set_id(int $id) {
+        $this->id = $id;
+    }
+
+    public function get_description() {
+        return $this->description;
+    }
+
+    public function set_description(string $description) {
+        $this->description = $description;
+    }
 
 }

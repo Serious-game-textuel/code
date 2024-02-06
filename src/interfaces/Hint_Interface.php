@@ -14,14 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Interface_Action {
-    public function get_id();
-    public function set_id();
-    public function get_nom();
-    public function set_nom();
+interface Hint_Interface {
 
     /**
-     * @return boolean
+     * @return int
      */
-    public function check_condition();
+    public function get_id();
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function set_id(int $id);
+
+    /**
+     * @return string
+     */
+    public function get_description();
+
+    /**
+     * @param string $description
+     * @return void
+     */
+    public function set_description(string $description);
 }
