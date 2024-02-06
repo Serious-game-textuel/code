@@ -50,15 +50,27 @@ interface Entity_Interface {
     public function set_name(string $name);
 
     /**
-     * @return string
+     * @return array
      */
     public function get_status();
 
     /**
-     * @param string $status
+     * @param array $status
      * @return void
      */
-    public function set_status(string $status);
+    public function set_status(array $status);
+
+    /**
+     * @param array $status
+     * @return void
+     */
+    public function add_status(array $status);
+    /**
+     * @param array $status
+     * @return void
+     */
+    public function remove_status(array $status);
+
 
 
 }

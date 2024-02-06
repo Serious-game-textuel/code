@@ -72,5 +72,15 @@ class Action implements Action_Interface {
     }
 
     public function do_conditions() {
+        $conditions = $this->get_conditions();
+        $conditionstrue = [];
+        foreach ($conditions as $condition) {
+            if ($condition->is_true()) {
+                array_push($conditionstrue, $condition);
+            }
+        }
+        foreach ($conditionstrue as $condition) {
+            $condition->do_reactions();
+        }
     }
 }

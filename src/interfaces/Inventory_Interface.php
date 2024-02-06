@@ -34,20 +34,25 @@ interface Inventory_Interface {
     public function get_item(int $id);
 
     /**
-     * @return Item_Interface[]
+     * @return array
      */
     public function get_items();
 
     /**
-     * @param Item_Interface $item
+     * @param array $item
      * @return void
      */
-    public function add_item(Item_Interface $item);
+    public function add_item(array $item);
+
+    /**
+     * @param array $item
+     * @return void
+     */
+    public function remove_item(array $item);
 
     /**
      * @param Item_Interface $item
-     * @return void
+     * @return boolean
      */
-    public function remove_item(Item_Interface $item);
-
+    public function check_item(Item_Interface $item);
 }

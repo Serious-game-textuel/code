@@ -41,6 +41,11 @@ interface Location_Interface extends Entity_Interface {
      * // This method checks if the actions are valid for the location and called do_condition
      */
     public function check_actions( Action_Interface $action);
+    /**
+     * @param Item_Interface $item
+     * @return bool
+     */
+    public function has_item_location(Item_Interface $item);
 
 
 }

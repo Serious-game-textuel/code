@@ -21,7 +21,13 @@ class Node_Condition extends Condition {
     private string $connector1;
 
 
-    public function __construct(int $id, Condition_Interface $condition1, Condition_Interface $condition2, string $connector1, array $reactions) {
+    public function __construct(
+        int $id,
+        Condition_Interface $condition1,
+        Condition_Interface $condition2,
+        string $connector1,
+        array $reactions
+    ) {
         parent::__construct($id, $reactions);
         $this->condition1 = $condition1;
         $this->condition2 = $condition2;

@@ -31,7 +31,7 @@ class Leaf_Condition extends Condition {
         $this->status = $status;
         $this->condition = $condition;
     }
-    
+
     public function get_entity1() {
         return $this->entity1;
     }

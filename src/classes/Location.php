@@ -21,7 +21,7 @@ class Location extends Entity implements Location_Interface {
     private array $hints;
     private array $actions;
 
-    public function __construct(int $id, string $description, string $name, string $status,
+    public function __construct(int $id, string $description, string $name, array $status,
      Inventory_Interface $inventory, array $characters, array $hints, array $actions) {
         parent::__construct($id, $description, $name, $status);
         $this->inventory = $inventory;
@@ -46,7 +46,8 @@ class Location extends Entity implements Location_Interface {
 
     public function check_actions(Action_Interface $action) {
                 return in_array($action, $this->actions);
-            }
-            
-
+    }
+    public function has_item_location(Item_Interface $item) {
+        return $this->inventory->check_item($item);
+    }
 }

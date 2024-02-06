@@ -39,8 +39,13 @@ interface Condition_Interface {
     public function set_reactions(array $reactions);
 
     /**
-     * @return void
+     * @return string
      */
     public function do_reactions();
+
+    /**
+     * @return boolean
+     */
+    public function is_true();
 
 }

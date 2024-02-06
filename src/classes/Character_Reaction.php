@@ -19,8 +19,8 @@ class Character_Reaction extends Reaction {
     private Character_Interface  $character;
     private Location_Interface $newlocation;
 
-    public function __construct( int $id, string $description, string $oldstatus, string $newstatus,
-     Item_Interface $olditem, Item_Interface $newitem, Character_Interface $character, Location_Interface $newlocation) {
+    public function __construct( int $id, string $description, array $oldstatus, array $newstatus,
+    array $olditem, array $newitem, Character_Interface $character, Location_Interface $newlocation) {
         parent::__construct($id, $description, $oldstatus, $newstatus, $olditem, $newitem);
         $this->character = $character;
         $this->newlocation = $newlocation;
