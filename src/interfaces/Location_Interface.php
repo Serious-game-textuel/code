@@ -49,5 +49,16 @@ interface Location_Interface extends Entity_Interface {
      */
     public function has_item_location(Item_Interface $item);
 
+    /**
+     * @param Npc_Character_Interface $npc_character
+     * @return bool
+     */
+    public function add_npc_character(Npc_Character_Interface $npccharacter);
+
+    /**
+     * @param Npc_Character_Interface $npc_character
+     * @return bool
+     */
+    public function remove_npc_character(Npc_Character_Interface $npccharacter);
 
 }

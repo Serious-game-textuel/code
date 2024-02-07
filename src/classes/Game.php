@@ -24,16 +24,17 @@ class Game implements Game_Interface {
 
     private int $id;
     private int $deaths;
-    private array $actions;
+    private int $actions;
     private array $visitedlocations;
     private DateTime $starttime;
     private Language $language;
     private Location_Interface $currentlocation;
     private static $instance = null;
+    private Player_Character $player;
 
 
-    public function __construct(int $id, int $deaths, array $actions, array $visitedlocations, DateTime $starttime,
-     Language $language, Location_Interface $currentlocation) {
+    public function __construct(int $id, int $deaths, int $actions, array $visitedlocations, DateTime $starttime,
+     Language $language, Location_Interface $currentlocation, Player_Character $player) {
         $this->id = $id;
         $this->deaths = $deaths;
         $this->actions = $actions;
@@ -41,13 +42,14 @@ class Game implements Game_Interface {
         $this->starttime = $starttime;
         $this->language = $language;
         $this->currentlocation = $currentlocation;
+        $this->player = $player;
     }
     public static function getinstance() {
         if (self::$instance == null) {
             self::$instance = new Game(
                 0,
                 0,
-                [],
+                0,
                 [],
                 new DateTime(),
                 Language::FR,
@@ -60,6 +62,12 @@ class Game implements Game_Interface {
                     [],
                     [],
                     []
+                ),
+                new Player_Character(
+                    0,
+                    null,
+                    [],
+                    new Inventory(0, [])
                 )
             );
         }
@@ -84,14 +92,21 @@ class Game implements Game_Interface {
     public function get_actions() {
         return $this->actions;
     }
-    public function set_actions(array $actions) {
+    public function set_actions(int $actions) {
         $this->actions = $actions;
     }
 
-    public function add_action(Action_Interface $action) {
-        $this->actions[] = $action;
+    public function add_action() {
+        $this->actions = $action ++;
     }
 
+    public function get_player() {
+        return $this->player;
+    }
+
+    public function set_player(Player_Character $player) {
+        $this->player = $player;
+    }
 
     public function get_visited_locations() {
         return $this->visitedlocations;

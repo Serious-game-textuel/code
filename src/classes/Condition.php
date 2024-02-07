@@ -51,12 +51,21 @@ class Condition implements Condition_Interface {
             if ($reaction instanceof Character_Reaction) {
                 if ($reaction->get_character() != null) {
                     $character = $reaction->get_character();
+
                     if ($reaction->get_new_location() != null) {
                         $newlocation = $reaction->get_new_location();
                         $game = Game::getinstance();
-                        $game->set_current_location($newlocation);
-                        $game->add_visited_location($newlocation);
-                        $newlocation->check_actions("description");
+                        if ($character instanceof Npc_Character) {
+                            $oldlocation = $character->get_current_location();
+                            $oldlocation->remove_character($character);
+                            $newlocation->add_character($character);
+                            $character->set_new_location($newlocation);
+
+                        } else if ($character instanceof Player_Character) {
+                            $game->set_current_location($newlocation);
+                            $game->add_visited_location($newlocation);
+                            $newlocation->check_actions("description");
+                        }
                     }
                     if ($reaction->get_new_item() != null) {
                         $newitem = $reaction->get_new_item();
@@ -69,24 +78,26 @@ class Condition implements Condition_Interface {
                     if ($reaction->get_new_status() != null) {
                         $newstatus = $reaction->get_new_status();
                         $character->add_status($newstatus);
-                        if ($newstatus == "mort" && $character->get_name() == "joueur") {
-                            $game = Game::getinstance();
-                            $game->add_deaths();
-                        }
-                        if ($newstatus == "victoire" && $character->get_name() == "joueur") {
-                            $game = Game::getinstance();
-                            $deaths = $game->get_deaths();
-                            $starttime = $game->get_start_time();
-                            $endtime = new DateTime();
-                            $interval = $starttime->diff($endtime);
-                            $time = $interval->format('%H:%I:%S');
-                            $lieux = $game->get_visited_locations();
-                            $lieuxvisites = 0;
-                            foreach ($lieux as $lieu) {
-                                    $lieuxvisites++;
+                        if ($character instanceof Player_Character) {
+                            if ($newstatus == "mort") {
+                                $game = Game::getinstance();
+                                $game->add_deaths();
                             }
-                            return "Vous avez gagné en " . $time . " avec " . $deaths
-                             . " morts et " . $lieuxvisites . " lieux visités.";
+                            if ($newstatus == "victoire") {
+                                $game = Game::getinstance();
+                                $deaths = $game->get_deaths();
+                                $starttime = $game->get_start_time();
+                                $endtime = new DateTime();
+                                $interval = $starttime->diff($endtime);
+                                $time = $interval->format('%H:%I:%S');
+                                $lieux = $game->get_visited_locations();
+                                $lieuxvisites = 0;
+                                foreach ($lieux as $lieu) {
+                                        $lieuxvisites++;
+                                }
+                                return "Vous avez gagné en " . $time . " avec " . $deaths
+                                . " morts et " . $lieuxvisites . " lieux visités.";
+                            }
                         }
                     }
                     if ($reaction->get_old_status() != null) {
