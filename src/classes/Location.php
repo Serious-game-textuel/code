@@ -28,7 +28,7 @@ class Location extends Entity implements Location_Interface {
      Inventory_Interface $inventory, array $npccharacters, array $hints, array $actions) {
         parent::__construct($id, $description, $name, $status);
         $this->inventory = $inventory;
-        $this->npc_characters = $npccharacters;
+        $this->npccharacters = $npccharacters;
         $this->hints = $hints;
         $this->actions = $actions;
     }
@@ -38,7 +38,7 @@ class Location extends Entity implements Location_Interface {
 
 
     public function add_npc_character(Npc_Character $npccharacter) {
-        $this->npc_characters[] = $npccharacter;
+        $this->npccharacters[] = $npccharacter;
     }
 
     public function remove_npc_character(Npc_Character $npccharacter) {

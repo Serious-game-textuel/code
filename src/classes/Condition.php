@@ -57,8 +57,8 @@ class Condition implements Condition_Interface {
                         $game = Game::getinstance();
                         if ($character instanceof Npc_Character) {
                             $oldlocation = $character->get_current_location();
-                            $oldlocation->remove_character($character);
-                            $newlocation->add_character($character);
+                            $oldlocation->remove_npc_character($character);
+                            $newlocation->add_npc_character($character);
                             $character->set_new_location($newlocation);
 
                         } else if ($character instanceof Player_Character) {
