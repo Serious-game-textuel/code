@@ -28,14 +28,51 @@ require_once 'src/classes/Character.php';
 require_once 'src/classes/Character_Reaction.php';
 require_once 'src/classes/Location_Reaction.php';
 require_once 'src/interfaces/Inventory_Interface.php';
-
+require_once 'src/classes/Action.php';
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Environment\Console;
 
 class ActionTest extends TestCase {
+    /**
+     * vérifie que quand on appelle la méthode do_conditions, les conditions sont bien effectuées
+     */
+    public function testDoConditions() {
+        // Create a mock reaction
+        // Create mock objects for testing
+        $item1 = new Item(5, "1 item", "item1",["status"]);
+        $character = new Character(1, "creation character", "Michel",["status"],new Inventory(3,[[$item1]]));
+        $location = new Location(1, "creation location", "location",["status"],new Inventory(3,[[$item1]]),[$character],[],[]);
+        $item = new Item(4, "une description de item", "item",["status"]);
+        $item2 = new Item(6, "une description de item2", "item2",["status"]);
+        // Mock reactions
+        $characterReaction = new Character_Reaction(1, 'je ajoute un item', [], [], [], [$item], $character, null);
+
+        $characterReaction1 = new Character_Reaction(1, 'je change un status', [], ['new_status'], [], [], $character, null);
+        
+        $locationReaction = new Location_Reaction(1, 'jajoute un item a une location', [], [], [], [$item], $location);
+
+        $locationReaction1 = new Location_Reaction(1, 'jajoute un item a une location', [], [], [], [$item2], $location);
+
+        // Create a condition instance with reactions
+        $conditionWithReactions = new Leaf_Condition(4, $character, $item1, 'possède', [], null, [$characterReaction,$characterReaction1]);
+
+        $conditionWithReactions1 = new Leaf_Condition(4, $location, $item1, 'possède', [], null, [$locationReaction]);
+
+        $conditionWithReactions2 = new Leaf_Condition(4, $location, $item2, 'possède', [], null, [$locationReaction1]);
+        
+        $action= new Action(1, $character, $item, 'donner', [$conditionWithReactions,$conditionWithReactions1,$conditionWithReactions2]);
+
+        // Test the do_condition method
+        $action->do_conditions();
+        $this->assertTrue($character->has_item_character($item)); // Check if character has item donc que la condition est vraie
+        $this->assertTrue($character->has_item_character($item1)); // Check if character has item1 donc que la réaction a bien été effectuée
+        $this->assertTrue(in_array('new_status', $character->get_status())); // Check if character has new_status donc que la réaction a bien été effectuée
+        $this->assertTrue($location->has_item_location($item1)); // Check if location has item1 donc que la réaction a bien été effectuée
+        $this->assertTrue($location->has_item_location($item)); // Check if location has item donc que la condition est vraie
+        $this->assertFalse($location->has_item_location($item2)); // Check if location has item2 donc que la condition est fausse et que la réaction n'a pas été effectuée
 
 
-
+    }
 
 }
 ?>

@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+require_once 'src/interfaces/Action_Interface.php';
 class Action implements Action_Interface {
 
     private int $id;
@@ -82,6 +82,8 @@ class Action implements Action_Interface {
             }
         }
         foreach ($conditionstrue as $condition) {
+            echo"réaction qui se déclenche";
+            print_r($condition->get_reactions());
             $condition->do_reactions();
         }
     }
