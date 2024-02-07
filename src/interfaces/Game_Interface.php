@@ -28,6 +28,17 @@ interface Game_Interface {
     public function set_id(int $id);
 
     /**
+     * @return Player_Character
+     */
+    public function get_player();
+
+    /**
+     * @param Player_Character $player
+     * @return void
+     */
+    public function set_player(Player_Character $player);
+
+    /**
      * Returns the number of deaths.
      * @return int
      */
