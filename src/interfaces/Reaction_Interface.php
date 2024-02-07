@@ -39,47 +39,47 @@ interface Reaction_Interface {
     public function set_description(string $description);
 
     /**
-     * @return string
+     * @return array
      */
     public function get_old_status();
 
     /**
-     * @param string
+     * @param array
      * @return void
      */
-    public function set_old_status(string $status);
+    public function set_old_status(array $status);
 
     /**
-     * @return string
+     * @return array
      */
     public function get_new_status();
 
     /**
-     * @param string
+     * @param array
      * @return void
      */
-    public function set_new_status(string $status);
+    public function set_new_status(array $status);
 
     /**
-     * @return Item_Interface
+     * @return array
      */
     public function get_old_item();
 
     /**
-     * @param Item_Interface
+     * @param array
      * @return void
      */
-    public function set_old_item(Item_Interface $item);
+    public function set_old_item(array $item);
 
     /**
-     * @return Item_Interface
+     * @return array
      */
     public function get_new_item();
 
     /**
-     * @param Item_Interface
+     * @param array
      * @return void
      */
-    public function set_new_item(Item_Interface $item);
+    public function set_new_item(array $item);
 
 }

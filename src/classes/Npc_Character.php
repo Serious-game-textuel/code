@@ -14,20 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-class Character extends Entity implements Character_Interface {
+class Npc_Character extends Character {
 
     private Inventory_Interface $inventory;
+    private Location_Interface $currentlocation;
 
-    public function __construct(int $id, string $description, string $name, array $status, Inventory_Interface $inventory) {
-        parent::__construct($id, $description, $name, $status);
-        $this->inventory = $inventory;
-    }
-    public function get_inventory() {
-        return $this->inventory;
+    public function __construct(
+        int $id,
+        string $description,
+        string $name, array $status,
+        Inventory_Interface $inventory,
+        Location_Interface $currentlocation) {
+            parent::__construct($id, $description, $name, $status);
+            $this->inventory = $inventory;
+            $this->currentlocation = $currentlocation;
     }
 
-    public function has_item_character(Item_Interface $item) {
-        return $this->inventory->check_item($item);
+    public function get_current_location() {
+        return $currentlocation;
+    }
+
+    public function set_new_location(Location_Interface $newlocation) {
+        $this->currentlocation = $newlocation;
     }
 
 }

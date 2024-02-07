@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-class Item extends Entity implements Item_Interface {
+class Player_Character extends Character {
+
+    private Inventory_Interface $inventory;
+
+    public function __construct(int $id, string $description, array $status, Inventory_Interface $inventory) {
+        parent::__construct($id, $description, "player", $status);
+        $this->inventory = $inventory;
+    }
 
 }

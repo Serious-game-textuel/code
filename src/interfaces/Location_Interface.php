@@ -35,6 +35,28 @@ interface Location_Interface extends Entity_Interface {
      * @return Hint_Interface[]
      */
     public function get_hints();
+    /**
+     * @param string $action
+     * @return bool
+     * // This method checks if the actions are valid for the location by parsing the string into a Action and called do_condition
+     */
+    public function check_actions( string $action);
+    /**
+     * @param Item_Interface $item
+     * @return bool
+     */
+    public function has_item_location(Item_Interface $item);
 
+    /**
+     * @param Npc_Character_Interface $npc_character
+     * @return bool
+     */
+    public function add_npc_character(Npc_Character_Interface $npccharacter);
+
+    /**
+     * @param Npc_Character_Interface $npc_character
+     * @return bool
+     */
+    public function remove_npc_character(Npc_Character_Interface $npccharacter);
 
 }

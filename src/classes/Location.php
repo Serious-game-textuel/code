@@ -17,15 +17,15 @@
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;
-    private array $characters;
+    private array $npccharacters;
     private array $hints;
     private array $actions;
 
-    public function __construct(int $id, string $description, string $name, string $status,
-     Inventory_Interface $inventory, array $characters, array $hints, array $actions) {
+    public function __construct(int $id, string $description, string $name, array $status,
+     Inventory_Interface $inventory, array $npccharacters, array $hints, array $actions) {
         parent::__construct($id, $description, $name, $status);
         $this->inventory = $inventory;
-        $this->characters = $characters;
+        $this->npc_characters = $npccharacters;
         $this->hints = $hints;
         $this->actions = $actions;
     }
@@ -33,8 +33,21 @@ class Location extends Entity implements Location_Interface {
         return $this->inventory;
     }
 
+
+    public function add_npc_character(Npc_Character $npccharacter) {
+        $this->npc_characters[] = $npccharacter;
+    }
+
+    public function remove_npc_character(Npc_Character $npccharacter) {
+        $key = array_search($npccharacter, $this->npccharacters);
+        if ($key !== false) {
+            unset($this->npccharacters[$key]);
+        }
+    }
+
+
     public function get_characters() {
-        return $this->characters;
+        return $this->npccharacters;
     }
 
     public function get_actions() {
@@ -44,5 +57,22 @@ class Location extends Entity implements Location_Interface {
         return $this->hints;
     }
 
-
+    public function check_actions(string $action) {
+        $action = explode(" ", $action);
+        $connector = $action[0];
+        $entity1 = $action[1];
+        $entity2 = $action[2];
+        for ($i = 0; $i < count($this->actions); $i++) {
+            if ($this->actions[$i]->get_entity1()->get_name() == $entity1
+                && $this->actions[$i]->get_entity2()->get_name() == $entity2
+                && $this->actions[$i]->get_connector() == $connector) {
+                $this->actions[$i]->do_condition();
+                return true;
+            }
+        }
+        return false;
+    }
+    public function has_item_location(Item_Interface $item) {
+        return $this->inventory->check_item($item);
+    }
 }

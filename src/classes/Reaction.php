@@ -18,13 +18,13 @@ abstract class Reaction implements Reaction_Interface {
 
     private int $id;
     private string $description;
-    private string $oldstatus;
-    private string $newstatus;
-    private Item_Interface $olditem;
-    private Item_Interface $newitem;
+    private array $oldstatus;
+    private array $newstatus;
+    private array $olditem;
+    private array $newitem;
 
-    public function __construct(int $id, string $description, string $oldstatus, string $newstatus,
-     Item_Interface $olditem, Item_Interface $newitem) {
+    public function __construct(int $id, string $description, array $oldstatus, array $newstatus,
+    array $olditem, array $newitem) {
         $this->id = $id;
         $this->description = $description;
         $this->oldstatus = $oldstatus;
@@ -53,7 +53,7 @@ abstract class Reaction implements Reaction_Interface {
         return $this->oldstatus;
     }
 
-    public function set_old_status(string $status) {
+    public function set_old_status(array $status) {
         $this->oldstatus = $status;
     }
 
@@ -61,7 +61,7 @@ abstract class Reaction implements Reaction_Interface {
         return $this->newstatus;
     }
 
-    public function set_new_status(string $status) {
+    public function set_new_status(array $status) {
         $this->newstatus = $status;
     }
 
@@ -69,7 +69,7 @@ abstract class Reaction implements Reaction_Interface {
         return $this->olditem;
     }
 
-    public function set_old_item(Item_Interface $item) {
+    public function set_old_item(array $item) {
         $this->olditem = $item;
     }
 
@@ -77,7 +77,7 @@ abstract class Reaction implements Reaction_Interface {
         return $this->newitem;
     }
 
-    public function set_new_item(Item_Interface $item) {
+    public function set_new_item(array $item) {
         $this->newitem = $item;
     }
 
