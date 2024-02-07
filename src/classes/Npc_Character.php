@@ -14,19 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-class Player_Character extends Character {
+class Npc_Character extends Character {
 
     private Inventory_Interface $inventory;
     private Location_Interface $currentlocation;
 
-    public function __construct(int $id, string $description, string $name, array $status, Inventory_Interface $inventory, Location_Interface $currentlocation) {
-        parent::__construct($id, $description, $name, $status);
-        $this->inventory = $inventory;
-        $this->currentlocation = $currentlocation;
+    public function __construct(
+        int $id,
+        string $description,
+        string $name, array $status,
+        Inventory_Interface $inventory,
+        Location_Interface $currentlocation) {
+            parent::__construct($id, $description, $name, $status);
+            $this->inventory = $inventory;
+            $this->currentlocation = $currentlocation;
     }
 
-    public function get_current_location() {   
+    public function get_current_location() {
         return $currentlocation;
+    }
+
+    public function set_new_location(Location_Interface $newlocation) {
+        $this->currentlocation = $newlocation;
     }
 
 }

@@ -47,18 +47,17 @@ class Condition implements Condition_Interface {
             if ($reaction instanceof Character_Reaction) {
                 if ($reaction->get_character() != null) {
                     $character = $reaction->get_character();
-                    
+
                     if ($reaction->get_new_location() != null) {
                         $newlocation = $reaction->get_new_location();
                         $game = Game::getinstance();
-                        if($character instanceof Npc_Character){
+                        if ($character instanceof Npc_Character) {
                             $oldlocation = $character->get_current_location();
                             $oldlocation->remove_character($character);
                             $newlocation->add_character($character);
                             $character->set_new_location($newlocation);
 
-                        }
-                        else if($character instanceof Player_Character){
+                        } else if ($character instanceof Player_Character) {
                             $game->set_current_location($newlocation);
                             $game->add_visited_location($newlocation);
                             $newlocation->check_actions("description");
@@ -76,11 +75,11 @@ class Condition implements Condition_Interface {
                         $newstatus = $reaction->get_new_status();
                         $character->add_status($newstatus);
                         if ($character instanceof Player_Character) {
-                            if ($newstatus == "mort" && $character->get_name() == "joueur") {
+                            if ($newstatus == "mort") {
                                 $game = Game::getinstance();
                                 $game->add_deaths();
                             }
-                            if ($newstatus == "victoire" && $character->get_name() == "joueur") {
+                            if ($newstatus == "victoire") {
                                 $game = Game::getinstance();
                                 $deaths = $game->get_deaths();
                                 $starttime = $game->get_start_time();
