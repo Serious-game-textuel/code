@@ -13,7 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+require_once 'src/classes/Entity.php';
+require_once 'src/interfaces/Location_Interface.php';
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;
@@ -50,11 +51,11 @@ class Location extends Entity implements Location_Interface {
         $entity1 = $action[1];
         $entity2 = $action[2];
         for ($i = 0; $i < count($this->actions); $i++) {
-            if ($this->actions[$i]->get_entity1()->get_name() == $entity1
-                && $this->actions[$i]->get_entity2()->get_name() == $entity2
-                && $this->actions[$i]->get_connector() == $connector) {
-                $this->actions[$i]->do_condition();
-                return true;
+                if ($this->actions[$i]->get_entity1()->get_name() == $entity1
+                    && $this->actions[$i]->get_entity2()->get_name() == $entity2
+                    && $this->actions[$i]->get_connector() == $connector) {
+                    $this->actions[$i]->do_condition();
+                    return true;
             }
         }
         return false;

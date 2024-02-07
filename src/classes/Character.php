@@ -27,7 +27,10 @@ class Character extends Entity implements Character_Interface {
     }
 
     public function has_item_character(Item_Interface $item) {
-        return $this->inventory->check_item($item);
+        if ($this->inventory !== null) {
+            return $this->inventory->check_item($item);
+        }
+        return false;
     }
 
 }

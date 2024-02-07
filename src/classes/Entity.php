@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+require_once 'src/interfaces/Entity_Interface.php';
 abstract class Entity implements Entity_Interface {
 
     private int $id;

@@ -13,6 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+require_once 'src/Language.php';
+require_once 'src/classes/Location.php';
+require_once 'src/classes/Inventory.php';
+require_once 'src/interfaces/Game_Interface.php';
 
 class Game implements Game_Interface {
 
