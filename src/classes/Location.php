@@ -17,15 +17,15 @@
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;
-    private array $characters;
+    private array $npc_characters;
     private array $hints;
     private array $actions;
 
     public function __construct(int $id, string $description, string $name, array $status,
-     Inventory_Interface $inventory, array $characters, array $hints, array $actions) {
+     Inventory_Interface $inventory, array $npc_characters, array $hints, array $actions) {
         parent::__construct($id, $description, $name, $status);
         $this->inventory = $inventory;
-        $this->characters = $characters;
+        $this->npc_characters = $npc_characters;
         $this->hints = $hints;
         $this->actions = $actions;
     }
@@ -33,8 +33,21 @@ class Location extends Entity implements Location_Interface {
         return $this->inventory;
     }
 
+
+    public function add_npc_character(Npc_Character $npc_character) {
+        $this->npc_characters[] = $npc_character;
+    }
+
+    public function remove_npc_character(Npc_Character $npc_character) {
+        $key = array_search($npc_character, $this->npc_characters);
+        if ($key !== false) {
+            unset($this->npc_characters[$key]);
+        }
+    }
+
+
     public function get_characters() {
-        return $this->characters;
+        return $this->npc_characters;
     }
 
     public function get_actions() {
