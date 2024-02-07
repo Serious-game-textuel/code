@@ -262,33 +262,127 @@ class ConditionTest extends TestCase {
         $nodeCondition = new Node_Condition(8, $condition1, $condition2, "ou", []);
         $this->assertTrue($nodeCondition->is_true());
     }
-
-    public function testDoReactions() {
+    /**
+     * vérifie le bon fonctionnement de la méthode do_reactions pour une leaf_condition qui ajoute un status
+     */
+    public function testCharacterDoReactionsAddStatus() {
         // Create mock objects for testing
         $character = new Character(1, "character", "description",["status"],new Inventory(3,[]));
-        $location = $this->createMock(Location_Interface::class);
         $newLocation = $this->createMock(Location_Interface::class);
-        $newItem = $this->createMock(Item::class);
-        $oldItem = $this->createMock(Item::class);
     
         // Mock reactions
         $characterReaction = new Character_Reaction(1, 'character_reaction', [], ['new_status'], [], [], $character, $newLocation);
-        $locationReaction = new Location_Reaction(2, 'location_reaction', [], ['new_status'], [], [], $location);
     
-        // Mock condition for testing
-        $condition = new Leaf_Condition(3, $character, null, 'est', ['status'], null, []);
-    
+
         // Create a condition instance with reactions
-        $conditionWithReactions = new Leaf_Condition(4, $character, null, 'est', ['status'], $condition, [$characterReaction, $locationReaction]);
+        $conditionWithReactions = new Leaf_Condition(4, $character, null, 'est', ['status'], null, [$characterReaction]);
     
         // Test with true conditionstatus
         $conditionWithReactions->do_reactions();
         $this->assertTrue(in_array('new_status', $character->get_status())); // Check if 'new_status' is in character status
-    
+
         // Test with false condition
         $conditionWithReactions->do_reactions();
-        $this->assertFalse(in_array('different_status', $character->get_status())); // Check if 'new_status' is in character status
+        $this->assertFalse(in_array('different_status', $character->get_status())); // Check if 'different_status' is not in character status
     }
 
+    /**
+     * vérifie le bon fonctionnement de la méthode do_reactions pour une leaf_condition pour un character_reaction qui retire un status
+     */
+    public function testCharacterDoReactionsRemoveStatus() {
+        // Create mock objects for testing
+        $character = new Character(1, "character", "description",["status"],new Inventory(3,[]));
+        $newLocation = $this->createMock(Location_Interface::class);
+    
+        // Mock reactions
+        $characterReaction = new Character_Reaction(1, 'character_reaction', ['status'], [], [], [], $character, $newLocation);
+    
+
+        // Create a condition instance with reactions
+        $conditionWithReactions = new Leaf_Condition(4, $character, null, 'est pas', ['status'], null, [$characterReaction]);
+    
+        // Test with true conditionstatus
+        $conditionWithReactions->do_reactions();
+        $this->assertFalse(in_array('status', $character->get_status())); // Check if 'status' is not in character status
+
+    }
+
+    /**
+     * vérifie le bon fonctionnement de la méthode do_reactions pour une leaf_condition pour un character_reaction qui ajoute ou retire un item
+     */
+    public function testCharacterDoReactionsAddRemoveItem() {
+        // Create mock objects for testing
+        $item1 = new Item(5, "item1", "description",["status"]);
+        $character = new Character(1, "character", "description",["status"],new Inventory(3,[[$item1]]));
+        $item = new Item(4, "item", "description",["status"]);
+        // Mock reactions
+        $characterReaction = new Character_Reaction(1, 'character_reaction', [], [], [], [$item], $character, null);
+    
+
+        // Create a condition instance with reactions
+        $conditionWithReactions = new Leaf_Condition(4, $character, $item1, 'possède', [], null, [$characterReaction]);
+    
+        // Test with true conditionstatus
+        $conditionWithReactions->do_reactions();
+        $this->assertTrue($character->has_item_character($item)); // Check if character has item
+
+        $characterReaction = new Character_Reaction(1, 'character_reaction', [], [], [$item], [], $character, null);
+        $conditionWithReactions = new Leaf_Condition(4, $character, $item1, 'possède', [], null, [$characterReaction]);
+        // Test with false condition
+        $conditionWithReactions->do_reactions();
+        $this->assertFalse($character->has_item_character($item)); // Check if character does not have item
+    }
+
+    /**
+     * vérifie le bon fonctionnement de la méthode do_reactions pour une leaf_condition pour un location_reaction qui ajoute ou retire un item
+     */
+    public function testLocationDoReactionsAddRemoveItem() {
+        // Create mock objects for testing
+        $item1 = new Item(5, "item1", "description",["status"]);
+        $location = new Location(1, "location", "description",["status"],new Inventory(3,[[$item1]]),[],[],[]);
+        $item = new Item(4, "item", "description",["status"]);
+        // Mock reactions
+        $locationReaction = new Location_Reaction(1, 'location_reaction', [], [], [], [$item], $location);
+    
+
+        // Create a condition instance with reactions
+        $conditionWithReactions = new Leaf_Condition(4, $location, $item1, 'possède', [], null, [$locationReaction]);
+    
+        // Test with true conditionstatus
+        $conditionWithReactions->do_reactions();
+        $this->assertTrue($location->has_item_location($item)); // Check if location has item
+
+        $locationReaction = new Location_Reaction(1, 'location_reaction', [], [], [$item], [], $location);
+        $conditionWithReactions = new Leaf_Condition(4, $location, $item1, 'possède', [], null, [$locationReaction]);
+        // Test with false condition
+        $conditionWithReactions->do_reactions();
+        $this->assertFalse($location->has_item_location($item)); // Check if location does not have item
+
+    }
+
+    /**
+     * vérifie le bon fonctionnement de la méthode do_reactions pour une leaf_condition pour un location_reaction qui ajoute ou retire un status
+     */
+    public function testLocationDoReactionsAddRemoveStatus() {
+        // Create mock objects for testing
+        $location = new Location(1, "location", "description",["status"],new Inventory(3,[]),[],[],[]);
+        // Mock reactions
+        $locationReaction = new Location_Reaction(1, 'location_reaction', [], ['new_status'], [], [], $location);
+    
+
+        // Create a condition instance with reactions
+        $conditionWithReactions = new Leaf_Condition(4, $location, null, 'est', ['status'], null, [$locationReaction]);
+    
+        // Test with true conditionstatus
+        $conditionWithReactions->do_reactions();
+        $this->assertTrue(in_array('new_status', $location->get_status())); // Check if location has status
+
+        $locationReaction = new Location_Reaction(1, 'location_reaction', ['new_status'], [], [], [], $location);
+        $conditionWithReactions = new Leaf_Condition(4, $location, null, 'est', ['status'], null, [$locationReaction]);
+        // Test with false condition
+        $conditionWithReactions->do_reactions();
+        $this->assertFalse(in_array('new_status', $location->get_status())); // Check if location does not have status
+
+    }
 }
 ?>
