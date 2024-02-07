@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // vendor/bin/phpunit src/tests/ConditionTest.php
-require_once 'src/interfaces/Condition_Interface.php';
-require_once 'src/classes/Node_Condition.php';
-require_once 'src/classes/Leaf_Condition.php';
-require_once 'src/classes/Condition.php';
-require_once 'src/interfaces/Entity_Interface.php';
-require_once 'src/interfaces/Character_Interface.php';
-require_once 'src/interfaces/Location_Interface.php';
-require_once 'src/classes/Reaction.php';
-require_once 'src/classes/Item.php';
-require_once 'src/classes/Character.php';
-require_once 'src/classes/Character_Reaction.php';
-require_once 'src/classes/Location_Reaction.php';
-require_once 'src/interfaces/Inventory_Interface.php';
-require_once 'src/classes/Action.php';
+require_once 'serioustextualgame/src/interfaces/Condition_Interface.php';
+require_once 'serioustextualgame/src/classes/Node_Condition.php';
+require_once 'serioustextualgame/src/classes/Leaf_Condition.php';
+require_once 'serioustextualgame/src/classes/Condition.php';
+require_once 'serioustextualgame/src/interfaces/Entity_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Character_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Location_Interface.php';
+require_once 'serioustextualgame/src/classes/Reaction.php';
+require_once 'serioustextualgame/src/classes/Item.php';
+require_once 'serioustextualgame/src/classes/Character.php';
+require_once 'serioustextualgame/src/classes/Character_Reaction.php';
+require_once 'serioustextualgame/src/classes/Location_Reaction.php';
+require_once 'serioustextualgame/src/interfaces/Inventory_Interface.php';
+require_once 'serioustextualgame/src/classes/Action.php';
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Environment\Console;
 
@@ -47,18 +47,18 @@ class ActionTest extends TestCase {
         // Mock reactions
         $characterReaction = new Character_Reaction(1, 'je ajoute un item', [], [], [], [$item], $character, null);
 
-        $characterReaction1 = new Character_Reaction(1, 'je change un status', [], ['new_status'], [], [], $character, null);
+        $characterReaction1 = new Character_Reaction(2, 'je change un status', [], ["new_status"], [], [], $character, null);
         
         $locationReaction = new Location_Reaction(1, 'jajoute un item a une location', [], [], [], [$item], $location);
 
-        $locationReaction1 = new Location_Reaction(1, 'jajoute un item a une location', [], [], [], [$item2], $location);
+        $locationReaction1 = new Location_Reaction(2, 'jajoute un item a une location', [], [], [], [$item2], $location);
 
         // Create a condition instance with reactions
         $conditionWithReactions = new Leaf_Condition(4, $character, $item1, 'possède', [], null, [$characterReaction,$characterReaction1]);
 
-        $conditionWithReactions1 = new Leaf_Condition(4, $location, $item1, 'possède', [], null, [$locationReaction]);
+        $conditionWithReactions1 = new Leaf_Condition(5, $location, $item1, 'possède', [], null, [$locationReaction]);
 
-        $conditionWithReactions2 = new Leaf_Condition(4, $location, $item2, 'possède', [], null, [$locationReaction1]);
+        $conditionWithReactions2 = new Leaf_Condition(6, $location, $item2, 'possède', [], null, [$locationReaction1]);
         
         $action= new Action(1, $character, $item, 'donner', [$conditionWithReactions,$conditionWithReactions1,$conditionWithReactions2]);
 

@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // vendor/bin/phpunit src/tests/ConditionTest.php
-require_once 'src/interfaces/Condition_Interface.php';
-require_once 'src/classes/Node_Condition.php';
-require_once 'src/classes/Leaf_Condition.php';
-require_once 'src/classes/Condition.php';
-require_once 'src/interfaces/Entity_Interface.php';
-require_once 'src/interfaces/Character_Interface.php';
-require_once 'src/interfaces/Location_Interface.php';
-require_once 'src/classes/Reaction.php';
-require_once 'src/classes/Item.php';
-require_once 'src/classes/Character.php';
-require_once 'src/classes/Character_Reaction.php';
-require_once 'src/classes/Location_Reaction.php';
-require_once 'src/interfaces/Inventory_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Condition_Interface.php';
+require_once 'serioustextualgame/src/classes/Node_Condition.php';
+require_once 'serioustextualgame/src/classes/Leaf_Condition.php';
+require_once 'serioustextualgame/src/classes/Condition.php';
+require_once 'serioustextualgame/src/interfaces/Entity_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Character_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Location_Interface.php';
+require_once 'serioustextualgame/src/classes/Reaction.php';
+require_once 'serioustextualgame/src/classes/Item.php';
+require_once 'serioustextualgame/src/classes/Character.php';
+require_once 'serioustextualgame/src/classes/Character_Reaction.php';
+require_once 'serioustextualgame/src/classes/Location_Reaction.php';
+require_once 'serioustextualgame/src/interfaces/Inventory_Interface.php';
 
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Environment\Console;

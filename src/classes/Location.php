@@ -13,8 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once 'src/classes/Entity.php';
-require_once 'src/interfaces/Location_Interface.php';
+require_once 'serioustextualgame/src/classes/Entity.php';
+require_once 'serioustextualgame/src/interfaces/Location_Interface.php';
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;

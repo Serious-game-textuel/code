@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once 'src/interfaces/Inventory_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Inventory_Interface.php';
 class Inventory implements Inventory_Interface {
 
     private int $id;

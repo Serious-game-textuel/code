@@ -13,12 +13,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once 'src/interfaces/App_Interface.php';
-require_once 'src/interfaces/Location_Interface.php';
-require_once 'src/interfaces/Entity_Interface.php';
-require_once 'src/interfaces/Action_Interface.php';
-require_once 'src/classes/App.php';
-require_once 'src/classes/Game.php';
+require_once 'serioustextualgame/src/interfaces/App_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Location_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Entity_Interface.php';
+require_once 'serioustextualgame/src/interfaces/Action_Interface.php';
+require_once 'serioustextualgame/src/classes/App.php';
+require_once 'serioustextualgame/src/classes/Game.php';
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Environment\Console;
 

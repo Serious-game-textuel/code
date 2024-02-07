@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once 'Game.php';
+require_once 'serioustextualgame/src/classes/Game.php';
 class Condition implements Condition_Interface {
 
     private int $id;
@@ -43,6 +43,7 @@ class Condition implements Condition_Interface {
 
     public function do_reactions() {
         $reactions = $this->get_reactions();
+        $description = [];
         foreach ($reactions as $reaction) {
             if ($reaction instanceof Character_Reaction) {
                 if ($reaction->get_character() != null) {
@@ -111,9 +112,12 @@ class Condition implements Condition_Interface {
                     }
                 }
             }
-            return $reaction->get_description();
+            $descriptions[] = $reaction->get_description();
         }
-        return "pas de réaction";
+        if (empty($descriptions)) {
+            return "pas de réaction";
+        }
+        return $descriptions;
     }
 
     public function is_true() {
