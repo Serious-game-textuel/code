@@ -13,17 +13,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once 'serioustextualgame/src/interfaces/Game_Interface.php';
-require_once 'serioustextualgame/src/interfaces/App_Interface.php';
-require_once 'serioustextualgame/src/classes/App.php';
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\Environment\Console;
 
 class AppTest extends TestCase {
     /**
      * vérifie que le constructeur initialise correctement les propriétés
      */
-    public function testGetSetGame() {
+    public function testgetsetgame() {
         $game1 = $this->createMock(Game_Interface::class);
         $game2 = $this->createMock(Game_Interface::class);
 
@@ -37,7 +38,7 @@ class AppTest extends TestCase {
     /**
      * vérifie que le constructeur initialise correctement les propriétés
      */
-    public function testGetSetSave() {
+    public function testgetsetsave() {
         $game1 = $this->createMock(Game_Interface::class);
         $game2 = $this->createMock(Game_Interface::class);
 

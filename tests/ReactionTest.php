@@ -13,33 +13,35 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once 'serioustextualgame/src/interfaces/Reaction_Interface.php';
-require_once 'serioustextualgame/src/interfaces/Character_Interface.php';
-require_once 'serioustextualgame/src/interfaces/Location_Interface.php';
-require_once 'serioustextualgame/src/classes/Reaction.php';
-require_once 'serioustextualgame/src/classes/Character_Reaction.php';
-require_once 'serioustextualgame/src/classes/Location_Reaction.php';
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\Environment\Console;
 
 class ReactionTest extends TestCase {
     /**
      * vérifie le comportement de la classe Character_Reaction
      */
-    public function testCharacterReaction() {
+    public function testcharacterreaction() {
         $character = $this->createMock(Character_Interface::class);
-        $newLocation = $this->createMock(Location_Interface::class);
+        $newlocation = $this->createMock(Location_Interface::class);
 
-        $reaction = new Character_Reaction(1, "Description", ['old_status'], ['new_status'], ['old_item'], ['new_item'], $character, $newLocation);
+        $reaction = new Character_Reaction(1, "Description",
+        ['old_status'], ['new_status'], ['old_item'], ['new_item'], $character, $newlocation);
 
         $this->assertInstanceOf(Character_Reaction::class, $reaction);
         $this->assertEquals($character, $reaction->get_character());
-        $this->assertEquals($newLocation, $reaction->get_new_location());
+        $this->assertEquals($newlocation, $reaction->get_new_location());
     }
     /**
      * vérifie le comportement de la classe Location_Reaction
      */
-    public function testLocationReaction() {
+    public function testlocationreaction() {
         $location = $this->createMock(Location_Interface::class);
 
         $reaction = new Location_Reaction(2, "Description", ['old_status'], ['new_status'], ['old_item'], ['new_item'], $location);
@@ -49,4 +51,3 @@ class ReactionTest extends TestCase {
     }
 
 }
-?>

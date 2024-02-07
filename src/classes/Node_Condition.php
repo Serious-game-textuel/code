@@ -13,7 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once 'serioustextualgame/src/classes/Condition.php';
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
 class Node_Condition extends Condition {
 
     private Condition_Interface $condition1;
