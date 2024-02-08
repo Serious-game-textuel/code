@@ -50,17 +50,16 @@ interface Game_Interface {
     public function add_deaths();
 
     /**
-     * Returns the list of all the actions previously performed.
-     * @return Action_Interface[]
+     * Returns the number of actions performed.
+     * @return int
      */
     public function get_actions();
 
     /**
-     * Add $action to the list of actions.
-     * @param Action_Interface $action
+     * Increases the number of actions performed.
      * @return void
      */
-    public function add_action(Action_Interface $action);
+    public function add_action();
 
     /**
      * Returns the list of all the visited locations

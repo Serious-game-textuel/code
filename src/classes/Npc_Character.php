@@ -25,13 +25,13 @@ class Npc_Character extends Character {
         string $name, array $status,
         Inventory_Interface $inventory,
         Location_Interface $currentlocation) {
-            parent::__construct($id, $description, $name, $status);
+            parent::__construct($id, $description, $name, $status, $inventory);
             $this->inventory = $inventory;
             $this->currentlocation = $currentlocation;
     }
 
     public function get_current_location() {
-        return $currentlocation;
+        return $this->currentlocation;
     }
 
     public function set_new_location(Location_Interface $newlocation) {

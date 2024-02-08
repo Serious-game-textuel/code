@@ -13,7 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
 class Item extends Entity implements Item_Interface {
 
 }

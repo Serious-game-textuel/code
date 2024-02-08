@@ -13,13 +13,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 class Condition implements Condition_Interface {
 
     private int $id;
-    private array $reactions;
+    private ?array $reactions;
 
-    public function __construct(int $id, array $reactions) {
+    public function __construct(int $id, ?array $reactions) {
         $this->id = $id;
         $this->reactions = $reactions;
 
@@ -43,6 +46,7 @@ class Condition implements Condition_Interface {
 
     public function do_reactions() {
         $reactions = $this->get_reactions();
+        $description = [];
         foreach ($reactions as $reaction) {
             if ($reaction instanceof Character_Reaction) {
                 if ($reaction->get_character() != null) {
@@ -53,8 +57,8 @@ class Condition implements Condition_Interface {
                         $game = Game::getinstance();
                         if ($character instanceof Npc_Character) {
                             $oldlocation = $character->get_current_location();
-                            $oldlocation->remove_character($character);
-                            $newlocation->add_character($character);
+                            $oldlocation->remove_npc_character($character);
+                            $newlocation->add_npc_character($character);
                             $character->set_new_location($newlocation);
 
                         } else if ($character instanceof Player_Character) {
@@ -122,9 +126,12 @@ class Condition implements Condition_Interface {
                     }
                 }
             }
-            return $reaction->get_description();
+            $descriptions[] = $reaction->get_description();
         }
-        return "pas de réaction";
+        if (empty($descriptions)) {
+            return "pas de réaction";
+        }
+        return $descriptions;
     }
 
     public function is_true() {
@@ -134,7 +141,6 @@ class Condition implements Condition_Interface {
             $connector = $this->get_connector();
             $status = $this->get_status();
             $entity1status = $entity1->get_status();
-            $entity2status = $entity2->get_status();
             if ($entity1 instanceof Character) {
                 if ($entity2 == null) {
                     if ($connector == "est") {

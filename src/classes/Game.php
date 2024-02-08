@@ -13,6 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
 
 class Game implements Game_Interface {
 
@@ -59,7 +66,7 @@ class Game implements Game_Interface {
                 ),
                 new Player_Character(
                     0,
-                    null,
+                    "Player",
                     [],
                     new Inventory(0, [])
                 )
@@ -91,7 +98,7 @@ class Game implements Game_Interface {
     }
 
     public function add_action() {
-        $this->actions = $action ++;
+        $this->actions ++;
     }
 
     public function get_player() {

@@ -13,7 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;
@@ -25,7 +28,7 @@ class Location extends Entity implements Location_Interface {
      Inventory_Interface $inventory, array $npccharacters, array $hints, array $actions) {
         parent::__construct($id, $description, $name, $status);
         $this->inventory = $inventory;
-        $this->npc_characters = $npccharacters;
+        $this->npccharacters = $npccharacters;
         $this->hints = $hints;
         $this->actions = $actions;
     }
@@ -35,7 +38,7 @@ class Location extends Entity implements Location_Interface {
 
 
     public function add_npc_character(Npc_Character $npccharacter) {
-        $this->npc_characters[] = $npccharacter;
+        $this->npccharacters[] = $npccharacter;
     }
 
     public function remove_npc_character(Npc_Character $npccharacter) {
@@ -64,10 +67,10 @@ class Location extends Entity implements Location_Interface {
         $entity2 = $action[2];
         for ($i = 0; $i < count($this->actions); $i++) {
             if ($this->actions[$i]->get_entity1()->get_name() == $entity1
-                && $this->actions[$i]->get_entity2()->get_name() == $entity2
-                && $this->actions[$i]->get_connector() == $connector) {
-                $this->actions[$i]->do_condition();
-                return true;
+                    && $this->actions[$i]->get_entity2()->get_name() == $entity2
+                    && $this->actions[$i]->get_connector() == $connector) {
+                    $this->actions[$i]->do_condition();
+                    return true;
             }
         }
         return false;
