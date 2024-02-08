@@ -32,13 +32,14 @@ class Game implements Game_Interface {
     private Location_Interface $currentlocation;
     private static $instance = null;
     private Player_Character $player;
-    private ?Action_Interface $default_action_search;
-    private ?Action_Interface $default_action_interact;
+    private ?Default_Action_Interface $default_action_search;
+    private ?Default_Action_Interface $default_action_interact;
+    private array $entities = [];
 
 
     public function __construct(int $id, int $deaths, int $actions, array $visitedlocations, DateTime $starttime,
      Language $language, Location_Interface $currentlocation, Player_Character $player,
-     ?Action_Interface $default_action_search, ?Action_Interface $default_action_interact) {
+     ?Default_Action_Interface $default_action_search, ?Default_Action_Interface $default_action_interact) {
         $this->id = $id;
         $this->deaths = $deaths;
         $this->actions = $actions;
@@ -49,6 +50,7 @@ class Game implements Game_Interface {
         $this->player = $player;
         $this->default_action_search = $default_action_search;
         $this->default_action_interact = $default_action_interact;
+        self::$instance = $this;
     }
     public static function getinstance() {
         if (self::$instance == null) {
@@ -152,7 +154,7 @@ class Game implements Game_Interface {
         return $this->default_action_search;
     }
 
-    public function set_default_action_search(Action_Interface $action) {
+    public function set_default_action_search(Default_Action_Interface $action) {
         $this->default_action_search = $action;
     }
 
@@ -160,8 +162,32 @@ class Game implements Game_Interface {
         return $this->default_action_interact;
     }
 
-    public function set_default_action_interact(Action_Interface $action) {
+    public function set_default_action_interact(Default_Action_Interface $action) {
         $this->default_action_interact = $action;
+    }
+
+    public function get_entities() {
+        return $this->entities;
+    }
+
+    public function set_entities(array $entities){
+        $this->entities = $entities;
+    }
+
+    public function add_entity(Entity_Interface $entity){
+        array_push($this->entities, $entity);
+    }
+
+    /**
+     * @return ?Entity_Interface
+     */
+    public function get_entity(string $name){
+        foreach($this->entities as $entity) {
+            if($entity->get_name()==$name){
+                return $entity;
+            }
+        }
+        return null;
     }
 
 }

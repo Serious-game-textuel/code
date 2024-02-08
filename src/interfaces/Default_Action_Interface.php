@@ -14,47 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Action_Interface {
-
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
+interface Default_Action_Interface extends Action_Interface {
     /**
-     * @return int
-     */
-    public function get_id();
-
-    /**
-     * @param int $id
+     * @param string $verb
      *
-     * @return void
-     */
-    public function set_id(int $id);
-
-    /**
-     * @return string
-     */
-    public function get_description();
-
-    /**
-     * @param string $description
-     *
-     * @return void
-     */
-    public function set_description(string $description);
-
-    /**
-     * @return Condition_Interface[]
-     */
-    public function get_conditions();
-
-    /**
-     * @param Condition_Interface[] $conditions
-     *
-     * @return void
-     */
-    public function set_conditions(array $conditions);
-
-    /**
      * @return array
      */
-    public function do_conditions();
-
+    public function do_conditions_verb(string $verb);
 }

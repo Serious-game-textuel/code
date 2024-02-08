@@ -30,6 +30,8 @@ abstract class Entity implements Entity_Interface {
         $this->description = $description;
         $this->name = $name;
         $this->status = $status;
+        $game = Game::getinstance();
+        $game->add_entity($this);
     }
 
     public function get_id() {
