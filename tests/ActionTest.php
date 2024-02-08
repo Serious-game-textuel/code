@@ -49,7 +49,6 @@ class ActionTest extends TestCase {
 
         $location = new Location(1, "un marécage boueux",
          "marécages", ["boueux"], new Inventory(2, [[$item2, $item4]]), [$character], [], []);
-        
         // Mock reactions.
         $characterreaction1 = new Character_Reaction(1, 'Michel récupère une poire', [], [], [], [$item2], $character, null);
         $characterreaction2 = new Character_Reaction(2, 'Michel grandit', [], ["grand"], [], [], $character, null);
@@ -66,7 +65,6 @@ class ActionTest extends TestCase {
 
         $conditionwithreactions4 = new Node_Condition(1, $conditionwithreactions2, $conditionwithreactions3,
             "et", [$locationreaction1, $locationreaction2]);
-        
         $action = new Action(1, 'action', [$conditionwithreactions1, $conditionwithreactions4]);
 
         // Test the do_condition method.
