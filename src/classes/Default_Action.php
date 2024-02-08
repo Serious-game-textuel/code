@@ -20,13 +20,13 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Act
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 
 class Default_Action extends Action implements Default_Action_Interface {
-    public function do_conditions_verb(string $verb){
+    public function do_conditions_verb(string $verb) {
         $game = Game::getinstance();
         $game->add_action();
-        $tokenDescription = explode('"', $this->get_description());
+        $tokendescription = explode('"', $this->get_description());
         $result = [];
-        foreach($tokenDescription as $token){
-            if(str_replace(' ', '', $token) == '+verbe+' ||
+        foreach ($tokendescription as $token) {
+            if (str_replace(' ', '', $token) == '+verbe+' ||
             str_replace(' ', '', $token) == 'verbe+' ||
             str_replace(' ', '', $token) == '+verbe' ||
             str_replace(' ', '', $token) == 'verbe') {
@@ -38,7 +38,7 @@ class Default_Action extends Action implements Default_Action_Interface {
         return implode("", $result);
     }
 
-    public function do_conditions(){
+    public function do_conditions() {
         return $this->do_conditions_verb('');
     }
 }

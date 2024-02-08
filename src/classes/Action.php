@@ -65,8 +65,7 @@ class Action implements Action_Interface {
             }
         }
         $return = [];
-        // Default actions
-        if(count($conditionstrue) > 0) {
+        if (count($conditionstrue) > 0) {
             foreach ($conditionstrue as $condition) {
                 $result = $condition->do_reactions();
                 echo($result);
@@ -74,22 +73,22 @@ class Action implements Action_Interface {
             }
         } else {
             $tokens = explode(' ', trim($this->description));
-            if($tokens[0] == "fouiller"){
-                if($game->get_entity($tokens[1]) !== null){
-                    if($game->default_action_search !== null){
+            if ($tokens[0] == "fouiller") {
+                if ($game->get_entity($tokens[1]) !== null) {
+                    if ($game->default_action_search !== null) {
                         $result = $game->default_action_search->do_conditions_verb($tokens[0]);
                         echo($result);
                         array_push($return, $result);
                     }
-                }else{
-                    if($game->default_action_interact !== null){
+                } else {
+                    if ($game->default_action_interact !== null) {
                         $result = $game->default_action_interact->do_conditions_verb($tokens[0]);
                         echo($result);
                         array_push($return, $result);
                     }
                 }
             } else {
-                if($game->default_action_interact !== null){
+                if ($game->default_action_interact !== null) {
                     $result = $game->default_action_interact->do_conditions_verb($tokens[0]);
                     echo($result);
                         array_push($return, $result);
