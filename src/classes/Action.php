@@ -21,17 +21,12 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Inte
 class Action implements Action_Interface {
 
     private int $id;
-    private Entity_Interface $entity1;
-    private Entity_Interface $entity2;
-    private string $connector;
+    private string $description;
     private array $conditions;
 
-    public function __construct(int $id, Entity_Interface $entity1, Entity_Interface $entity2, string $connector,
-     array $conditions) {
+    public function __construct(int $id, string $description, array $conditions) {
         $this->id = $id;
-        $this->entity1 = $entity1;
-        $this->entity2 = $entity2;
-        $this->connector = $connector;
+        $this->description = $description;
         $this->conditions = $conditions;
     }
 
@@ -43,28 +38,12 @@ class Action implements Action_Interface {
         $this->id = $id;
     }
 
-    public function get_entity1() {
-        return $this->entity1;
+    public function get_description() {
+        return $this->description;
     }
 
-    public function set_entity1(Entity_Interface $entity1) {
-        $this->entity1 = $entity1;
-    }
-
-    public function get_entity2() {
-        return $this->entity2;
-    }
-
-    public function set_entity2(Entity_Interface $entity2) {
-        $this->entity2 = $entity2;
-    }
-
-    public function get_connector() {
-        return $this->connector;
-    }
-
-    public function set_connector(string $connector) {
-        $this->connector = $connector;
+    public function set_description(string $description) {
+        $this->description = $description;
     }
 
     public function get_conditions() {
