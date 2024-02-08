@@ -13,7 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
 class Character extends Entity implements Character_Interface {
 
     private Inventory_Interface $inventory;
@@ -27,7 +29,10 @@ class Character extends Entity implements Character_Interface {
     }
 
     public function has_item_character(Item_Interface $item) {
-        return $this->inventory->check_item($item);
+        if ($this->inventory !== null) {
+            return $this->inventory->check_item($item);
+        }
+        return false;
     }
 
 }

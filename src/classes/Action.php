@@ -13,6 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
 
 class Action implements Action_Interface {
 
@@ -73,7 +77,7 @@ class Action implements Action_Interface {
 
     public function do_conditions() {
         $game = Game::getinstance();
-        $game->add_action($this);
+        $game->add_action();
         $conditions = $this->get_conditions();
         $conditionstrue = [];
         foreach ($conditions as $condition) {

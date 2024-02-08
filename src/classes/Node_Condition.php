@@ -13,7 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
 class Node_Condition extends Condition {
 
     private Condition_Interface $condition1;
@@ -26,7 +28,7 @@ class Node_Condition extends Condition {
         Condition_Interface $condition1,
         Condition_Interface $condition2,
         string $connector1,
-        array $reactions
+        ?array $reactions
     ) {
         parent::__construct($id, $reactions);
         $this->condition1 = $condition1;
