@@ -83,10 +83,17 @@ echo $OUTPUT->header();
     }
     typeWriter(document.getElementById("text"), "Bonjour, je suis un texte dynamique", "white");
 
+    document.getElementById("inputText").addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) { // Vérifie si la touche est "Entrée"
+            displayInputText(); // Appelle la fonction displayInputText()
+        }
+    });
+
     function displayInputText() {
         var inputText = document.getElementById("inputText").value;
         typeWriter(document.getElementById("text"), inputText, "red"); 
         document.getElementById("inputText").value = ''; 
+        
     }
 </script>
 
