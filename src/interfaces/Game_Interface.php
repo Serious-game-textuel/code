@@ -106,4 +106,47 @@ interface Game_Interface {
      */
     public function set_current_location(Location_Interface $location);
 
+    /**
+     * @return Default_Action_Interface
+     */
+    public function get_default_action_search();
+
+    /**
+     * @param Default_Action_Interface
+     * @return void
+     */
+    public function set_default_action_search(Default_Action_Interface $action);
+
+    /**
+     * @return Default_Action_Interface
+     */
+    public function get_default_action_interact();
+
+    /**
+     * @param Default_Action_Interface
+     * @return void
+     */
+    public function set_default_action_interact(Default_Action_Interface $action);
+
+    /**
+     * @return array
+     */
+    public function get_entities();
+
+    /**
+     * @param array
+     * @return void
+     */
+    public function set_entities(array $entities);
+
+    /**
+     * @return void
+     */
+    public function add_entity(Entity_Interface $entity);
+
+    /**
+     * @return ?Entity_Interface
+     */
+    public function get_entity(string $name);
+
 }

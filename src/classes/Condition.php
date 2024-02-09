@@ -46,7 +46,7 @@ class Condition implements Condition_Interface {
 
     public function do_reactions() {
         $reactions = $this->get_reactions();
-        $description = [];
+        $descriptions = [];
         foreach ($reactions as $reaction) {
             if ($reaction instanceof Character_Reaction) {
                 if ($reaction->get_character() != null) {
@@ -126,12 +126,12 @@ class Condition implements Condition_Interface {
                     }
                 }
             }
-            $descriptions[] = $reaction->get_description();
+            array_push($descriptions, $reaction->get_description());
         }
         if (empty($descriptions)) {
             return "pas de réaction";
         }
-        return $descriptions;
+        return implode(' / ', $descriptions);
     }
 
     public function is_true() {
