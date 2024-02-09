@@ -26,10 +26,15 @@ abstract class Entity implements Entity_Interface {
 
     private array $status;
     public function __construct(string $description, string $name, array $status) {
+        $game = Game::getinstance();
+        if ($game->get_entity($name) !== null) {
+            throw new InvalidArgumentException("Chaque entité doit avoir un nom unique : ".$name);
+        }
         $this->id = Id_Class::generate_id(Entity::class);
         $this->description = $description;
         $this->name = $name;
         $this->status = $status;
+        $game->add_entity($this);
     }
 
     public function get_id() {

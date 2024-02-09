@@ -32,10 +32,14 @@ class Game implements Game_Interface {
     private Location_Interface $currentlocation;
     private static $instance = null;
     private Player_Character $player;
+    private ?Default_Action_Interface $defaultactionsearch;
+    private ?Default_Action_Interface $defaultactioninteract;
+    private array $entities = [];
 
 
     public function __construct(int $deaths, int $actions, array $visitedlocations, DateTime $starttime,
-     Language $language, Location_Interface $currentlocation, Player_Character $player) {
+    Language $language, Location_Interface $currentlocation, Player_Character $player,
+    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract) {
         $this->id = Id_Class::generate_id(Game::class);
         $this->deaths = $deaths;
         $this->actions = $actions;
@@ -44,7 +48,11 @@ class Game implements Game_Interface {
         $this->language = $language;
         $this->currentlocation = $currentlocation;
         $this->player = $player;
+        $this->defaultactionsearch = $defaultactionsearch;
+        $this->defaultactioninteract = $defaultactioninteract;
+        self::$instance = $this;
     }
+
     public static function getinstance() {
         if (self::$instance == null) {
             throw new Exception('TODO');
@@ -116,6 +124,46 @@ class Game implements Game_Interface {
     }
     public function set_current_location(Location_Interface $currentlocation) {
         $this->currentlocation = $currentlocation;
+    }
+
+    public function get_default_action_search() {
+        return $this->defaultactionsearch;
+    }
+
+    public function set_default_action_search(Default_Action_Interface $action) {
+        $this->defaultactionsearch = $action;
+    }
+
+    public function get_default_action_interact() {
+        return $this->defaultactioninteract;
+    }
+
+    public function set_default_action_interact(Default_Action_Interface $action) {
+        $this->defaultactioninteract = $action;
+    }
+
+    public function get_entities() {
+        return $this->entities;
+    }
+
+    public function set_entities(array $entities) {
+        $this->entities = $entities;
+    }
+
+    public function add_entity(Entity_Interface $entity) {
+        array_push($this->entities, $entity);
+    }
+
+    /**
+     * @return ?Entity_Interface
+     */
+    public function get_entity(string $name) {
+        foreach ($this->entities as $entity) {
+            if ($entity->get_name() == $name) {
+                return $entity;
+            }
+        }
+        return null;
     }
 
 }

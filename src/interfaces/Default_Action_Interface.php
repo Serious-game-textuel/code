@@ -14,45 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Inventory_Interface {
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
+interface Default_Action_Interface extends Action_Interface {
     /**
-     * @return int
-     */
-    public function get_id();
-
-    /**
-     * @param int $id
-     * @return void
-     */
-    public function set_id(int $id);
-
-    /**
-     * @param int $id
-     * @return Item_Interface
-     */
-    public function get_item(int $id);
-
-    /**
+     * @param string $verb
+     *
      * @return array
      */
-    public function get_items();
-
-    /**
-     * @param array $item
-     * @return void
-     */
-    public function add_item(array $item);
-
-    /**
-     * @param array $item
-     * @return void
-     */
-    public function remove_item(array $item);
-
-    /**
-     * @param Item_Interface $item
-     * @return boolean
-     */
-    public function check_item(Item_Interface $item);
+    public function do_conditions_verb(string $verb);
 }

@@ -29,40 +29,16 @@ interface Action_Interface {
     public function set_id(int $id);
 
     /**
-     * @return Entity_Interface
-     */
-    public function get_entity1();
-
-    /**
-     * @param Entity_Interface $entity1
-     *
-     * @return void
-     */
-    public function set_entity1(Entity_Interface $entity1);
-
-    /**
-     * @return Entity_Interface
-     */
-    public function get_entity2();
-
-    /**
-     * @param Entity_Interface $entity2
-     *
-     * @return void
-     */
-    public function set_entity2(Entity_Interface $entity2);
-
-    /**
      * @return string
      */
-    public function get_connector();
+    public function get_description();
 
     /**
-     * @param string $connector
+     * @param string $description
      *
      * @return void
      */
-    public function set_connector(string $connector);
+    public function set_description(string $description);
 
     /**
      * @return Condition_Interface[]
@@ -77,7 +53,7 @@ interface Action_Interface {
     public function set_conditions(array $conditions);
 
     /**
-     * @return void
+     * @return array
      */
     public function do_conditions();
 
