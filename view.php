@@ -59,6 +59,10 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
 echo $OUTPUT->header();
+//$intro = $moduleinstance->intro;
+/*echo "Contenu de \$intro : ";
+var_dump($intro);
+echo "\b";*/
 
 ?>
 

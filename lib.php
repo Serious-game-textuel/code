@@ -53,6 +53,11 @@ function serioustextualgame_add_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timecreated = time();
 
+    $file_content = $mform->get_file_content('userfile');
+    if ($file_content) {
+        $moduleinstance->intro = $file_content;
+    }
+
     $id = $DB->insert_record('serioustextualgame', $moduleinstance);
 
     return $id;
@@ -73,9 +78,16 @@ function serioustextualgame_update_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timemodified = time();
     $moduleinstance->id = $moduleinstance->instance;
+    $file_content = $mform->get_file_content(
+        'userfile'
+    );
+    if ($file_content) {
+        $moduleinstance->intro = $file_content;
+    }
 
     return $DB->update_record('serioustextualgame', $moduleinstance);
 }
+
 
 /**
  * Removes an instance of the mod_serioustextualgame from the database.
