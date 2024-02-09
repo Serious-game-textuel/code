@@ -13,16 +13,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
-class Player_Character extends Character {
 
-    private Inventory_Interface $inventory;
+class Id_Class {
 
-    public function __construct(string $description, array $status, Inventory_Interface $inventory) {
-        parent::__construct($description, "player", $status, $inventory);
-        $this->inventory = $inventory;
+    private static $map = [];
+
+    public static function generate_id($class) {
+        if (array_key_exists($class, self::$map)) {
+            self::$map[$class]++;
+        } else {
+            self::$map[$class] = 1;
+        }
+        return self::$map[$class];
     }
 
 }

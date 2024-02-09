@@ -18,8 +18,8 @@ class Hint implements Hint_Interface {
     private int $id;
     private string $description;
 
-    public function __construct(int $id, string $description) {
-        $this->id = $id;
+    public function __construct(string $description) {
+        $this->id = Id_Class::generate_id(Hint::class);
         $this->description = $description;
     }
 

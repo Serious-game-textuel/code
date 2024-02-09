@@ -20,7 +20,6 @@ class App implements App_Interface {
     private Game_Interface $save;
 
     public function __construct(Game_Interface $game, Game_Interface $save) {
-        
     }
 
     public function get_game() {

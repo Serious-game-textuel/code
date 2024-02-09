@@ -24,9 +24,9 @@ class Location extends Entity implements Location_Interface {
     private array $hints;
     private array $actions;
 
-    public function __construct(int $id, string $description, string $name, array $status,
+    public function __construct(string $description, string $name, array $status,
      Inventory_Interface $inventory, array $npccharacters, array $hints, array $actions) {
-        parent::__construct($id, $description, $name, $status);
+        parent::__construct($description, $name, $status);
         $this->inventory = $inventory;
         $this->npccharacters = $npccharacters;
         $this->hints = $hints;

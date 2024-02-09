@@ -26,9 +26,9 @@ class Action implements Action_Interface {
     private string $connector;
     private array $conditions;
 
-    public function __construct(int $id, Entity_Interface $entity1, Entity_Interface $entity2, string $connector,
+    public function __construct(Entity_Interface $entity1, Entity_Interface $entity2, string $connector,
      array $conditions) {
-        $this->id = $id;
+        $this->id = Id_Class::generate_id(Action::class);
         $this->entity1 = $entity1;
         $this->entity2 = $entity2;
         $this->connector = $connector;

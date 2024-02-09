@@ -25,8 +25,8 @@ abstract class Entity implements Entity_Interface {
     private string $name;
 
     private array $status;
-    public function __construct(int $id, string $description, string $name, array $status) {
-        $this->id = $id;
+    public function __construct(string $description, string $name, array $status) {
+        $this->id = Id_Class::generate_id(Entity::class);
         $this->description = $description;
         $this->name = $name;
         $this->status = $status;
