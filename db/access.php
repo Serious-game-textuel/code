@@ -23,24 +23,24 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-$capabilities = array(
-    'mod/serioustextualgame:view' => array(
+$capabilities = [
+    'mod/serioustextualgame:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
+        'archetypes' => [
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'mod/serioustextualgame:addinstance' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'mod/serioustextualgame:addinstance' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-    ),
-);
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+];

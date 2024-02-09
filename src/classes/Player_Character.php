@@ -13,22 +13,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
+class Player_Character extends Character {
 
-/**
- * The mod_page instance list viewed event.
- *
- * @package    mod_serioustextualgame
- * @copyright  2013 Ankit Agarwal
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+    private Inventory_Interface $inventory;
 
-namespace mod_serioustextualgame\event;
+    public function __construct(string $description, array $status, Inventory_Interface $inventory) {
+        parent::__construct($description, "player", $status, $inventory);
+        $this->inventory = $inventory;
+    }
 
-/**
- * The mod_seriousgame instance list viewed event class.
- * @package    mod_seriousgame
- * @since      Moodle 2.7
- */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
 }
-

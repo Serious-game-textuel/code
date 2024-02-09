@@ -14,21 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * The mod_page instance list viewed event.
- *
- * @package    mod_serioustextualgame
- * @copyright  2013 Ankit Agarwal
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+class Location_Reaction extends Reaction {
 
-namespace mod_serioustextualgame\event;
+    private Location_Interface $location;
 
-/**
- * The mod_seriousgame instance list viewed event class.
- * @package    mod_seriousgame
- * @since      Moodle 2.7
- */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+    public function __construct(string $description, array $oldstatus,
+     array $newstatus, array $olditem, array $newitem, Location_Interface $location) {
+        parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
+        $this->location = $location;
+    }
+    public function get_location() {
+        return $this->location;
+    }
+
+    public function set_location(Location_Interface $location) {
+        $this->location = $location;
+    }
+
 }
 

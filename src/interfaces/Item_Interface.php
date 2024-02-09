@@ -14,21 +14,5 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * The mod_page instance list viewed event.
- *
- * @package    mod_serioustextualgame
- * @copyright  2013 Ankit Agarwal
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-namespace mod_serioustextualgame\event;
-
-/**
- * The mod_seriousgame instance list viewed event class.
- * @package    mod_seriousgame
- * @since      Moodle 2.7
- */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+interface Item_Interface extends Entity_Interface {
 }
-

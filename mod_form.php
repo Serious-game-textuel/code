@@ -47,7 +47,7 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('serioustextualgamename', 'mod_serioustextualgame'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('serioustextualgamename', 'mod_serioustextualgame'), ['size' => '64']);
 
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -64,14 +64,16 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
         } else {
             $this->add_intro_editor();
         }
-        $maxbytes = 20 * 1024 * 1024; // 20MB in bytes
-        $mform->addElement('filepicker', 'userfile', get_string('file'), null, array('maxbytes' => $maxbytes, 'accepted_types' => '*'));
+        $mform->addElement('filepicker', 'userfile', get_string('file'), null, ['maxbytes' => $maxbytes, 'accepted_types' => '*']);
+        // Adding your new field here.
         $mform->addHelpButton('userfile', 'file');
 
         // Adding the rest of mod_serioustextualgame settings, spreading all them into this fieldset
         // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'serioustextualgamesettings', get_string('serioustextualgamesettings', 'mod_serioustextualgame'));
-        $mform->addElement('header', 'serioustextualgamefieldset', get_string('serioustextualgamefieldset', 'mod_serioustextualgame'));
+        $mform->addElement('static', 'label1', 'serioustextualgamesettings',
+        get_string('serioustextualgamesettings', 'mod_serioustextualgame'));
+        $mform->addElement('header', 'serioustextualgamefieldset',
+        get_string('serioustextualgamefieldset', 'mod_serioustextualgame'));
 
         // Add standard elements.
         $this->standard_coursemodule_elements();

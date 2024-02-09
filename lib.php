@@ -86,12 +86,12 @@ function serioustextualgame_update_instance($moduleinstance, $mform = null) {
 function serioustextualgame_delete_instance($id) {
     global $DB;
 
-    $exists = $DB->get_record('serioustextualgame', array('id' => $id));
+    $exists = $DB->get_record('serioustextualgame', ['id' => $id]);
     if (!$exists) {
         return false;
     }
 
-    $DB->delete_records('serioustextualgame', array('id' => $id));
+    $DB->delete_records('serioustextualgame', ['id' => $id]);
 
     return true;
 }
@@ -111,7 +111,7 @@ function serioustextualgame_delete_instance($id) {
  * @return string[].
  */
 function serioustextualgame_get_file_areas($course, $cm, $context) {
-    return array();
+    return [];
 }
 
 /**
@@ -149,7 +149,7 @@ function serioustextualgame_get_file_info($browser, $areas, $course, $cm, $conte
  * @param bool $forcedownload Whether or not force download.
  * @param array $options Additional options affecting the file serving.
  */
-function serioustextualgame_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, $options = array()) {
+function serioustextualgame_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, $options = []) {
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {

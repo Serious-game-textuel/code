@@ -14,21 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * The mod_page instance list viewed event.
- *
- * @package    mod_serioustextualgame
- * @copyright  2013 Ankit Agarwal
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+class Hint implements Hint_Interface {
+    private int $id;
+    private string $description;
 
-namespace mod_serioustextualgame\event;
+    public function __construct(string $description) {
+        $this->id = Id_Class::generate_id(self::class);
+        $this->description = $description;
+    }
 
-/**
- * The mod_seriousgame instance list viewed event class.
- * @package    mod_seriousgame
- * @since      Moodle 2.7
- */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+    public function get_id() {
+        return $this->id;
+    }
+
+    public function set_id(int $id) {
+        $this->id = $id;
+    }
+
+    public function get_description() {
+        return $this->description;
+    }
+
+    public function set_description(string $description) {
+        $this->description = $description;
+    }
+
 }
-

@@ -14,21 +14,38 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * The mod_page instance list viewed event.
- *
- * @package    mod_serioustextualgame
- * @copyright  2013 Ankit Agarwal
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+interface Condition_Interface {
 
-namespace mod_serioustextualgame\event;
+    /**
+     * @return int
+     */
+    public function get_id();
 
-/**
- * The mod_seriousgame instance list viewed event class.
- * @package    mod_seriousgame
- * @since      Moodle 2.7
- */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+    /**
+     * @param int
+     * @return void
+     */
+    public function set_id(int $id);
+
+    /**
+     * @return Reaction_Interface[]
+     */
+    public function get_reactions();
+
+    /**
+     * @param Reaction_Interface[] $reactions
+     * @return void
+     */
+    public function set_reactions(array $reactions);
+
+    /**
+     * @return string
+     */
+    public function do_reactions();
+
+    /**
+     * @return boolean
+     */
+    public function is_true();
+
 }
-

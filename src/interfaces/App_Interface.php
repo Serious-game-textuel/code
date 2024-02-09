@@ -14,21 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * The mod_page instance list viewed event.
- *
- * @package    mod_serioustextualgame
- * @copyright  2013 Ankit Agarwal
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+interface App_Interface {
+    /**
+     * @return Game_Interface
+     */
+    public function get_game();
 
-namespace mod_serioustextualgame\event;
+    /**
+     * @param Game_Interface $game
+     *
+     * @return void
+     */
+    public function set_game(Game_Interface $game);
 
-/**
- * The mod_seriousgame instance list viewed event class.
- * @package    mod_seriousgame
- * @since      Moodle 2.7
- */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+    /**
+     * @return Game_Interface
+     */
+    public function get_save();
+
+    /**
+     * @param Game_Interface $save
+     *
+     * @return void
+     */
+    public function set_save(Game_Interface $save);
+
 }
 
