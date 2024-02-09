@@ -72,7 +72,7 @@ class Action implements Action_Interface {
                 array_push($return, $result);
             }
         } else {
-            $tokens = explode(' ', trim($this->description));
+            $tokens = explode(' ', App::tokenize($this->description));
             if ($tokens[0] == "fouiller") {
                 if ($game->get_entity($tokens[1]) !== null) {
                     if ($game->get_default_action_search() !== null) {

@@ -38,9 +38,7 @@ class App implements App_Interface {
         $this->save = $save;
     }
 
-
-
-    private function tokenize($str) {
+    public static function tokenize($str) {
         $str = trim($str);
         $str = preg_replace('/\s+/', ' ', $str);
         $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
