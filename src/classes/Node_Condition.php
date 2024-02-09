@@ -24,13 +24,12 @@ class Node_Condition extends Condition {
 
 
     public function __construct(
-        int $id,
         Condition_Interface $condition1,
         Condition_Interface $condition2,
         string $connector1,
         ?array $reactions
     ) {
-        parent::__construct($id, $reactions);
+        parent::__construct($reactions);
         $this->condition1 = $condition1;
         $this->condition2 = $condition2;
         $this->connector1 = $connector1;

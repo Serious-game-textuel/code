@@ -18,9 +18,9 @@ class Location_Reaction extends Reaction {
 
     private Location_Interface $location;
 
-    public function __construct(int $id, string $description, array $oldstatus,
+    public function __construct(string $description, array $oldstatus,
      array $newstatus, array $olditem, array $newitem, Location_Interface $location) {
-        parent::__construct($id, $description, $oldstatus, $newstatus, $olditem, $newitem);
+        parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
         $this->location = $location;
     }
     public function get_location() {

@@ -37,10 +37,10 @@ class Game implements Game_Interface {
     private array $entities = [];
 
 
-    public function __construct(int $id, int $deaths, int $actions, array $visitedlocations, DateTime $starttime,
-     Language $language, Location_Interface $currentlocation, Player_Character $player,
-     ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract) {
-        $this->id = $id;
+    public function __construct(int $deaths, int $actions, array $visitedlocations, DateTime $starttime,
+    Language $language, Location_Interface $currentlocation, Player_Character $player,
+    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract) {
+        $this->id = Id_Class::generate_id(self::class);
         $this->deaths = $deaths;
         $this->actions = $actions;
         $this->visitedlocations = $visitedlocations;
@@ -52,34 +52,10 @@ class Game implements Game_Interface {
         $this->defaultactioninteract = $defaultactioninteract;
         self::$instance = $this;
     }
+
     public static function getinstance() {
         if (self::$instance == null) {
-            self::$instance = new Game(
-                0,
-                0,
-                0,
-                [],
-                new DateTime(),
-                Language::FR,
-                new Location(
-                    0,
-                    "Start",
-                    "Start",
-                    [],
-                    new Inventory(0, []),
-                    [],
-                    [],
-                    []
-                ),
-                new Player_Character(
-                    0,
-                    "Player",
-                    [],
-                    new Inventory(0, [])
-                ),
-                null,
-                null
-            );
+            throw new Exception('TODO');
         }
 
         return self::$instance;

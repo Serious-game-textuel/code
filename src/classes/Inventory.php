@@ -21,8 +21,8 @@ class Inventory implements Inventory_Interface {
     private int $id;
     private array $items;
 
-    public function __construct(int $id, array $items) {
-        $this->id = $id;
+    public function __construct(array $items) {
+        $this->id = Id_Class::generate_id(self::class);
         $this->items = $items;
     }
 

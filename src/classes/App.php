@@ -20,9 +20,8 @@ class App implements App_Interface {
     private Game_Interface $save;
 
     public function __construct(Game_Interface $game, Game_Interface $save) {
-        $this->game = $game;
-        $this->save = $save;
     }
+
     public function get_game() {
         return $this->game;
     }
@@ -37,6 +36,14 @@ class App implements App_Interface {
 
     public function set_save(Game_Interface $save) {
         $this->save = $save;
+    }
+
+    public static function tokenize($str) {
+        $str = trim($str);
+        $str = preg_replace('/\s+/', ' ', $str);
+        $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
+        $str = strtolower($str);
+        return $str;
     }
 
 }

@@ -24,8 +24,8 @@ class Action implements Action_Interface {
     private string $description;
     private array $conditions;
 
-    public function __construct(int $id, string $description, array $conditions) {
-        $this->id = $id;
+    public function __construct(string $description, array $conditions) {
+        $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
         $this->conditions = $conditions;
     }
@@ -72,24 +72,24 @@ class Action implements Action_Interface {
                 array_push($return, $result);
             }
         } else {
-            $tokens = explode(' ', trim($this->description));
+            $tokens = explode(' ', App::tokenize($this->description));
             if ($tokens[0] == "fouiller") {
                 if ($game->get_entity($tokens[1]) !== null) {
-                    if ($game->default_action_search !== null) {
-                        $result = $game->default_action_search->do_conditions_verb($tokens[0]);
+                    if ($game->get_default_action_search() !== null) {
+                        $result = $game->get_default_action_search()->do_conditions_verb($tokens[0]);
                         echo($result);
                         array_push($return, $result);
                     }
                 } else {
-                    if ($game->default_action_interact !== null) {
-                        $result = $game->default_action_interact->do_conditions_verb($tokens[0]);
+                    if ($game->get_default_action_interact() !== null) {
+                        $result = $game->get_default_action_interact()->do_conditions_verb($tokens[0]);
                         echo($result);
                         array_push($return, $result);
                     }
                 }
             } else {
-                if ($game->default_action_interact !== null) {
-                    $result = $game->default_action_interact->do_conditions_verb($tokens[0]);
+                if ($game->get_default_action_interact() !== null) {
+                    $result = $game->get_default_action_interact()->do_conditions_verb($tokens[0]);
                     echo($result);
                         array_push($return, $result);
                 }
