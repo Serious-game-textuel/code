@@ -30,7 +30,7 @@ abstract class Entity implements Entity_Interface {
         if ($game->get_entity($name) !== null) {
             throw new InvalidArgumentException("Chaque entité doit avoir un nom unique : ".$name);
         }
-        $this->id = Id_Class::generate_id(Entity::class);
+        $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
         $this->name = $name;
         $this->status = $status;

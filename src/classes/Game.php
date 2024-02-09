@@ -40,7 +40,7 @@ class Game implements Game_Interface {
     public function __construct(int $deaths, int $actions, array $visitedlocations, DateTime $starttime,
     Language $language, Location_Interface $currentlocation, Player_Character $player,
     ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract) {
-        $this->id = Id_Class::generate_id(Game::class);
+        $this->id = Id_Class::generate_id(self::class);
         $this->deaths = $deaths;
         $this->actions = $actions;
         $this->visitedlocations = $visitedlocations;

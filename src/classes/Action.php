@@ -25,7 +25,7 @@ class Action implements Action_Interface {
     private array $conditions;
 
     public function __construct(string $description, array $conditions) {
-        $this->id = Id_Class::generate_id(Action::class);
+        $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
         $this->conditions = $conditions;
     }

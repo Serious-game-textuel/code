@@ -27,7 +27,7 @@ abstract class Reaction implements Reaction_Interface {
 
     public function __construct(string $description, array $oldstatus, array $newstatus,
     array $olditem, array $newitem) {
-        $this->id = Id_Class::generate_id(Reaction::class);
+        $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
         $this->oldstatus = $oldstatus;
         $this->newstatus = $newstatus;
