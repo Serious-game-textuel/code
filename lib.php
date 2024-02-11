@@ -57,7 +57,6 @@ function serioustextualgame_add_instance($moduleinstance, $mform = null) {
     if ($file_content) {
         $moduleinstance->intro = $file_content;
     }
-
     $id = $DB->insert_record('serioustextualgame', $moduleinstance);
 
     return $id;

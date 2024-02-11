@@ -23,7 +23,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
 /**
@@ -39,8 +38,8 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-        global $CFG;
-
+        global $CFG, $PAGE;
+       // $CFG->cachejs = false;
         $mform = $this->_form;
 
         // Adding the "general" fieldset, where all the common settings are shown.
@@ -80,5 +79,7 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
 
         // Add standard buttons.
         $this->add_action_buttons();
+        $PAGE->requires->js_call_amd('mod_serioustextualgame/filepicker', 'init');
+
     }
 }
