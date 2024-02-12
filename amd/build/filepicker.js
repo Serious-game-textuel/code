@@ -23,7 +23,8 @@ define(["jquery", "core/ajax", "core/notification"], function (
 
         Ajax.call([request])[0]
           .done(function (result) {
-            // console.log(result); // result est maintenant une chaîne de caractères
+            /* eslint-disable no-console */
+            console.log(result);
           })
           .fail(Notification.exception);
       });
