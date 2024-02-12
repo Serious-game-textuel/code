@@ -89,9 +89,17 @@ class App implements App_Interface {
     private function create_items() {
         $col = 1;
         $lign = 0;
+        $foundline = false;
         $items = [];
-        while (strcmp($this->csvdata[$lign][0],"OBJETS") != 0) {
-            $lign = $lign + 1;
+        while (!$foundline && sizeof($this->csvdata)>$lign) {
+            if (strcmp($this->csvdata[$lign][0],"OBJETS") != 0) {
+                $foundline = true;
+            } else {
+                $lign = $lign + 1;
+            }
+        }
+        if (!$foundline) {
+            throw new Exception("OBJETS line not found");
         }
         while ($this->csvdata[$lign][$col] != null) {
             $name = $this->get_cell_string(3, $col);
@@ -104,9 +112,17 @@ class App implements App_Interface {
 
     private function create_characters() {
         $col = 1;
+        $foundline = false;
         $lign = 0;
-        while (strcmp($this->csvdata[$lign][0],"PERSONNAGES") != 0) {
-            $lign = $lign + 1;
+        while (!$foundline && sizeof($this->csvdata)>$lign) {
+            if (strcmp($this->csvdata[$lign][0],"PERSONNAGES") != 0) {
+                $foundline = true;
+            } else {
+                $lign = $lign + 1;
+            }
+        }
+        if (!$foundline) {
+            throw new Exception("PERSONNAGES line not found");
         }
         while ($this->csvdata[$lign][$col] != null) {
             $name = $this->get_cell_string(8, $col);
@@ -132,9 +148,17 @@ class App implements App_Interface {
 
     private function create_locations() {
         $col = 1;
+        $foundline = false;
         $lign = 0;
-        while (strcmp($this->csvdata[$lign][0],"LIEUX") != 0) {
-            $lign = $lign + 1;
+        while (!$foundline && sizeof($this->csvdata)>$lign) {
+            if (strcmp($this->csvdata[$lign][0],"LIEUX") != 0) {
+                $foundline = true;
+            } else {
+                $lign = $lign + 1;
+            }
+        }
+        if (!$foundline) {
+            throw new Exception("LIEUX line not found");
         }
         while ($this->csvdata[$lign][$col] != null) {
             $name = $this->get_cell_string(14, $col);
