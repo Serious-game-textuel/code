@@ -23,11 +23,7 @@ define(["jquery", "core/ajax", "core/notification"], function (
 
         Ajax.call([request])[0]
           .done(function (result) {
-            var files = result.files;
-            if (files.length > 0) {
-              var file = files[0];
-              console.log(file);
-            }
+            console.log(result); // result est maintenant une chaîne de caractères
           })
           .fail(Notification.exception);
       });

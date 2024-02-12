@@ -39,7 +39,6 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
      */
     public function definition() {
         global $CFG, $PAGE;
-       // $CFG->cachejs = false;
         $mform = $this->_form;
 
         // Adding the "general" fieldset, where all the common settings are shown.

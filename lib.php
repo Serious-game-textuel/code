@@ -53,9 +53,9 @@ function serioustextualgame_add_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timecreated = time();
 
-    $file_content = $mform->get_file_content('userfile');
-    if ($file_content) {
-        $moduleinstance->intro = $file_content;
+    $filecontent = $mform->get_file_content('userfile');
+    if ($filecontent) {
+        $moduleinstance->intro = $filecontent;
     }
     $id = $DB->insert_record('serioustextualgame', $moduleinstance);
 
@@ -77,11 +77,11 @@ function serioustextualgame_update_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timemodified = time();
     $moduleinstance->id = $moduleinstance->instance;
-    $file_content = $mform->get_file_content(
+    $filecontent = $mform->get_file_content(
         'userfile'
     );
-    if ($file_content) {
-        $moduleinstance->intro = $file_content;
+    if ($filecontent) {
+        $moduleinstance->intro = $filecontent;
     }
 
     return $DB->update_record('serioustextualgame', $moduleinstance);

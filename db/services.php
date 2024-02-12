@@ -21,6 +21,8 @@
  * @copyright   2024 Your Name <serioustextualgame@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
+
 $functions = [
     'mod_serioustextualgame_get_file_info' => [
         'classname'   => 'mod_serioustextualgame_external',

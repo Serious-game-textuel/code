@@ -18,62 +18,55 @@
  * External services for mod_serioustextualgame.
  * @package     mod_serioustextualgame
  * @category    services
- * @copyright   2024 Your Name 
+ * @copyright   2024 Your Name
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->libdir . "/externallib.php");
 
 class mod_serioustextualgame_external extends external_api {
 
     public static function get_file_info($draftitemid) {
         global $USER;
-    
-        // Check the user is logged in
+        // Check the user is logged in.
         require_login();
         $context = context_user::instance($USER->id);
         self::validate_context($context);
-    
-        // Get the file info
+        // Get the file info.
         $fs = get_file_storage();
         $files = $fs->get_area_files($context->id, 'user', 'draft', $draftitemid, 'id DESC', false);
-    
-        // Prepare the files array
-        $fileinfo = array();
+        // Prepare the files array.
+        $fileinfo = [];
         foreach ($files as $file) {
-            $fileinfo[] = array(
-                'id' => $file->get_id(),
-                'name' => $file->get_filename(),
-                'content' => $file->get_content(),
-                // Add other file properties here
-            );
+            $content = $file->get_content();
+            // Parse the CSV content.
+            $lines = str_getcsv($content, "\n");
+            if (count($lines) > 1) {
+                $secondline = str_getcsv($lines[1]);
+                if (count($secondline) > 1) {
+                    // Get the second column of the second line.
+                    $secondcolumnvalue = $secondline[1];
+                    // Check if the second column value is 'coucou'.
+                    if ($secondcolumnvalue === 'coucou') {
+                        return 'bon fichier';
+                    } else {
+                        return 'mauvais fichier';
+                    }
+                }
+            }
         }
-    
-        // Return the file info
-        return [
-            'files' => $fileinfo,
-        ];
+        // Return 'mauvais fichier' if no file was found.
+        return 'mauvais fichier';
     }
-    
-    
 
     public static function get_file_info_returns() {
-        return new external_single_structure([
-            'files' => new external_multiple_structure(
-                new external_single_structure([
-                    'id' => new external_value(PARAM_INT, 'ID of the file'),
-                    'name' => new external_value(PARAM_TEXT, 'Name of the file'),
-                    'content' => new external_value(PARAM_RAW, 'Content of the file'),
-                    // Add other file properties here
-                ])
-            ),
-        ]);
+        return new external_value(PARAM_TEXT, 'Result of the file check');
     }
-    
 
     public static function get_file_info_parameters() {
         return new external_function_parameters(
-            array('draftitemid' => new external_value(PARAM_INT, 'Draft item id'))
+            ['draftitemid' => new external_value(PARAM_INT, 'Draft item id')]
         );
     }
-    
 }

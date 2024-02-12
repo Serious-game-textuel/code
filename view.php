@@ -45,34 +45,34 @@ require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
-// Récupérez le contenu CSV de $moduleinstance->intro
-$csv_content = $moduleinstance->intro;
+// Récupérez le contenu CSV de $moduleinstance->intro.
+$csvcontent = $moduleinstance->intro;
 
-// Convertissez le contenu CSV en un fichier temporaire
-$temp_file_path = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
-file_put_contents($temp_file_path, $csv_content);
+// Convertissez le contenu CSV en un fichier temporaire.
+$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
+file_put_contents($tempfilepath, $csvcontent);
 
-// Ouvrez le fichier temporaire
-$handle = fopen($temp_file_path, 'r');
+// Ouvrez le fichier temporaire.
+$handle = fopen($tempfilepath, 'r');
 if ($handle !== false) {
-    // Ignorez la première ligne
+    // Ignorez la première ligne.
     fgetcsv($handle);
 
-    // Obtenez la deuxième ligne
-    $second_line = fgetcsv($handle);
+    // Obtenez la deuxième ligne.
+    $secondline = fgetcsv($handle);
 
-    if ($second_line !== false && count($second_line) > 1) {
-        // Obtenez la deuxième colonne de la deuxième ligne
-        $second_column_value = $second_line[1];
-        // Utilisez $second_column_value comme vous le souhaitez
+    if ($secondline !== false && count($secondline) > 1) {
+        // Obtenez la deuxième colonne de la deuxième ligne.
+        $secondcolumnvalue = $secondline[1];
+        // Utilisez $second_column_value comme vous le souhaitez.
     }
 
-    // Fermez le fichier
+    // Fermez le fichier.
     fclose($handle);
 }
 
-// Supprimez le fichier temporaire
-unlink($temp_file_path);
+// Supprimez le fichier temporaire.
+unlink($tempfilepath);
 
 $event = \mod_serioustextualgame\event\course_module_viewed::create([
     'objectid' => $moduleinstance->id,
@@ -88,12 +88,9 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
 echo $OUTPUT->header();
-//affiche le contenu de la deuxième colonne de la deuxième ligne du fichier CSV
-echo $second_column_value;
-//$intro = $moduleinstance->intro;
-/*echo "Contenu de \$intro : ";
-var_dump($intro);
-echo "\b";*/
+// Affiche le contenu de la deuxième colonne de la deuxième ligne du fichier CSV.
+echo $secondcolumnvalue;
+
 
 ?>
 
