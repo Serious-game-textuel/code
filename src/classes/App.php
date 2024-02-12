@@ -88,8 +88,12 @@ class App implements App_Interface {
 
     private function create_items() {
         $col = 1;
+        $lign = 0;
         $items = [];
-        while ($this->csvdata[3][$col] != null) {
+        while (strcmp($this->csvdata[$lign][0],"OBJETS") != 0) {
+            $lign = $lign + 1;
+        }
+        while ($this->csvdata[$lign][$col] != null) {
             $name = $this->get_cell_string(3, $col);
             $description = $this->get_cell_string(4, $col);
             $statuses = $this->get_cell_array_string(5, $col);
@@ -100,7 +104,11 @@ class App implements App_Interface {
 
     private function create_characters() {
         $col = 1;
-        while ($this->csvdata[8][$col] != null) {
+        $lign = 0;
+        while (strcmp($this->csvdata[$lign][0],"PERSONNAGES") != 0) {
+            $lign = $lign + 1;
+        }
+        while ($this->csvdata[$lign][$col] != null) {
             $name = $this->get_cell_string(8, $col);
             $description = $this->get_cell_string(9, $col);
             $statuses = $this->get_cell_array_string(10, $col);
@@ -124,7 +132,11 @@ class App implements App_Interface {
 
     private function create_locations() {
         $col = 1;
-        while ($this->csvdata[14][$col] != null) {
+        $lign = 0;
+        while (strcmp($this->csvdata[$lign][0],"LIEUX") != 0) {
+            $lign = $lign + 1;
+        }
+        while ($this->csvdata[$lign][$col] != null) {
             $name = $this->get_cell_string(14, $col);
             $statuses = $this->get_cell_array_string(15, $col);
             $itemnames = $this->get_cell_array_string(16, $col);
