@@ -70,11 +70,28 @@ abstract class Entity implements Entity_Interface {
     }
 
     public function add_status(array $status) {
-        $this->status = array_merge($this->status, $status);
+        // Fusionner les nouveaux statuts avec les statuts existants
+        $mergedStatus = array_merge($this->status, $status);
+    
+        // Supprimer les doublons de statuts
+        $uniqueStatus = array_unique($mergedStatus);
+    
+        // Mettre à jour les statuts avec les statuts uniques
+        $this->status = $uniqueStatus;
     }
 
     public function remove_status(array $status) {
+        // Supprimer les éléments spécifiés de la liste des statuts
         $this->status = array_diff($this->status, $status);
+    
+        // Supprimer les indices vides après la suppression
+        $this->status = array_filter($this->status);
+    
+        // Réindexer le tableau pour mettre à jour les indices
+        $this->status = array_values($this->status);
     }
-
+    
 }
+
+
+
