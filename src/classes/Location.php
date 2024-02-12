@@ -20,37 +20,17 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_In
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;
-    private array $npccharacters;
     private array $hints;
     private array $actions;
 
-    public function __construct(string $description, string $name, array $status,
-     Inventory_Interface $inventory, array $npccharacters, array $hints, array $actions) {
-        parent::__construct($description, $name, $status);
-        $this->inventory = $inventory;
-        $this->npccharacters = $npccharacters;
+    public function __construct(string $name, array $status, array $items, array $hints, array $actions) {
+        parent::__construct("", $name, $status);
+        $this->inventory = new Inventory($items);
         $this->hints = $hints;
         $this->actions = $actions;
     }
     public function get_inventory() {
         return $this->inventory;
-    }
-
-
-    public function add_npc_character(Npc_Character $npccharacter) {
-        $this->npccharacters[] = $npccharacter;
-    }
-
-    public function remove_npc_character(Npc_Character $npccharacter) {
-        $key = array_search($npccharacter, $this->npccharacters);
-        if ($key !== false) {
-            unset($this->npccharacters[$key]);
-        }
-    }
-
-
-    public function get_characters() {
-        return $this->npccharacters;
     }
 
     public function get_actions() {

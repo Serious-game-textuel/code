@@ -16,25 +16,8 @@
 
 class Npc_Character extends Character {
 
-    private Inventory_Interface $inventory;
-    private Location_Interface $currentlocation;
-
-    public function __construct(
-        string $description,
-        string $name, array $status,
-        Inventory_Interface $inventory,
-        Location_Interface $currentlocation) {
-            parent::__construct($description, $name, $status, $inventory);
-            $this->inventory = $inventory;
-            $this->currentlocation = $currentlocation;
-    }
-
-    public function get_current_location() {
-        return $this->currentlocation;
-    }
-
-    public function set_new_location(Location_Interface $newlocation) {
-        $this->currentlocation = $newlocation;
+    public function __construct(string $description, string $name, array $status, array $items, ?Location_Interface $currentlocation) {
+            parent::__construct($description, $name, $status, $items, $currentlocation);
     }
 
 }
