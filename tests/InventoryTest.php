@@ -78,7 +78,7 @@ class InventoryTest extends TestCase {
             $Inventory->remove_item($Item);
             $this->assertEquals([$Item],$Inventory->get_items());
 
-            $Inventory->
+
 
 
 
