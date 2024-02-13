@@ -36,36 +36,35 @@ class ActionTest extends TestCase {
      * vérifie que quand on appelle la méthode do_conditions, les conditions sont bien effectuées
      */
     public function testdoconditions() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0, [], new DateTime(),
+            $this->createMock(Player_Character::class), null, null,[]);
         // Create a mock reaction.
         // Create mock objects for testing.
-        $item1 = new Item(1, "une pomme", "pomme", ["croquée"]);
-        $item2 = new Item(2, "une poire", "poire", []);
-        $item3 = new Item(3, "une banane", "banane", ["longue", "jaune"]);
-        $item4 = new Item(4, "une fraise", "fraise", []);
+        $item1 = new Item("une pomme", "pomme", ["croquée"]);
+        $item2 = new Item("une poire", "poire", []);
+        $item3 = new Item("une banane", "banane", ["longue", "jaune"]);
+        $item4 = new Item("une fraise", "fraise", []);
 
-        $character = new Character(1, "Un troll", "Michel", ["fatigué"], new Inventory(1, [[$item1]]));
+        $location = new Location("un marécage boueux", ["boueux"], [$item2, $item4], [], []);
+        $character = new Character("Un troll", "Michel", ["fatigué"], [$item1], $location);
 
-        $location = new Location(1, "un marécage boueux",
-         "marécages", ["boueux"], new Inventory(2, [[$item2, $item4]]), [$character], [], []);
         // Mock reactions.
-        $characterreaction1 = new Character_Reaction(1, 'Michel récupère une poire', [], [], [], [$item2], $character, null);
-        $characterreaction2 = new Character_Reaction(2, 'Michel grandit', [], ["grand"], [], [], $character, null);
-        $characterreaction3 = new Character_Reaction(2, 'Michel perd sa fraise', [], [], [$item4], [], $character, null);
+        $characterreaction1 = new Character_Reaction('Michel récupère une poire', [], [], [], [$item2], $character, null);
+        $characterreaction2 = new Character_Reaction('Michel grandit', [], ["grand"], [], [], $character, null);
+        $characterreaction3 = new Character_Reaction('Michel perd sa fraise', [], [], [$item4], [], $character, null);
 
-        $locationreaction1 = new Location_Reaction(1, 'une banane a apparu dans le marécage', [], [], [], [$item3], $location);
-        $locationreaction2 = new Location_Reaction(2, 'une poire a disparu du marécage', [], [], [$item2], [], $location);
+        $locationreaction1 = new Location_Reaction('une banane a apparu dans le marécage', [], [], [], [$item3], $location);
+        $locationreaction2 = new Location_Reaction('une poire a disparu du marécage', [], [], [$item2], [], $location);
 
         // Create a condition instance with reactions.
-        $conditionwithreactions1 = new Leaf_Condition(1, $character, $item1,
-         'possède', [], null, [$characterreaction1, $characterreaction2, $characterreaction3]);
-        $conditionwithreactions2 = new Leaf_Condition(2, $location, null, 'est', ["boueux"], null, []);
-        $conditionwithreactions3 = new Leaf_Condition(3, $location, $item2, 'possède', [], null, []);
+        $conditionwithreactions1 = new Leaf_Condition($character, $item1,
+         'possède', [], [], [$characterreaction1, $characterreaction2, $characterreaction3]);
+        $conditionwithreactions2 = new Leaf_Condition($location, null, 'est', ["boueux"], [], []);
+        $conditionwithreactions3 = new Leaf_Condition($location, $item2, 'possède', [], [], []);
 
-        $conditionwithreactions4 = new Node_Condition(1, $conditionwithreactions2, $conditionwithreactions3,
+        $conditionwithreactions4 = new Node_Condition($conditionwithreactions2, $conditionwithreactions3,
             "et", [$locationreaction1, $locationreaction2]);
-        $action = new Action(1, 'action', [$conditionwithreactions1, $conditionwithreactions4]);
+        $action = new Action('action', [$conditionwithreactions1, $conditionwithreactions4]);
 
         // Test the do_condition method.
         $result = $action->do_conditions();
