@@ -45,6 +45,34 @@ require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
+// Récupérez le contenu CSV de $moduleinstance->intro.
+$csvcontent = $moduleinstance->filecontent;
+// Convertissez le contenu CSV en un fichier temporaire.
+$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
+file_put_contents($tempfilepath, $csvcontent);
+
+// Ouvrez le fichier temporaire.
+$handle = fopen($tempfilepath, 'r');
+if ($handle !== false) {
+    // Ignorez la première ligne.
+    fgetcsv($handle);
+
+    // Obtenez la deuxième ligne.
+    $secondline = fgetcsv($handle);
+
+    if ($secondline !== false && count($secondline) > 1) {
+        // Obtenez la deuxième colonne de la deuxième ligne.
+        $secondcolumnvalue = $secondline[1];
+        // Utilisez $second_column_value comme vous le souhaitez.
+    }
+
+    // Fermez le fichier.
+    fclose($handle);
+}
+
+// Supprimez le fichier temporaire.
+unlink($tempfilepath);
+
 $event = \mod_serioustextualgame\event\course_module_viewed::create([
     'objectid' => $moduleinstance->id,
     'context' => $modulecontext,
@@ -59,5 +87,49 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
 echo $OUTPUT->header();
+// Affiche le contenu de la deuxième colonne de la deuxième ligne du fichier CSV.
+echo "second_column_value: $secondcolumnvalue";
 
+
+?>
+
+<div id="container" style="background-color: black; color: white; width: 100%; height: 500px; overflow: auto; position: relative;">
+    <div id="text" style="padding: 10px;"></div>
+    <input type="text" id="inputText" 
+        placeholder="Écrivez quelque chose ici..." 
+        style="position: absolute; bottom: 0; width: 100%;">
+</div>
+<button onclick="displayInputText()">Valider</button>
+
+<script type = "text/javascript">
+
+    function typeWriter(element, txt, color) {
+        if (txt.length > 0) {
+            element.innerHTML += `<span style="color:${color};">${txt.charAt(0)}</span>`;
+            setTimeout(function () {
+                typeWriter(element, txt.substring(1), color)
+            }, 50);
+        }
+        else {
+            element.innerHTML += "<br>";
+        }
+    }
+    typeWriter(document.getElementById("text"), "Bonjour, je suis un texte dynamique", "white");
+
+    document.getElementById("inputText").addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) { // Vérifie si la touche est "Entrée"
+            displayInputText(); // Appelle la fonction displayInputText()
+        }
+    });
+
+    function displayInputText() {
+        var inputText = document.getElementById("inputText").value;
+        typeWriter(document.getElementById("text"), inputText, "red"); 
+        document.getElementById("inputText").value = ''; 
+        
+    }
+</script>
+
+<?php
 echo $OUTPUT->footer();
+
