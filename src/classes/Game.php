@@ -34,9 +34,8 @@ class Game implements Game_Interface {
     private array $entities = [];
 
 
-    public function __construct(int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime,
-    Language $language, ?Location_Interface $currentlocation, ?Player_Character $player,
-    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract) {
+    public function __construct(int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
+    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
         $this->id = Id_Class::generate_id(self::class);
         $this->deaths = $deaths;
         $this->actions = $actions;
@@ -45,6 +44,7 @@ class Game implements Game_Interface {
         $this->player = $player;
         $this->defaultactionsearch = $defaultactionsearch;
         $this->defaultactioninteract = $defaultactioninteract;
+        $this->entities = $entities;
     }
 
     public function get_id() {

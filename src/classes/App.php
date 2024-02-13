@@ -79,29 +79,25 @@ class App implements App_Interface {
 
     private function parse() {
 
-        $this->create_items();
-        $this->create_characters();
-        $this->create_locations();
-        $this->create_all_actions();
+        $itemsrow = $this->get_row("OBJETS");
+        $charactersrow = $this->get_row("PERSONNAGES");
+        $locationsrow = $this->get_row("LIEUX");
+
+        $this->create_items($itemsrow);
+        $this->create_characters($charactersrow);
+        $this->create_locations($locationsrow);
+        $this->create_all_actions($locationsrow);
+
+        $player = $this->get_startentity($this->playerkeyword);
+
+        $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(), $player, null, null, $this->startentities);
         
     }
 
-    private function create_items() {
+    private function create_items($row) {
         $col = 1;
-        $lign = 0;
-        $foundline = false;
-        $items = [];
-        while (!$foundline && sizeof($this->csvdata)>$lign) {
-            if (strcmp($this->csvdata[$lign][0],"OBJETS") != 0) {
-                $foundline = true;
-            } else {
-                $lign = $lign + 1;
-            }
-        }
-        if (!$foundline) {
-            throw new Exception("OBJETS line not found");
-        }
-        while ($this->csvdata[$lign][$col] != null) {
+        $row = $this->get_row("OBJETS");
+        while ($this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string(3, $col);
             $description = $this->get_cell_string(4, $col);
             $statuses = $this->get_cell_array_string(5, $col);
@@ -110,21 +106,9 @@ class App implements App_Interface {
         }
     }
 
-    private function create_characters() {
+    private function create_characters($row) {
         $col = 1;
-        $foundline = false;
-        $lign = 0;
-        while (!$foundline && sizeof($this->csvdata)>$lign) {
-            if (strcmp($this->csvdata[$lign][0],"PERSONNAGES") != 0) {
-                $foundline = true;
-            } else {
-                $lign = $lign + 1;
-            }
-        }
-        if (!$foundline) {
-            throw new Exception("PERSONNAGES line not found");
-        }
-        while ($this->csvdata[$lign][$col] != null) {
+        while ($this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string(8, $col);
             $description = $this->get_cell_string(9, $col);
             $statuses = $this->get_cell_array_string(10, $col);
@@ -146,24 +130,12 @@ class App implements App_Interface {
         }
     }
 
-    private function create_locations() {
+    private function create_locations($row) {
         $col = 1;
-        $foundline = false;
-        $lign = 0;
-        while (!$foundline && sizeof($this->csvdata)>$lign) {
-            if (strcmp($this->csvdata[$lign][0],"LIEUX") != 0) {
-                $foundline = true;
-            } else {
-                $lign = $lign + 1;
-            }
-        }
-        if (!$foundline) {
-            throw new Exception("LIEUX line not found");
-        }
-        while ($this->csvdata[$lign][$col] != null) {
-            $name = $this->get_cell_string(14, $col);
-            $statuses = $this->get_cell_array_string(15, $col);
-            $itemnames = $this->get_cell_array_string(16, $col);
+        while ($this->csvdata[$row][$col] != null) {
+            $name = $this->get_cell_string($row, $col);
+            $statuses = $this->get_cell_array_string($row + 1, $col);
+            $itemnames = $this->get_cell_array_string($row + 2, $col);
             $items = [];
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
@@ -177,14 +149,14 @@ class App implements App_Interface {
             $col++;
         }
         $col = 1;
-        while ($this->csvdata[14][$col] != null) {
-            $locationname = $this->get_cell_string(14, $col);
+        while ($this->csvdata[$row][$col] != null) {
+            $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
                 throw new Exception($locationname . "is not a location");
             }
             $character = $this->get_startentity($name);
-            $characternames = $this->get_cell_array_string(17, $col);
+            $characternames = $this->get_cell_array_string($row + 3, $col);
             foreach ($characternames as $name) {
                 $character = $this->get_startentity($name);
                 if ($character == null || !($character instanceof Character)) {
@@ -195,22 +167,22 @@ class App implements App_Interface {
         }
     }
 
-    private function create_all_actions() {
+    private function create_all_actions($row) {
         $col = 1;
-        while ($this->csvdata[14][$col] != null) {
-            $locationname = $this->get_cell_string(14, $col);
+        while ($this->csvdata[$row][$col] != null) {
+            $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
                 throw new Exception($locationname . "is not a location");
             }
-            $this->create_column_actions($location, $col);
+            $actions = $this->create_column_actions($location, $col, $row + 6);
+
             $col++;
         }
     }
 
-    private function create_column_actions($location, $col) {
+    private function create_column_actions($location, $col, $row) {
         $rowstep = 10;
-        $row = 20;
 
         $actions = [];
         $conditions = [];
@@ -278,13 +250,17 @@ class App implements App_Interface {
         }
 
         foreach ($actions as $action) {
+            $conditions = [];
             foreach ($conditions[$action] as $condition) {
-                $this->parse_condition(
-                    $condition,
-                    $reactions[$action][$condition]
-                );
                 
+                array_push($coniditions,
+                    $this->parse_condition(
+                        $condition,
+                        $reactions[$action][$condition]
+                    )
+                );
             }
+            new Action($action, $conditions);
         }
 
     }
@@ -367,6 +343,21 @@ class App implements App_Interface {
             $status = $member2;
         }
         return new Leaf_Condition($entity1, $entity2, $connector, [$status], $reactions);
+    }
+
+    private function get_row($str) {
+        $lign = 0;
+        $foundline = false;
+        while (!$foundline && sizeof($this->csvdata)>$lign) {
+            if (strcmp($this->csvdata[$lign][0], $str) != 0) {
+                $foundline = true;
+            } else {
+                $lign = $lign + 1;
+            }
+        }
+        if (!$foundline) {
+            throw new Exception($str . " line not found");
+        }
     }
 
     private function get_cell_string($row, $column) {

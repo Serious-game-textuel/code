@@ -37,6 +37,7 @@ class Inventory implements Inventory_Interface {
     public function get_item(int $id) {
         return $this->items[$id] ?? null;
     }
+    
     public function get_items() {
         return $this->items;
     }
@@ -44,6 +45,7 @@ class Inventory implements Inventory_Interface {
     public function add_item(array $item) {
         $this->items[] = $item;
     }
+
     public function remove_item(array $item) {
         $key = array_search($item, $this->items);
         if ($key !== false) {

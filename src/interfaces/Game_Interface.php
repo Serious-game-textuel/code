@@ -85,17 +85,6 @@ interface Game_Interface {
     public function set_start_time(DateTime $time);
 
     /**
-     * @return Language
-     */
-    public function get_language();
-
-    /**
-     * @param Language $language
-     * @return void
-     */
-    public function set_language(Language $language);
-
-    /**
      * @return Location_Interface
      */
     public function get_current_location();
