@@ -36,6 +36,7 @@ class ActionTest extends TestCase {
      * vérifie que quand on appelle la méthode do_conditions, les conditions sont bien effectuées
      */
     public function testdoconditions() {
+        $app = App::get_instance();
         $game = new Game(0, 0, [], new DateTime(),
             $this->createMock(Player_Character::class), null, null,[]);
         // Create a mock reaction.

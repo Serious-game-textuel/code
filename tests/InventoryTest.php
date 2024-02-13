@@ -37,16 +37,15 @@ class InventoryTest extends TestCase {
       * vérifie le bon fonctionnement du constructeur de la classe Inventory
       */
     public function testinventory(){
-            $game = new Game(0, 0, [], new DateTime(),
-            Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+            $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
             $Item = new Item("description1", "name1", ["status1"]);
             $Item2 = new Item("description2", "name2", ["status2"]);
             $Item3 = new Item("description3", "name3", ["status3"]);
-            $Player_Character = new Player_Character("description", ["status"], $this->createMock(Inventory_Interface::class), $this->createMock(Location_Interface::class));
+            $Player_Character = new Player_Character("description","name", ["status"], [], $this->createMock(Location_Interface::class));
 
             $Inventory = new Inventory([$Item, $Item2]);
             $this->assertEquals(true,$Inventory->check_item($Item2));
-            $this->asserEquals(false, $Inventory->check_item($Item3));
+            $this->assertEquals(false, $Inventory->check_item($Item3));
 
             $this->assertEquals(null, $Inventory->get_item(-1));
             $this->assertEquals($Item2, $Inventory->get_item($Item2->get_id()));
@@ -64,19 +63,19 @@ class InventoryTest extends TestCase {
             $this->assertEquals([$Item, $Item2, $Item3],$Inventory->get_items());
             $Inventory->add_items([$Player_Character,15]);
             $this->assertEquals([$Item, $Item2, $Item3],$Inventory->get_items());
-            $Inventory->remove_item([$Item3,]);
+            $Inventory->remove_items([$Item3,]);
             $Inventory->add_items([$Item3,$Player_Character]);
             $this->assertEquals([$Item, $Item2],$Inventory->get_items());
-            $Inventory->remove_item([null,$Item,15,$Item2,$Item3,null]);
+            $Inventory->remove_items([null,$Item,15,$Item2,$Item3,null]);
             $this->assertEquals([],$Inventory->get_items());
-            $Inventory->remove_item([$Item, $Item2,]);
+            $Inventory->remove_items([$Item, $Item2,]);
             $this->assertEquals([],$Inventory->get_items());
             $Inventory->add_items([$Item, $Item2]);
-            $Inventory->remove_item([]);
+            $Inventory->remove_items([]);
             $this->assertEquals([$Item, $Item2],$Inventory->get_items());
             $Inventory->add_items([$Item, $Item2]);
-            $Inventory->remove_item($Item);
-            $this->assertEquals([$Item],$Inventory->get_items());
+            $Inventory->remove_items([$Item]);
+            $this->assertEquals([$Item2],$Inventory->get_items());
 
 
 

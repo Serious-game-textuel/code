@@ -31,7 +31,7 @@ class ReactionTest extends TestCase {
         $character = $this->createMock(Character_Interface::class);
         $newlocation = $this->createMock(Location_Interface::class);
 
-        $reaction = new Character_Reaction(1, "Description",
+        $reaction = new Character_Reaction("Description",
         ['old_status'], ['new_status'], ['old_item'], ['new_item'], $character, $newlocation);
 
         $this->assertInstanceOf(Character_Reaction::class, $reaction);
@@ -44,7 +44,7 @@ class ReactionTest extends TestCase {
     public function testlocationreaction() {
         $location = $this->createMock(Location_Interface::class);
 
-        $reaction = new Location_Reaction(2, "Description", ['old_status'], ['new_status'], ['old_item'], ['new_item'], $location);
+        $reaction = new Location_Reaction("Description", ['old_status'], ['new_status'], ['old_item'], ['new_item'], $location);
 
         $this->assertInstanceOf(Location_Reaction::class, $reaction);
         $this->assertEquals($location, $reaction->get_location());

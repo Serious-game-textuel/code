@@ -25,24 +25,12 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Charact
 use PHPUnit\Framework\TestCase;
 
 class GameTest extends TestCase {
-    /**
-     * vérifie si la méthode getinstance retourne bien une instance de Game
-     */
-    public function testgetinstance() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
-        $game1 = Game::getinstance();
-        $game2 = Game::getinstance();
 
-        $this->assertInstanceOf(Game::class, $game1);
-        $this->assertSame($game1, $game2); // Should return the same instance.
-    }
     /**
      * vérifie si les méthodes get_id et set_id fonctionnent correctement en   récupérant et en définissant l'ID du jeu
      */
     public function testgetsetid() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
 
         $this->assertEquals(0, $game->get_id());
 
@@ -53,8 +41,7 @@ class GameTest extends TestCase {
      * vérifie si la méthode get_deaths retourne bien le nombre de morts
      */
     public function testgetdeaths() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
 
         $this->assertEquals(0, $game->get_deaths());
     }
@@ -62,8 +49,7 @@ class GameTest extends TestCase {
      * vérifie si la méthode add_deaths incrémente bien le nombre de morts
      */
     public function testadddeaths() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
 
         $game->add_deaths();
         $this->assertEquals(1, $game->get_deaths());
@@ -72,8 +58,7 @@ class GameTest extends TestCase {
      * vérifie si la méthode get_actions retourne bien la liste des actions
      */
     public function testgetactions() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
 
         $this->assertEquals(0, $game->get_actions());
     }
@@ -81,8 +66,7 @@ class GameTest extends TestCase {
      * vérifie si la méthode add_action ajoute bien une action à la liste des actions
      */
     public function testaddaction() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
         $action = $this->createMock(Action_Interface::class);
 
         $game->add_action();
@@ -92,8 +76,7 @@ class GameTest extends TestCase {
      * vérifie si la méthode get_visited_locations retourne bien la liste des locations visitées
      */
     public function testgetvisitedlocations() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
 
         $this->assertEquals([], $game->get_visited_locations());
     }
@@ -101,8 +84,7 @@ class GameTest extends TestCase {
      * vérifie si la méthode add_visited_location ajoute bien une location à la liste des locations visitées
      */
     public function testaddvisitedlocation() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
         $location = $this->createMock(Location_Interface::class);
 
         $game->add_visited_location($location);
@@ -112,8 +94,7 @@ class GameTest extends TestCase {
      * vérifie si la méthode get_start_time retourne bien l'heure de début du jeu
      */
     public function testgetstarttime() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
 
         $this->assertInstanceOf(DateTime::class, $game->get_start_time());
     }
@@ -121,53 +102,12 @@ class GameTest extends TestCase {
      * vérifie si la méthode set_start_time définit bien l'heure de début du jeu
      */
     public function testsetstarttime() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        $game = new Game(0, 0,[], new DateTime(),$this->createMock(Player_Character::class), null, null,[]);
         $time = new DateTime();
 
         $game->set_start_time($time);
         $this->assertSame($time, $game->get_start_time());
     }
-    /**
-     * vérifie si la méthode get_language retourne bien la langue du jeu
-     */
-    public function testgetlanguage() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
 
-        $this->assertEquals(Language::FR, $game->get_language());
-    }
-    /**
-     * vérifie si la méthode set_language définit bien la langue du jeu
-     */
-    public function testsetlanguage() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
-        $language = Language::EN;
-
-        $game->set_language($language);
-        $this->assertEquals($language, $game->get_language());
-    }
-    /**
-     * vérifie si la méthode get_current_location retourne bien la location actuelle
-     */
-    public function testgetcurrentlocation() {
-        $location = $this->createMock(Location_Interface::class);
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $location, $this->createMock(Player_Character::class), null, null);
-        $game->add_visited_location($location);
-        $this->assertSame($location, $game->get_current_location());
-    }
-    /**
-     * vérifie si la méthode set_current_location définit bien la location actuelle
-     */
-    public function testsetcurrentlocation() {
-        $location = $this->createMock(Location_Interface::class);
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $location, $this->createMock(Player_Character::class), null, null);
-        $newlocation = $this->createMock(Location_Interface::class);
-
-        $game->set_current_location($newlocation);
-        $this->assertSame($newlocation, $game->get_current_location());
-    }
 }
+
