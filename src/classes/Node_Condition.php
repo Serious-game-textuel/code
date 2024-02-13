@@ -29,6 +29,7 @@ class Node_Condition extends Condition {
         string $connector1,
         ?array $reactions
     ) {
+        Util::check_array($reactions, Reaction_Interface::class);
         parent::__construct($reactions);
         $this->condition1 = $condition1;
         $this->condition2 = $condition2;

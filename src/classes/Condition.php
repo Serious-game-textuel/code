@@ -23,13 +23,9 @@ class Condition implements Condition_Interface {
     private array $reactions = [];
 
     public function __construct(array $reactions) {
-        for ($i=0; $i<sizeof($reactions); $i++) {
-            if (!$reactions[$i] instanceof Reaction_Interface) {
-                $reactions[$i] = null;
-            }
-        }
+        Util::check_array($reactions, Reaction_Interface::class);
         $this->id = Id_Class::generate_id(self::class);
-        $this->reactions = array_filter($reactions);
+        $this->reactions = $reactions;
 
     }
 
@@ -42,12 +38,7 @@ class Condition implements Condition_Interface {
     }
 
     public function set_reactions(array $reactions) {
-        for ($i=0; $i<sizeof($reactions); $i++) {
-            if (!$reactions[$i] instanceof Reaction_Interface) {
-                $reactions[$i] = null;
-            }
-        }
-        $this->reactions = array_filter($reactions);
+        $this->reactions = Util::clean_array($reactions, Reaction_Interface::class);
     }
 
     public function do_reactions() {

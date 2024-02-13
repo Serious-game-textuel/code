@@ -28,31 +28,15 @@ abstract class Reaction implements Reaction_Interface {
     public function __construct(string $description, array $oldstatus, array $newstatus,
     array $olditem, array $newitem) {
         $this->id = Id_Class::generate_id(self::class);
-        for ($i=0; $i<sizeof($oldstatus); $i++) {
-            if (!is_string($oldstatus[$i])) {
-                $oldstatus[$i] = null;
-            }
-        }
-        for ($i=0; $i<sizeof($newstatus); $i++) {
-            if (!is_string($newstatus[$i])) {
-                $newstatus[$i] = null;
-            }
-        }
-        for ($i=0; $i<sizeof($olditem); $i++) {
-            if (!$olditem[$i] instanceof Item_Interface) {
-                $olditem[$i] = null;
-            }
-        }
-        for ($i=0; $i<sizeof($newitem); $i++) {
-            if (!$newitem[$i] instanceof Item_Interface) {
-                $newitem[$i] = null;
-            }
-        }
+        Util::check_array($oldstatus, 'string');
+        Util::check_array($newstatus, 'string');
+        Util::check_array($olditem, Item_Interface::class);
+        Util::check_array($newitem, Item_Interface::class);
         $this->description = $description;
-        $this->oldstatus = array_filter($oldstatus);
-        $this->newstatus = array_filter($newstatus);
-        $this->olditem = array_filter($olditem);
-        $this->newitem = array_filter($newitem);
+        $this->oldstatus = $oldstatus;
+        $this->newstatus = $newstatus;
+        $this->olditem = $olditem;
+        $this->newitem = $newitem;
     }
 
     public function get_id() {
@@ -72,12 +56,7 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function set_old_status(array $status) {
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        $this->oldstatus = array_filter($status);
+        $this->oldstatus = Util::clean_array($status, 'string');
     }
 
     public function get_new_status() {
@@ -85,12 +64,7 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function set_new_status(array $status) {
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        $this->newstatus = array_filter($status);
+        $this->newstatus = Util::clean_array($status, 'string');
     }
 
     public function get_old_item() {
@@ -98,12 +72,7 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function set_old_item(array $item) {
-        for ($i=0; $i<sizeof($item); $i++) {
-            if (!$item[$i] instanceof Item_Interface) {
-                $item[$i] = null;
-            }
-        }
-        $this->olditem = array_filter($item);
+        $this->olditem = Util::clean_array($item, Item_Interface::class);
     }
 
     public function get_new_item() {
@@ -111,12 +80,7 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function set_new_item(array $item) {
-        for ($i=0; $i<sizeof($item); $i++) {
-            if (!$item[$i] instanceof Item_Interface) {
-                $item[$i] = null;
-            }
-        }
-        $this->newitem = array_filter($item);
+        $this->newitem = Util::clean_array($item, Item_Interface::class);
     }
 
 

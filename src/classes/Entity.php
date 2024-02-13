@@ -33,12 +33,8 @@ abstract class Entity implements Entity_Interface {
         $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
         $this->name = $name;
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        $this->status = array_filter($status);
+        Util::check_array($status, 'string');
+        $this->status = $status;
         $game->add_entity($this);
     }
 
@@ -67,30 +63,15 @@ abstract class Entity implements Entity_Interface {
     }
 
     public function set_status(array $status) {
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        $this->status = array_filter($status);
+        $this->status = Util::clean_array($status, 'string');
     }
 
     public function add_status(array $status) {
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        $this->status = array_merge($this->status, array_filter($status));
+        $this->status = array_merge($this->status, Util::clean_array($status, 'string'));
     }
 
     public function remove_status(array $status) {
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        $this->status = array_diff($this->status, array_filter($status));
+        $this->status = array_diff($this->status, Util::clean_array($status, 'string'));
     }
 
 }

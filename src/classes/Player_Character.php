@@ -21,12 +21,8 @@ class Player_Character extends Character {
     private Inventory_Interface $inventory;
 
     public function __construct(string $description, array $status, Inventory_Interface $inventory) {
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        parent::__construct($description, "player", array_filter($status), $inventory);
+        Util::check_array($status, 'string');
+        parent::__construct($description, "player", $status, $inventory);
         $this->inventory = $inventory;
     }
 

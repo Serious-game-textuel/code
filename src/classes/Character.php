@@ -21,12 +21,8 @@ class Character extends Entity implements Character_Interface {
     private Inventory_Interface $inventory;
 
     public function __construct(string $description, string $name, array $status, Inventory_Interface $inventory) {
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        parent::__construct($description, $name, array_filter($status));
+        Util::check_array($status, 'string');
+        parent::__construct($description, $name, $status);
         $this->inventory = $inventory;
     }
     public function get_inventory() {

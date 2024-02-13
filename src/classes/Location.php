@@ -26,26 +26,14 @@ class Location extends Entity implements Location_Interface {
 
     public function __construct(string $description, string $name, array $status,
      Inventory_Interface $inventory, array $npccharacters, array $hints, array $actions) {
-        for ($i=0; $i<sizeof($status); $i++) {
-            if (!is_string($status[$i])) {
-                $status[$i] = null;
-            }
-        }
-        parent::__construct($description, $name, array_filter($status));
+        Util::check_array($status, 'string');
+        parent::__construct($description, $name, $status);
         $this->inventory = $inventory;
-        for ($i=0; $i<sizeof($npccharacters); $i++) {
-            if (!$npccharacters[$i] instanceof Npc_Character) {
-                $npccharacters[$i] = null;
-            }
-        }
-        $this->npccharacters = array_filter($npccharacters);
+        Util::check_array($npccharacters, Npc_Character::class);
+        $this->npccharacters = $npccharacters;
         $this->hints = $hints;
-        for ($i=0; $i<sizeof($actions); $i++) {
-            if (!$actions[$i] instanceof Action_Interface) {
-                $actions[$i] = null;
-            }
-        }
-        $this->actions = array_filter($actions);
+        Util::check_array($actions, Action_Interface::class);
+        $this->actions = $actions;
     }
     public function get_inventory() {
         return $this->inventory;

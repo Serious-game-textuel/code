@@ -30,7 +30,7 @@ interface Action_Interface {
      * @param string $description
      *
      * @return void
-     */
+     */ 
     public function set_description(string $description);
 
     /**

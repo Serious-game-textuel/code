@@ -20,28 +20,11 @@ class Location_Reaction extends Reaction {
 
     public function __construct(string $description, array $oldstatus,
      array $newstatus, array $olditem, array $newitem, Location_Interface $location) {
-        for ($i=0; $i<sizeof($oldstatus); $i++) {
-            if (!is_string($oldstatus[$i])) {
-                $oldstatus[$i] = null;
-            }
-        }
-        for ($i=0; $i<sizeof($newstatus); $i++) {
-            if (!is_string($newstatus[$i])) {
-                $newstatus[$i] = null;
-            }
-        }
-        for ($i=0; $i<sizeof($olditem); $i++) {
-            if (!$olditem[$i] instanceof Item_Interface) {
-                $olditem[$i] = null;
-            }
-        }
-        for ($i=0; $i<sizeof($newitem); $i++) {
-            if (!$newitem[$i] instanceof Item_Interface) {
-                $newitem[$i] = null;
-            }
-        }
-        parent::__construct($description, array_filter($oldstatus),
-        array_filter($newstatus), array_filter($olditem), array_filter($newitem));
+        Util::check_array($oldstatus, 'string');
+        Util::check_array($newstatus, 'string');
+        Util::check_array($olditem, Item_Interface::class);
+        Util::check_array($newitem, Item_Interface::class);
+        parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
         $this->location = $location;
     }
     public function get_location() {
