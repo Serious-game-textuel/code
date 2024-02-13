@@ -27,38 +27,24 @@ class Game implements Game_Interface {
     private int $deaths;
     private int $actions;
     private array $visitedlocations;
-    private DateTime $starttime;
-    private Language $language;
-    private Location_Interface $currentlocation;
-    private static $instance = null;
-    private Player_Character $player;
+    private ?DateTime $starttime;
+    private ?Player_Character $player;
     private ?Default_Action_Interface $defaultactionsearch;
     private ?Default_Action_Interface $defaultactioninteract;
     private array $entities = [];
 
 
-    public function __construct(int $deaths, int $actions, array $visitedlocations, DateTime $starttime,
-    Language $language, Location_Interface $currentlocation, Player_Character $player,
-    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract) {
+    public function __construct(int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
+    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
         $this->id = Id_Class::generate_id(self::class);
         $this->deaths = $deaths;
         $this->actions = $actions;
         $this->visitedlocations = $visitedlocations;
         $this->starttime = $starttime;
-        $this->language = $language;
-        $this->currentlocation = $currentlocation;
         $this->player = $player;
         $this->defaultactionsearch = $defaultactionsearch;
         $this->defaultactioninteract = $defaultactioninteract;
-        self::$instance = $this;
-    }
-
-    public static function getinstance() {
-        if (self::$instance == null) {
-            throw new Exception('TODO');
-        }
-
-        return self::$instance;
+        $this->entities = $entities;
     }
 
     public function get_id() {
@@ -112,18 +98,11 @@ class Game implements Game_Interface {
         $this->starttime = $starttime;
     }
 
-    public function get_language() {
-        return $this->language;
-    }
-    public function set_language(Language $language) {
-        $this->language = $language;
-    }
-
     public function get_current_location() {
-        return $this->currentlocation;
+        return $this->player->get_current_location();
     }
     public function set_current_location(Location_Interface $currentlocation) {
-        $this->currentlocation = $currentlocation;
+        $this->player->set_currentlocation($currentlocation);
     }
 
     public function get_default_action_search() {

@@ -24,11 +24,6 @@ interface Location_Interface extends Entity_Interface {
     public function get_inventory();
 
     /**
-     * @return Character_Interface[]
-     */
-    public function get_characters();
-
-    /**
      * @param Action_Interface[]
      */
     public function get_actions();
