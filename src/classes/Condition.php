@@ -56,7 +56,6 @@ class Condition implements Condition_Interface {
                     if ($reaction->get_new_location() != null) {
                         $newlocation = $reaction->get_new_location();
                         if ($character instanceof Npc_Character) {
-                            $oldlocation = $character->get_current_location();
                             $character->set_currentlocation($newlocation);
                         } else if ($character instanceof Player_Character) {
                             $game->set_current_location($newlocation);

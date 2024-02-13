@@ -185,14 +185,15 @@ class App implements App_Interface {
         $rowstep = 10;
 
         $actions = [];
+        $descriptions = [];
         $conditions = [];
         $reactions = [];
 
         while ($this->csvdata[$row][$col] != null) {
 
             $action = $this->get_cell_string($row, $col);
-            if (!in_array($action, $actions)) {
-                array_push($actions, $action);
+            if (!in_array($action, $descriptions)) {
+                array_push($descriptions, $action);
             }
 
             $condition = $this->get_cell_string($row + 1, $col);
@@ -249,20 +250,20 @@ class App implements App_Interface {
             $row += $rowstep;
         }
 
-        foreach ($actions as $action) {
+        foreach ($descriptions as $action) {
             $conditions = [];
             foreach ($conditions[$action] as $condition) {
                 
-                array_push($coniditions,
+                array_push($conditions,
                     $this->parse_condition(
                         $condition,
                         $reactions[$action][$condition]
                     )
                 );
             }
-            new Action($action, $conditions);
+            array_push($actions, new Action($action, $conditions));
         }
-
+        return $actions;
     }
 
     private function parse_condition($condition, $reactions) {
@@ -358,6 +359,7 @@ class App implements App_Interface {
         if (!$foundline) {
             throw new Exception($str . " line not found");
         }
+        return $lign;
     }
 
     private function get_cell_string($row, $column) {
