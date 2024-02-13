@@ -100,7 +100,8 @@ class Game implements Game_Interface {
     }
 
     public function add_visited_location(Location_Interface $location) {
-        $this->visitedlocations[] = $location;
+        array_push($this->visitedlocations, $location);
+        $this->entities = Util::clean_array($this->visitedlocations, Location_Interface::class);
     }
 
     public function get_start_time() {
@@ -150,6 +151,7 @@ class Game implements Game_Interface {
 
     public function add_entity(Entity_Interface $entity) {
         array_push($this->entities, $entity);
+        $this->entities = Util::clean_array($this->entities, Entity_Interface::class);
     }
 
     /**

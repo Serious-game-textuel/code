@@ -41,7 +41,8 @@ class Location extends Entity implements Location_Interface {
 
 
     public function add_npc_character(Npc_Character $npccharacter) {
-        $this->npccharacters[] = $npccharacter;
+        array_push($this->npccharacters, $npccharacter);
+        $this->entities = Util::clean_array($this->npccharacters, Location_Interface::class);
     }
 
     public function remove_npc_character(Npc_Character $npccharacter) {
