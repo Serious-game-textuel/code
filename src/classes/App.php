@@ -30,18 +30,25 @@ class App implements App_Interface {
 
     private Language $language;
 
-    public function __construct($csvdata, Language $language) {
-        self::$instance = $this;
-        $this->csvdata = $csvdata;
-        $this->language = $language;
-        $this->startentities = [];
-        if ($this->language == Language::FR) {
-            self::$playerkeyword = "joueur";
+    public function __construct($csvfilepath, Language $language) {
+        
+        $file = fopen($csvfilepath, 'r');
+        if ($file !== false) {
+            $this->csvdata = fgetcsv($file);
+            self::$instance = $this;
+            $this->language = $language;
+            $this->startentities = [];
+            if ($this->language == Language::FR) {
+                self::$playerkeyword = "joueur";
+            } else {
+                self::$playerkeyword = "player";
+            }
+            $this->parse();
         } else {
-            self::$playerkeyword = "player";
+            throw new Exception("File not found");
         }
-
-        $this->parse();
+        
+        
     }
 
     public static function get_instance() {
