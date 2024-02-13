@@ -40,7 +40,7 @@ interface Location_Interface extends Entity_Interface {
     public function check_actions( string $action);
 
     /**
-     * @param String $action
+     * @param string $action
      * @return Action_Interface
      */
     public function is_action_valide(string $action);
@@ -51,15 +51,5 @@ interface Location_Interface extends Entity_Interface {
 
 
     public function has_item_location(Item_Interface $item);
-    /**
-     * @param Npc_Character $npccharacter
-     * @return void
-     */
-    public function add_npc_character(Npc_Character $npccharacter);
-    /**
-     * @param Npc_Character $npccharacter
-     * @return void
-     */
-    public function remove_npc_character(Npc_Character $npccharacter);
 
 }

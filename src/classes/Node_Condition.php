@@ -18,14 +18,14 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
 class Node_Condition extends Condition {
 
-    private Condition_Interface $condition1;
-    private Condition_Interface $condition2;
+    private ?Condition_Interface $condition1;
+    private ?Condition_Interface $condition2;
     private string $connector;
 
 
     public function __construct(
-        Condition_Interface $condition1,
-        Condition_Interface $condition2,
+        ?Condition_Interface $condition1,
+        ?Condition_Interface $condition2,
         string $connector,
         ?array $reactions
     ) {
