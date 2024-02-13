@@ -62,7 +62,8 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
         } else {
             $this->add_intro_editor();
         }
-        $mform->addElement('filepicker', 'userfile', get_string('file'), null, ['maxbytes' => 1111111111, 'accepted_types' => '*']);
+        $mform->addElement('filepicker', 'userfile', get_string('file'),
+         null, ['maxbytes' => 1111111111, 'accepted_types' => '.csv']);
         // Adding your new field here.
         $mform->addHelpButton('userfile', 'file');
 

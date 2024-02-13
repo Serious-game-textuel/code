@@ -46,8 +46,7 @@ require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 // Récupérez le contenu CSV de $moduleinstance->intro.
-$csvcontent = $moduleinstance->intro;
-
+$csvcontent = $moduleinstance->filecontent;
 // Convertissez le contenu CSV en un fichier temporaire.
 $tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
 file_put_contents($tempfilepath, $csvcontent);
@@ -89,7 +88,7 @@ $PAGE->set_context($modulecontext);
 
 echo $OUTPUT->header();
 // Affiche le contenu de la deuxième colonne de la deuxième ligne du fichier CSV.
-echo $secondcolumnvalue;
+echo "second_column_value: $secondcolumnvalue";
 
 
 ?>
