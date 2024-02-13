@@ -71,7 +71,7 @@ class Action implements Action_Interface {
                 echo($result);
                 array_push($return, $result);
             }
-        } 
+        }
         return $return;
     }
 }

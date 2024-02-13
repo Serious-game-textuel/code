@@ -60,7 +60,7 @@ class Location extends Entity implements Location_Interface {
         return $this->hints;
     }
 
-    public function is_action_valide(string $action){
+    public function is_action_valide(string $action) {
         for ($i = 0; $i < count($this->actions); $i++) {
             if ($this->actions[$i]->get_description() == $action) {
                 return $action[$i];
@@ -74,12 +74,11 @@ class Location extends Entity implements Location_Interface {
         $game = Game::getinstance();
         $action = App::tokenize($action);
         $actionvalide = $this->is_action_valide($action);
-        if ($actionvalide != null){
+        if ($actionvalide != null) {
             array_push($return, $actionvalide->do_conditions());
-        }
-        else{
+        } else {
             $defaultaction = "fouiller";
-            if(strpos($action, $defaultaction) === 0){
+            if (strpos($action, $defaultaction) === 0) {
                 $entity = substr($action, strlen($defaultaction) + 1);
                 if ($game->get_entity($entity) !== null) {
                     if ($game->get_default_action_interact() !== null) {

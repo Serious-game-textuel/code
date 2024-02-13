@@ -43,7 +43,7 @@ interface Location_Interface extends Entity_Interface {
      * // This method checks if the actions are valid for the location by parsing the string into a Action and called do_condition
      */
     public function check_actions( string $action);
-    
+
     /**
      * @param String $action
      * @return Action_Interface
