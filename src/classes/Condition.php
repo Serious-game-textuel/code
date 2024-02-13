@@ -20,11 +20,16 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 class Condition implements Condition_Interface {
 
     private int $id;
-    private ?array $reactions;
+    private array $reactions = [];
 
     public function __construct(array $reactions) {
+        for ($i=0; $i<sizeof($reactions); $i++) {
+            if (!$reactions[$i] instanceof Reaction_Interface) {
+                $reactions[$i] = null;
+            }
+        }
         $this->id = Id_Class::generate_id(self::class);
-        $this->reactions = $reactions;
+        $this->reactions = array_filter($reactions);
 
     }
 
@@ -32,16 +37,17 @@ class Condition implements Condition_Interface {
         return $this->id;
     }
 
-    public function set_id(int $id) {
-        $this->id = $id;
-    }
-
     public function get_reactions() {
         return $this->reactions;
     }
 
     public function set_reactions(array $reactions) {
-        $this->reactions = $reactions;
+        for ($i=0; $i<sizeof($reactions); $i++) {
+            if (!$reactions[$i] instanceof Reaction_Interface) {
+                $reactions[$i] = null;
+            }
+        }
+        $this->reactions = array_filter($reactions);
     }
 
     public function do_reactions() {

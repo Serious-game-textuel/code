@@ -24,10 +24,23 @@ class Leaf_Condition extends Condition {
 
     public function __construct(Entity_Interface $entity1, Entity_Interface $entity2, string $connector,
     ?array $status, ?Condition_Interface $condition, array $reactions) {
-        parent::__construct($reactions);
+        for ($i=0; $i<sizeof($reactions); $i++) {
+            if (!$reactions[$i] instanceof Reaction_Interface) {
+                $reactions[$i] = null;
+            }
+        }
+        parent::__construct(array_filter($reactions));
         $this->entity1 = $entity1;
         $this->entity2 = $entity2;
         $this->connector = $connector;
+        if ($status !== null) {
+            for ($i=0; $i<sizeof($status); $i++) {
+                if (!is_string($status[$i])) {
+                    $status[$i] = null;
+                }
+            }
+            $status = array_filter($status);
+        }
         $this->status = $status;
         $this->condition = $condition;
     }
@@ -61,7 +74,12 @@ class Leaf_Condition extends Condition {
     }
 
     public function set_status(array $status) {
-        $this->status = $status;
+        for ($i=0; $i<sizeof($status); $i++) {
+            if (!is_string($status[$i])) {
+                $status[$i] = null;
+            }
+        }
+        $this->status = array_filter($status);
     }
 
     public function get_condition() {

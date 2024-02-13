@@ -24,7 +24,12 @@ class Npc_Character extends Character {
         string $name, array $status,
         Inventory_Interface $inventory,
         Location_Interface $currentlocation) {
-            parent::__construct($description, $name, $status, $inventory);
+            for ($i=0; $i<sizeof($status); $i++) {
+                if (!is_string($status[$i])) {
+                    $status[$i] = null;
+                }
+            }
+            parent::__construct($description, $name, array_filter($status), $inventory);
             $this->inventory = $inventory;
             $this->currentlocation = $currentlocation;
     }

@@ -43,7 +43,12 @@ class Game implements Game_Interface {
         $this->id = Id_Class::generate_id(self::class);
         $this->deaths = $deaths;
         $this->actions = $actions;
-        $this->visitedlocations = $visitedlocations;
+        for ($i=0; $i<sizeof($visitedlocations); $i++) {
+            if (!$visitedlocations[$i] instanceof Reaction_Interface) {
+                $visitedlocations[$i] = null;
+            }
+        }
+        $this->visitedlocations = array_filter($visitedlocations);
         $this->starttime = $starttime;
         $this->language = $language;
         $this->currentlocation = $currentlocation;
@@ -63,9 +68,6 @@ class Game implements Game_Interface {
 
     public function get_id() {
         return $this->id;
-    }
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_deaths() {
@@ -98,7 +100,12 @@ class Game implements Game_Interface {
         return $this->visitedlocations;
     }
     public function set_visited_locations(array $visitedlocations) {
-        $this->visitedlocations = $visitedlocations;
+        for ($i=0; $i<sizeof($visitedlocations); $i++) {
+            if (!$visitedlocations[$i] instanceof Location_Interface) {
+                $visitedlocations[$i] = null;
+            }
+        }
+        $this->visitedlocations = array_filter($visitedlocations);
     }
 
     public function add_visited_location(Location_Interface $location) {
@@ -147,7 +154,12 @@ class Game implements Game_Interface {
     }
 
     public function set_entities(array $entities) {
-        $this->entities = $entities;
+        for ($i=0; $i<sizeof($visitedlocations); $i++) {
+            if (!$visitedlocations[$i] instanceof Location_Interface) {
+                $visitedlocations[$i] = null;
+            }
+        }
+        $this->entities = array_filter($entities);
     }
 
     public function add_entity(Entity_Interface $entity) {

@@ -23,15 +23,16 @@ class Inventory implements Inventory_Interface {
 
     public function __construct(array $items) {
         $this->id = Id_Class::generate_id(self::class);
-        $this->items = $items;
+        for ($i=0; $i<sizeof($items); $i++) {
+            if (!$items[$i] instanceof Item_Interface) {
+                $items[$i] = null;
+            }
+        }
+        $this->items = array_filter($items);
     }
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_item(int $id) {
@@ -42,7 +43,12 @@ class Inventory implements Inventory_Interface {
     }
 
     public function add_item(array $item) {
-        $this->items[] = $item;
+        for ($i=0; $i<sizeof($item); $i++) {
+            if (!$item[$i] instanceof Item_Interface) {
+                $item[$i] = null;
+            }
+        }
+        array_merge($this->items, array_filter($item));
     }
     public function remove_item(array $item) {
         $key = array_search($item, $this->items);

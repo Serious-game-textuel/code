@@ -22,12 +22,6 @@ interface Condition_Interface {
     public function get_id();
 
     /**
-     * @param int
-     * @return void
-     */
-    public function set_id(int $id);
-
-    /**
      * @return Reaction_Interface[]
      */
     public function get_reactions();

@@ -27,10 +27,6 @@ class Hint implements Hint_Interface {
         return $this->id;
     }
 
-    public function set_id(int $id) {
-        $this->id = $id;
-    }
-
     public function get_description() {
         return $this->description;
     }

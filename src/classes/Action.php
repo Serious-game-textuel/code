@@ -27,15 +27,16 @@ class Action implements Action_Interface {
     public function __construct(string $description, array $conditions) {
         $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
-        $this->conditions = $conditions;
+        for ($i=0; $i<sizeof($conditions); $i++) {
+            if (!$conditions[$i] instanceof Condition_Interface) {
+                $conditions[$i] = null;
+            }
+        }
+        $this->conditions = array_filter($conditions);
     }
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_description() {
@@ -51,7 +52,12 @@ class Action implements Action_Interface {
     }
 
     public function set_conditions(array $conditions) {
-        $this->conditions = $conditions;
+        for ($i=0; $i<sizeof($conditions); $i++) {
+            if (!$conditions[$i] instanceof Condition_Interface) {
+                $conditions[$i] = null;
+            }
+        }
+        $this->conditions = array_filter($conditions);
     }
 
     public function do_conditions() {

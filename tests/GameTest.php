@@ -38,18 +38,6 @@ class GameTest extends TestCase {
         $this->assertSame($game1, $game2); // Should return the same instance.
     }
     /**
-     * vérifie si les méthodes get_id et set_id fonctionnent correctement en   récupérant et en définissant l'ID du jeu
-     */
-    public function testgetsetid() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
-
-        $this->assertEquals(0, $game->get_id());
-
-        $game->set_id(5);
-        $this->assertEquals(5, $game->get_id());
-    }
-    /**
      * vérifie si la méthode get_deaths retourne bien le nombre de morts
      */
     public function testgetdeaths() {
