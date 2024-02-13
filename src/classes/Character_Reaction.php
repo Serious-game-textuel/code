@@ -16,11 +16,11 @@
 
 class Character_Reaction extends Reaction {
 
-    private Character_Interface  $character;
-    private ?Location_Interface $newlocation;
+    private Character_Interface $character;
+    private Location_Interface $newlocation;
 
     public function __construct(string $description, array $oldstatus, array $newstatus,
-    array $olditem, array $newitem, Character_Interface $character, ?Location_Interface $newlocation) {
+    array $olditem, array $newitem, Character_Interface $character, Location_Interface $newlocation) {
         parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
         $this->character = $character;
         $this->newlocation = $newlocation;
@@ -29,10 +29,6 @@ class Character_Reaction extends Reaction {
 
     public function get_character() {
         return $this->character;
-    }
-
-    public function set_character(Character_Interface $character) {
-        $this->character = $character;
     }
 
     public function get_new_location() {

@@ -25,7 +25,6 @@ class Condition implements Condition_Interface {
     public function __construct(array $reactions) {
         $this->id = Id_Class::generate_id(self::class);
         $this->reactions = $reactions;
-
     }
 
     public function get_id() {

@@ -23,12 +23,9 @@ class Location_Reaction extends Reaction {
         parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
         $this->location = $location;
     }
-    public function get_location() {
-        return $this->location;
-    }
 
-    public function set_location(Location_Interface $location) {
-        $this->location = $location;
+    public function get_location(): Location_Interface {
+        return $this->location;
     }
 
 }

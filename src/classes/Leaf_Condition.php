@@ -20,16 +20,14 @@ class Leaf_Condition extends Condition {
     private ?Entity_Interface $entity2;
     private string $connector;
     private ?array $status;
-    private ?Condition_Interface $condition;
 
     public function __construct(Entity_Interface $entity1, Entity_Interface $entity2, string $connector,
-    ?array $status, ?Condition_Interface $condition, array $reactions) {
+    ?array $status, array $reactions) {
         parent::__construct($reactions);
         $this->entity1 = $entity1;
         $this->entity2 = $entity2;
         $this->connector = $connector;
         $this->status = $status;
-        $this->condition = $condition;
     }
 
     public function get_entity1() {
@@ -63,15 +61,6 @@ class Leaf_Condition extends Condition {
     public function set_status(array $status) {
         $this->status = $status;
     }
-
-    public function get_condition() {
-        return $this->condition;
-    }
-
-    public function set_condition(Condition_Interface $condition) {
-        $this->condition = $condition;
-    }
-
 
 }
 

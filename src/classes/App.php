@@ -26,7 +26,7 @@ class App implements App_Interface {
 
     private array $startentities;
 
-    private string $playerkeyword;
+    private static string $playerkeyword;
 
     private Language $language;
 
@@ -36,9 +36,9 @@ class App implements App_Interface {
         $this->language = $language;
         $this->startentities = [];
         if ($this->language == Language::FR) {
-            $this->playerkeyword = "joueur";
+            self::$playerkeyword = "joueur";
         } else {
-            $this->playerkeyword = "player";
+            self::$playerkeyword = "player";
         }
 
         $this->parse();
@@ -175,19 +175,189 @@ class App implements App_Interface {
     private function create_column_actions($location, $col) {
         $rowstep = 10;
         $row = 20;
-        $actions = [];
-        while ($this->csvdata[$row][$col] != null) {
-            $description = $this->get_cell_string($row + 1, $col);
-            $condition = $this->get_cell_string($row + 2, $col);
-            if () {
 
+        $actions = [];
+        $conditions = [];
+        $reactions = [];
+
+        while ($this->csvdata[$row][$col] != null) {
+
+            $action = $this->get_cell_string($row, $col);
+            if (!in_array($action, $actions)) {
+                array_push($actions, $action);
             }
+
+            $condition = $this->get_cell_string($row + 1, $col);
+            array_push($conditions[$action], $condition);
+
+            $reactiondescription = $this->get_cell_string($row + 2, $col);
+
+            $entity = $this->get_startentity($this->get_cell_string($row + 3, $col));
+            if ($entity == null) {
+                throw new Exception($this->get_cell_string($row + 3, $col) . " is not an entity");
+            }
+
+            $newstatuses = $this->get_cell_array_string($row + 4, $col);
+
+            $oldstatuses = $this->get_cell_array_string($row + 5, $col);
+
+            $newitemnames = $this->get_cell_array_string($row + 6, $col);
+            $newitems = [];
+            foreach ($newitemnames as $name) {
+                $item = $this->get_startentity($name);
+                if ($item == null || !($item instanceof Item_Interface)) {
+                    throw new Exception($name . " is not an Item");
+                }
+                array_push($newitems, $item);
+            }
+
+            $olditemnames = $this->get_cell_array_string($row + 7, $col);
+            $olditems = [];
+            foreach ($olditemnames as $name) {
+                $item = $this->get_startentity($name);
+                if ($item == null || !($item instanceof Item_Interface)) {
+                    throw new Exception($name . " is not an Item");
+                }
+                array_push($olditems, $item);
+            }
+
+            
+
+            if ($entity instanceof Location_Interface) {
+                $reaction = new Location_Reaction($reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity);
+                array_push($reactions[$action][$condition], $reaction);
+            } else if ($entity instanceof Character_Interface) {
+                $location = $this->get_startentity($this->get_cell_string($row + 8, $col));
+                if ($location == null || !($location instanceof Location_Interface)) {
+                    throw new Exception($name . " is not a Location");
+                }
+
+                $reaction = new Character_Reaction($reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity, $location);
+                array_push($reactions[$action][$condition], $reaction);
+            } else {
+                throw new Exception("Only characters and locations can have reactions");
+            }
+
             $row += $rowstep;
         }
+
+        foreach ($actions as $action) {
+            foreach ($conditions[$action] as $condition) {
+                $this->parse_condition(
+                    $condition,
+                    $reactions[$action][$condition]
+                );
+                
+            }
+        }
+
+    }
+
+    private function parse_condition($condition, $reactions) {
+        $tokens = $this->get_tokens($condition);
+        
+        //Shunting Yard
+        $output = [];
+        $stack = [];
+        foreach ($tokens as $t) {
+            if ($t == '|') {
+                while (!empty($stack) && (end($stack) == "|" || end($stack) == "&")) {
+                    $output[] = array_pop($stack);
+                }
+                $stack[] = $t;
+            } else if ($t == '&') {
+                while (!empty($stack) && end($stack) == "&") {
+                    $output[] = array_pop($stack);
+                }
+                $stack[] = $t;
+            } else if ($t == '(') {
+                $stack[] = $t;
+            } else if ($t == ')') {
+                while (!empty($stack) && end($stack) != '(') {
+                    $output[] = array_pop($stack);
+                }
+                array_pop($stack);
+            } else {
+                $output[] = $t;
+            }
+        }
+        while (!empty($stack)) {
+            $output[] = array_pop($stack);
+        }
+
+        return $this->read_tree($output, $reactions);
+    }
+
+    private function read_tree($tokens, $reactions) {
+        if (empty($tokens)) {
+            return null;
+        } else if (end($tokens) == '|' || end($tokens) == '&') {
+            $token = array_pop($tokens);
+            return new Node_Condition($this->read_tree($tokens, $reactions), $this->read_tree($tokens, $reactions), $token, $reactions);
+        } else {
+            $token = array_pop($tokens);
+            return $this->parse_leaf_condition($token, $reactions);
+        }
+    }
+
+    private function parse_leaf_condition($condition, $reactions) {
+        $tokens = $this->get_tokens($condition);
+        $connectortokenstart = 0;
+        $member2tokenstart = 0;
+        $connector = "";
+        for ($i = 0; $i < count($tokens); $i++) {
+            if ($tokens[$i] == "a" || $tokens[$i] == "est") {
+                $connectortokenstart = $i;
+                $connector .= $tokens[$i];
+                if ($tokens[$i+1] == "pas") {
+                    $member2tokenstart = $i + 2;
+                    $connector .= " pas";
+                } else {
+                    $member2tokenstart = $i + 1;
+                }
+            }
+        }
+
+        $member1 = implode(' ', array_slice($tokens, 0, $connectortokenstart));
+        $member2 = implode(' ', array_slice($tokens, $member2tokenstart));
+
+        $entity1 = $this->get_startentity($member1);
+        if ($entity1 == null) {
+            throw new Exception($member1 . " is not an entity");
+        }
+        $entity2 = $this->get_startentity($member2);
+        $status = "";
+        if ($entity1 == null) {
+            $status = $member2;
+        }
+        return new Leaf_Condition($entity1, $entity2, $connector, [$status], $reactions);
     }
 
     private function get_cell_string($row, $column) {
         return self::tokenize($this->csvdata[$row][$column]);
+    }
+
+    private function get_tokens($str) {
+        $tokens = [];
+        $token = "";
+        for ($i = 0; $i < strlen($str); $i++) {
+            $c = $str[$i];
+            if ($c == "(" || $c == ")" || $c == "&" || $c == "|") {
+                $token = self::tokenize($token);
+                if ($token != "") {
+                    array_push($tokens, $token);
+                }
+                $token = "";
+                array_push($tokens, $c);
+            } else {
+                $token .= $c;
+            }
+        }
+        $token = self::tokenize($token);
+        if ($token != "") {
+            array_push($tokens, $token);
+        }
+        return $tokens;
     }
 
     private function get_cell_array_string($row, $column) {
