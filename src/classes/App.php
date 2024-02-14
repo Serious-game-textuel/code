@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use availability_completion\condition;
+
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
+
+
 class App implements App_Interface {
 
     private Game_Interface $game;
@@ -22,7 +29,7 @@ class App implements App_Interface {
 
     private array $csvdata;
 
-    private static App_Interface $instance = null;
+    private static App_Interface $instance ;
 
     private array $startentities;
 
@@ -34,7 +41,11 @@ class App implements App_Interface {
         
         $file = fopen($csvfilepath, 'r');
         if ($file !== false) {
-            $this->csvdata = fgetcsv($file);
+            $this->csvdata = [];
+            while (($line = fgetcsv($file)) !== false) {
+                $this->csvdata[] = $line;
+            }
+            fclose($file);
             self::$instance = $this;
             $this->language = $language;
             $this->startentities = [];
@@ -52,7 +63,11 @@ class App implements App_Interface {
     }
 
     public static function get_instance() {
-        return self::$instance;
+        if (isset(self::$instance)) {
+            return self::$instance;
+        } else {
+            throw new Exception("App not initialized");
+        }
     }
 
     public function get_game() {
@@ -89,13 +104,13 @@ class App implements App_Interface {
         $itemsrow = $this->get_row("OBJETS");
         $charactersrow = $this->get_row("PERSONNAGES");
         $locationsrow = $this->get_row("LIEUX");
-
+        
         $this->create_items($itemsrow);
         $this->create_characters($charactersrow);
         $this->create_locations($locationsrow);
         $this->create_all_actions($locationsrow);
 
-        $player = $this->get_startentity($this->playerkeyword);
+        $player = $this->get_startentity(self::$playerkeyword);
 
         $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(), $player, null, null, $this->startentities);
         
@@ -104,7 +119,7 @@ class App implements App_Interface {
     private function create_items($row) {
         $col = 1;
         $row = $this->get_row("OBJETS");
-        while ($this->csvdata[$row][$col] != null) {
+        while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string(3, $col);
             $description = $this->get_cell_string(4, $col);
             $statuses = $this->get_cell_array_string(5, $col);
@@ -115,20 +130,20 @@ class App implements App_Interface {
 
     private function create_characters($row) {
         $col = 1;
-        while ($this->csvdata[$row][$col] != null) {
-            $name = $this->get_cell_string(8, $col);
-            $description = $this->get_cell_string(9, $col);
-            $statuses = $this->get_cell_array_string(10, $col);
-            $itemnames = $this->get_cell_array_string(11, $col);
+        while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
+            $name = $this->get_cell_string($row, $col);
+            $description = $this->get_cell_string($row + 1, $col);
+            $statuses = $this->get_cell_array_string($row + 2, $col);
+            $itemnames = $this->get_cell_array_string($row + 3, $col);
             $items = [];
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . "is not an item");
+                    throw new Exception($itemname . "is not an item with the row: " . $row . " and the col: " . $col ."");
                 }
                 array_push($items, $item);
             }
-            if ($name == $this->playerkeyword) {
+            if ($name == self::$playerkeyword) {
                 new Player_Character($description, $name, $statuses, $items, null);
             } else {
                 new Npc_Character($description, $name, $statuses, $items, null);
@@ -139,7 +154,7 @@ class App implements App_Interface {
 
     private function create_locations($row) {
         $col = 1;
-        while ($this->csvdata[$row][$col] != null) {
+        while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string($row, $col);
             $statuses = $this->get_cell_array_string($row + 1, $col);
             $itemnames = $this->get_cell_array_string($row + 2, $col);
@@ -147,7 +162,7 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . "is not an item");
+                    throw new Exception($itemname . "is not an item and here is the row: " . $row . " and the col: " . $col ."");
                 }
                 array_push($items, $item);
             }
@@ -156,7 +171,7 @@ class App implements App_Interface {
             $col++;
         }
         $col = 1;
-        while ($this->csvdata[$row][$col] != null) {
+        while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
@@ -171,12 +186,13 @@ class App implements App_Interface {
                 }
                 $character->set_currentlocation($location);
             }
+            $col++;
         }
     }
 
     private function create_all_actions($row) {
         $col = 1;
-        while ($this->csvdata[$row][$col] != null) {
+        while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
@@ -193,74 +209,105 @@ class App implements App_Interface {
 
         $actions = [];
         $descriptions = [];
-        $conditions = [];
+        $conditionnames = [];
         $reactions = [];
 
-        while ($this->csvdata[$row][$col] != null) {
+        while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
 
             $action = $this->get_cell_string($row, $col);
             if (!in_array($action, $descriptions)) {
                 array_push($descriptions, $action);
             }
-
             $condition = $this->get_cell_string($row + 1, $col);
-            array_push($conditions[$action], $condition);
-
+            if ($condition == null) {
+                $condition = "NO_CONDITION";
+            }
+            if (!isset($conditionnames[$action])) {
+                $conditionnames[$action] = [];
+            }
+            array_push($conditionnames[$action], $condition);
             $reactiondescription = $this->get_cell_string($row + 2, $col);
 
-            $entity = $this->get_startentity($this->get_cell_string($row + 3, $col));
-            if ($entity == null) {
-                throw new Exception($this->get_cell_string($row + 3, $col) . " is not an entity");
-            }
+            $entityname = $this->get_cell_string($row + 3, $col);
 
-            $newstatuses = $this->get_cell_array_string($row + 4, $col);
-
-            $oldstatuses = $this->get_cell_array_string($row + 5, $col);
-
-            $newitemnames = $this->get_cell_array_string($row + 6, $col);
+            $entity = null;
+            $newstatuses = null;
+            $oldstatuses = null;
             $newitems = [];
-            foreach ($newitemnames as $name) {
-                $item = $this->get_startentity($name);
-                if ($item == null || !($item instanceof Item_Interface)) {
-                    throw new Exception($name . " is not an Item");
-                }
-                array_push($newitems, $item);
-            }
-
-            $olditemnames = $this->get_cell_array_string($row + 7, $col);
             $olditems = [];
-            foreach ($olditemnames as $name) {
-                $item = $this->get_startentity($name);
-                if ($item == null || !($item instanceof Item_Interface)) {
-                    throw new Exception($name . " is not an Item");
+            if ($entityname != "") {
+                $entity = $this->get_startentity($entityname);
+                if ($entity == null) {
+                    throw new Exception($this->get_cell_string($row + 3, $col) . " is not an entity with the row: " . $row . " and the col: " . $col ."");
                 }
-                array_push($olditems, $item);
+
+                $newstatuses = $this->get_cell_array_string($row + 4, $col);
+
+                $oldstatuses = $this->get_cell_array_string($row + 5, $col);
+
+                $newitemnames = $this->get_cell_array_string($row + 6, $col);
+                $newitems = [];
+                foreach ($newitemnames as $name) {
+                    $item = $this->get_startentity($name);
+                    if ($item == null || !($item instanceof Item_Interface)) {
+                        throw new Exception($name . " is not an Item");
+                    }
+                    array_push($newitems, $item);
+                }
+                $olditemnames = $this->get_cell_array_string($row + 7, $col);
+                $olditems = [];
+                foreach ($olditemnames as $name) {
+                    $item = $this->get_startentity($name);
+                    if ($item == null || !($item instanceof Item_Interface)) {
+                        throw new Exception($name . " is not an Item");
+                    }
+                    array_push($olditems, $item);
+                }
             }
+            
+
+            
 
             
 
             if ($entity instanceof Location_Interface) {
                 $reaction = new Location_Reaction($reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity);
+                if (!isset($reactions[$action][$condition])) {
+                    $reactions[$action][$condition] = [];
+                }
                 array_push($reactions[$action][$condition], $reaction);
             } else if ($entity instanceof Character_Interface) {
-                $location = $this->get_startentity($this->get_cell_string($row + 8, $col));
-                if ($location == null || !($location instanceof Location_Interface)) {
-                    throw new Exception($name . " is not a Location");
+                $locationname = $this->get_cell_string($row + 8, $col);
+                $location = null;
+                if ($locationname != "") {
+                    $location = $this->get_startentity($locationname);
+                    if ($location == null || !($location instanceof Location_Interface)) {
+                        throw new Exception($locationname . " is not a location");
+                    }
                 }
-
+            
                 $reaction = new Character_Reaction($reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity, $location);
+                if (!isset($reactions[$action][$condition])) {
+                    $reactions[$action][$condition] = [];
+                }
                 array_push($reactions[$action][$condition], $reaction);
-            } else {
+            } else if ($entityname == ""){
+                $reaction = new No_Entity_Reaction($reactiondescription);
+                if (!isset($reactions[$action][$condition])) {
+                    $reactions[$action][$condition] = [];
+                }
+                array_push($reactions[$action][$condition], $reaction);
+            }
+            else {
                 throw new Exception("Only characters and locations can have reactions");
             }
 
-            $row += $rowstep;
+            $row = $row + $rowstep;
         }
 
         foreach ($descriptions as $action) {
             $conditions = [];
-            foreach ($conditions[$action] as $condition) {
-                
+            foreach ($conditionnames[$action] as $condition) {
                 array_push($conditions,
                     $this->parse_condition(
                         $condition,
@@ -274,6 +321,9 @@ class App implements App_Interface {
     }
 
     private function parse_condition($condition, $reactions) {
+        if ($condition == "NO_CONDITION") {
+            return new Leaf_Condition(null, null, "", [], $reactions);
+        }
         $tokens = $this->get_tokens($condition);
         
         //Shunting Yard
@@ -304,7 +354,7 @@ class App implements App_Interface {
         while (!empty($stack)) {
             $output[] = array_pop($stack);
         }
-
+        
         return $this->read_tree($output, $reactions);
     }
 
@@ -321,33 +371,37 @@ class App implements App_Interface {
     }
 
     private function parse_leaf_condition($condition, $reactions) {
-        $tokens = $this->get_tokens($condition);
-        $connectortokenstart = 0;
-        $member2tokenstart = 0;
+        $entity1 = null;
         $connector = "";
-        for ($i = 0; $i < count($tokens); $i++) {
-            if ($tokens[$i] == "a" || $tokens[$i] == "est") {
-                $connectortokenstart = $i;
-                $connector .= $tokens[$i];
-                if ($tokens[$i+1] == "pas") {
-                    $member2tokenstart = $i + 2;
-                    $connector .= " pas";
-                } else {
-                    $member2tokenstart = $i + 1;
-                }
+        $connectorstart = 0;
+        $member2start = 0;
+
+        $tokens = explode(' ', $condition);
+
+        for ($i = 1; $i <= count($tokens); $i++) {
+            $member1 = implode(' ', array_slice($tokens, 0, $i));
+            $entity1 = $this->get_startentity($member1);
+            if ($entity1 != null) {
+                $connectorstart = $i;
+                $member2start = $i + 1;
+                break;
             }
         }
-
-        $member1 = implode(' ', array_slice($tokens, 0, $connectortokenstart));
-        $member2 = implode(' ', array_slice($tokens, $member2tokenstart));
-
-        $entity1 = $this->get_startentity($member1);
-        if ($entity1 == null) {
-            throw new Exception($member1 . " is not an entity");
+        if ($entity1 = null) {
+            throw new Exception("Wrong condition syntax");
         }
+
+        $connector .= $tokens[$connectorstart];
+
+        if ($tokens[$connectorstart + 1] == "pas") {
+            $connector .= $tokens[$connectorstart + 1];
+            $member2start++;
+        }
+
+        $member2 = implode(' ', array_slice($tokens, $member2start));
         $entity2 = $this->get_startentity($member2);
         $status = "";
-        if ($entity1 == null) {
+        if ($entity2 == null) {
             $status = $member2;
         }
         return new Leaf_Condition($entity1, $entity2, $connector, [$status], $reactions);
@@ -358,9 +412,9 @@ class App implements App_Interface {
         $foundline = false;
         while (!$foundline && sizeof($this->csvdata)>$lign) {
             if (strcmp($this->csvdata[$lign][0], $str) != 0) {
-                $foundline = true;
-            } else {
                 $lign = $lign + 1;
+            } else {
+                $foundline = true;
             }
         }
         if (!$foundline) {
@@ -370,6 +424,10 @@ class App implements App_Interface {
     }
 
     private function get_cell_string($row, $column) {
+        $str = $this->csvdata[$row][$column];
+        if ($str == null) {
+            return "";
+        }
         return self::tokenize($this->csvdata[$row][$column]);
     }
 
@@ -398,6 +456,9 @@ class App implements App_Interface {
 
     private function get_cell_array_string($row, $column) {
         $str = $this->csvdata[$row][$column];
+        if ($str == null) {
+            return [];
+        }
         $words = explode('/', $str);
         for ($i = 0; $i < sizeof($words); $i++) {
             $words[$i] = self::tokenize($words[$i]);

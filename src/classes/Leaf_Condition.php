@@ -21,7 +21,7 @@ class Leaf_Condition extends Condition {
     private string $connector;
     private ?array $status;
 
-    public function __construct(Entity_Interface $entity1, ?Entity_Interface $entity2, string $connector,
+    public function __construct(?Entity_Interface $entity1, ?Entity_Interface $entity2, string $connector,
     ?array $status, array $reactions) {
         parent::__construct($reactions);
         $this->entity1 = $entity1;
