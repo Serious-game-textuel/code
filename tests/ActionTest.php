@@ -59,12 +59,12 @@ class ActionTest extends TestCase {
 
         // Create a condition instance with reactions.
         $conditionwithreactions1 = new Leaf_Condition($character, $item1,
-         'possède', [], [], [$characterreaction1, $characterreaction2, $characterreaction3]);
+         'a', [], [], [$characterreaction1, $characterreaction2, $characterreaction3]);
         $conditionwithreactions2 = new Leaf_Condition($location, null, 'est', ["boueux"], [], []);
-        $conditionwithreactions3 = new Leaf_Condition($location, $item2, 'possède', [], [], []);
+        $conditionwithreactions3 = new Leaf_Condition($location, $item2, 'a', [], [], []);
 
         $conditionwithreactions4 = new Node_Condition($conditionwithreactions2, $conditionwithreactions3,
-            "et", [$locationreaction1, $locationreaction2]);
+            "&", [$locationreaction1, $locationreaction2]);
         $action = new Action('action', [$conditionwithreactions1, $conditionwithreactions4]);
 
         // Test the do_condition method.
@@ -88,6 +88,71 @@ class ActionTest extends TestCase {
         // Check if location has item1 donc que la réaction a bien été effectuée.
         $this->assertTrue($location->has_item_location($item4));
         // Check if location has item donc que la condition est vraie.
+
+
+        $emptyaction = new Action('action', []);
+        $result = $emptyaction->do_conditions();
+        $this->assertEquals($result, []);
+
+        $characterreaction4 = new Character_Reaction('Michel mange la poire', [], [], [$item2], [], $character, null); 
+        $characterreaction5 = new Character_Reaction('Michel ramasse la poire', [], [], [], [$item2], $character, null);
+
+
+
+        $unvalidcondition = new Leaf_Condition($character, $item3, 'a', [], [], [$characterreaction4]);//mange poire si il a bannane
+        $validecondition = new Leaf_Condition($character, $item2, 'a', [], [], [$characterreaction4]);//mange la poire si il l'a
+        $validecondition2 = new Leaf_Condition($character, $item2, 'a pas', [], [], [$characterreaction5]);//mange la poire si il l'a
+        $unvalidconditionwithreactions = new Node_Condition($unvalidcondition, null,
+            "&", [$characterreaction4]);//mange poire
+        $unvalidconditionwithreactions2 = new Node_Condition($unvalidcondition, $validecondition,
+            "&", [$characterreaction4]);//mange poire
+
+        $validconditionwithreaction = new Node_Condition( null, $validecondition,
+            "|", [$characterreaction4]);//mange poire
+        $validconditionwithreaction2 = new Node_Condition($unvalidcondition, $validecondition2,
+            "|", [$characterreaction2]);//ajout poire dans l'inventaire
+        $valideconditionwithreaction3 = new Node_Condition(null, null,
+            "|", [$characterreaction2]);//ajout poire dans l'inventaire
+
+        // Test & et | Node condition
+
+        $action1 = new Action('action', [$unvalidconditionwithreactions]);// False
+        // Test the do_condition method.
+        $result = $action1->do_conditions();
+        // Check le personnage a gardé la poire.
+        $this->assertTrue($character->has_item_character($item2));
+
+        $action2 = new Action('action', [$unvalidconditionwithreactions2]);// False
+        $result = $action2->do_conditions();
+        // Check le personnage a gardé la poire.
+        $this->assertTrue($character->has_item_character($item2));
+
+        $action3 = new Action('action', [$unvalidconditionwithreactions, $unvalidconditionwithreactions2]);//False
+        $result = $action3->do_conditions();
+        // Check le personnage a gardé la poire.
+        $this->assertTrue($character->has_item_character($item2));
+
+        $action4 = new Action('action', [$validconditionwithreaction]);
+        $result = $action4->do_conditions();
+        // Check le personnage a mangé la poire.
+        $this->assertFalse($character->has_item_character($item2));
+
+        $action5 = new Action('action', [$validconditionwithreaction2, $unvalidconditionwithreactions2]);
+        $result = $action5->do_conditions();
+        // Check le personnage a ramassé la poire.
+        $this->assertTrue($character->has_item_character($item2));
+
+        $action6 = new Action('action', [$validconditionwithreaction]);
+        $result = $action6->do_conditions();
+        // Check le personnage a mangé la poire.
+        $this->assertFalse($character->has_item_character($item2));
+
+        $action7 = new Action('action', [$unvalidconditionwithreactions2,$valideconditionwithreaction3]);
+        $result = $action7->do_conditions();
+        // Check le personnage a mangé la poire.
+        $this->assertTrue($character->has_item_character($item2));
+        
+
     }
 
 }
