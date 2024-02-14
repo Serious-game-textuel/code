@@ -15,9 +15,4 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 class Npc_Character extends Character {
-
-    public function __construct(string $description, string $name, array $status, array $items, ?Location_Interface $currentlocation) {
-            parent::__construct($description, $name, $status, $items, $currentlocation);
-    }
-
 }

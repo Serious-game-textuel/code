@@ -17,9 +17,4 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
 class Player_Character extends Character {
-
-    public function __construct(string $description, string $name, array $status, array $items, ?Location_Interface $currentlocation) {
-        parent::__construct($description, $name, $status, $items, $currentlocation);
-    }
-
 }

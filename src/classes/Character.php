@@ -22,7 +22,8 @@ class Character extends Entity implements Character_Interface {
 
     private ?Location_Interface $currentlocation;
 
-    public function __construct(string $description, string $name, array $status, array $items, ?Location_Interface $currentlocation) {
+    public function __construct(string $description, string $name,
+    array $status, array $items, ?Location_Interface $currentlocation) {
         parent::__construct($description, $name, $status);
         $this->inventory = new Inventory($items);
         $this->currentlocation = $currentlocation;

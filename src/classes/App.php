@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use availability_completion\condition;
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
@@ -29,7 +29,7 @@ class App implements App_Interface {
 
     private array $csvdata;
 
-    private static App_Interface $instance ;
+    private static App_Interface $instance;
 
     private array $startentities;
 
@@ -38,7 +38,6 @@ class App implements App_Interface {
     private Language $language;
 
     public function __construct($csvfilepath, Language $language) {
-        
         $file = fopen($csvfilepath, 'r');
         if ($file !== false) {
             $this->csvdata = [];
@@ -58,8 +57,6 @@ class App implements App_Interface {
         } else {
             throw new Exception("File not found");
         }
-        
-        
     }
 
     public static function get_instance() {
@@ -104,7 +101,6 @@ class App implements App_Interface {
         $itemsrow = $this->get_row("OBJETS");
         $charactersrow = $this->get_row("PERSONNAGES");
         $locationsrow = $this->get_row("LIEUX");
-        
         $this->create_items($itemsrow);
         $this->create_characters($charactersrow);
         $this->create_locations($locationsrow);
@@ -113,7 +109,6 @@ class App implements App_Interface {
         $player = $this->get_startentity(self::$playerkeyword);
 
         $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(), $player, null, null, $this->startentities);
-        
     }
 
     private function create_items($row) {
@@ -238,7 +233,8 @@ class App implements App_Interface {
             if ($entityname != "") {
                 $entity = $this->get_startentity($entityname);
                 if ($entity == null) {
-                    throw new Exception($this->get_cell_string($row + 3, $col) . " is not an entity with the row: " . $row . " and the col: " . $col ."");
+                    throw new Exception($this->get_cell_string($row + 3, $col)
+                    . " is not an entity with the row: " . $row . " and the col: " . $col ."");
                 }
 
                 $newstatuses = $this->get_cell_array_string($row + 4, $col);
@@ -264,12 +260,6 @@ class App implements App_Interface {
                     array_push($olditems, $item);
                 }
             }
-            
-
-            
-
-            
-
             if ($entity instanceof Location_Interface) {
                 $reaction = new Location_Reaction($reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity);
                 if (!isset($reactions[$action][$condition])) {
@@ -285,20 +275,19 @@ class App implements App_Interface {
                         throw new Exception($locationname . " is not a location");
                     }
                 }
-            
-                $reaction = new Character_Reaction($reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity, $location);
+                $reaction = new Character_Reaction($reactiondescription,
+                $oldstatuses, $newstatuses, $olditems, $newitems, $entity, $location);
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
                 array_push($reactions[$action][$condition], $reaction);
-            } else if ($entityname == ""){
+            } else if ($entityname == "") {
                 $reaction = new No_Entity_Reaction($reactiondescription);
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
                 array_push($reactions[$action][$condition], $reaction);
-            }
-            else {
+            } else {
                 throw new Exception("Only characters and locations can have reactions");
             }
 
@@ -325,8 +314,7 @@ class App implements App_Interface {
             return new Leaf_Condition(null, null, "", [], $reactions);
         }
         $tokens = $this->get_tokens($condition);
-        
-        //Shunting Yard
+        // Shunting Yard.
         $output = [];
         $stack = [];
         foreach ($tokens as $t) {
@@ -354,7 +342,6 @@ class App implements App_Interface {
         while (!empty($stack)) {
             $output[] = array_pop($stack);
         }
-        
         return $this->read_tree($output, $reactions);
     }
 
@@ -363,7 +350,8 @@ class App implements App_Interface {
             return null;
         } else if (end($tokens) == '|' || end($tokens) == '&') {
             $token = array_pop($tokens);
-            return new Node_Condition($this->read_tree($tokens, $reactions), $this->read_tree($tokens, $reactions), $token, $reactions);
+            return new Node_Condition($this->read_tree($tokens, $reactions),
+            $this->read_tree($tokens, $reactions), $token, $reactions);
         } else {
             $token = array_pop($tokens);
             return $this->parse_leaf_condition($token, $reactions);
@@ -410,7 +398,7 @@ class App implements App_Interface {
     private function get_row($str) {
         $lign = 0;
         $foundline = false;
-        while (!$foundline && sizeof($this->csvdata)>$lign) {
+        while (!$foundline && count($this->csvdata) > $lign) {
             if (strcmp($this->csvdata[$lign][0], $str) != 0) {
                 $lign = $lign + 1;
             } else {
@@ -460,7 +448,7 @@ class App implements App_Interface {
             return [];
         }
         $words = explode('/', $str);
-        for ($i = 0; $i < sizeof($words); $i++) {
+        for ($i = 0; $i < count($words); $i++) {
             $words[$i] = self::tokenize($words[$i]);
         }
         return $words;
@@ -473,5 +461,4 @@ class App implements App_Interface {
         $str = strtolower($str);
         return $str;
     }
-
 }

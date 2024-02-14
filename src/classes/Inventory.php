@@ -37,7 +37,6 @@ class Inventory implements Inventory_Interface {
     public function get_item(int $id) {
         return $this->items[$id] ?? null;
     }
-    
     public function get_items() {
         return $this->items;
     }
