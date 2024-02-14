@@ -71,7 +71,6 @@ abstract class Entity implements Entity_Interface {
             $this->status = array_merge($this->status, Util::clean_array($status, 'string'));
         }
     }
-        
 
     public function remove_status(array $status) {
         if (in_array($status, $this->status)) {

@@ -13,15 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-defined('MOODLE_INTERNAL') || die();
-
 class Util {
     public static function check_array(array $array, string $class) {
         if ($class == 'string') {
-            if (Util::has_array_duplicate($array)) {
+            if (self::has_array_duplicate($array)) {
                 throw new InvalidArgumentException('Invalid array : duplicate value.');
             }
-            for ($i=0; $i<sizeof($array); $i++) {
+            for ($i = 0; $i < count($array); $i++) {
                 if ($array[$i] == null) {
                     throw new InvalidArgumentException('Invalid array : value at index '.$i.' is null.');
                 }
@@ -31,10 +29,10 @@ class Util {
                 }
             }
         } else {
-            if (Util::has_array_duplicate_name_or_id($array)) {
+            if (self::has_array_duplicate_name_or_id($array)) {
                 throw new InvalidArgumentException('Invalid array : duplicate value (due to id or name).');
             }
-            for ($i=0; $i<sizeof($array); $i++) {
+            for ($i = 0; $i < count($array); $i++) {
                 if ($array[$i] == null) {
                     throw new InvalidArgumentException('Invalid array : value at index '.$i.' is null.');
                 }
@@ -49,28 +47,28 @@ class Util {
     public static function clean_array(array $array, string $class) {
         $result = [];
         if ($class == "string") {
-            for ($i=0; $i<sizeof($array); $i++) {
+            for ($i = 0; $i < count($array); $i++) {
                 if ($array[$i] != null && is_string($array[$i])) {
                     array_push($result, $array[$i]);
                 }
             }
         } else {
-            for ($i=0; $i<sizeof($array); $i++) {
+            for ($i = 0; $i < count($array); $i++) {
                 if ($array[$i] != null && $array[$i] instanceof $class) {
                     array_push($result, $array[$i]);
                 }
             }
         }
-        for ($i=0; $i<sizeof($result); $i++) {
-            for ($y= $i+1; $y<sizeof($result); $y++) {
+        for ($i = 0; $i < count($result); $i++) {
+            for ($y = $i + 1; $y < count($result); $y++) {
                 if ($class == 'string') {
                     if ($result[$i] === $result[$y]) {
-                        $result[$i]=null;
+                        $result[$i] = null;
                     }
                 } else {
                     if ($result[$i] === $result[$y] || $result[$i]->get_name() === $result[$y]->get_name()
                     || $result[$i]->get_id() === $result[$y]->get_id()) {
-                        $result[$i]=null;
+                        $result[$i] = null;
                     }
                 }
             }
@@ -80,8 +78,8 @@ class Util {
 
     public static function has_array_duplicate(array $array) {
         $clean = array_filter($array);
-        for ($i= 0; $i<sizeof($clean); $i++) {
-            for ($y= $i+1; $y<sizeof($clean); $y++) {
+        for ($i = 0; $i < count($clean); $i++) {
+            for ($y = $i + 1; $y < count($clean); $y++) {
                 if ($clean[$i] == $clean[$y]) {
                     return true;
                 }
@@ -91,8 +89,8 @@ class Util {
     }
     public static function has_array_duplicate_name_or_id(array $array) {
         $clean = array_filter($array);
-        for ($i= 0; $i<sizeof($clean); $i++) {
-            for ($y= $i+1; $y<sizeof($clean); $y++) {
+        for ($i = 0; $i < count($clean); $i++) {
+            for ($y = $i + 1; $y < count($clean); $y++) {
                 if ($clean[$i] === $clean[$y] || $clean[$i]->get_name() === $clean[$y]->get_name()
                 || $clean[$i]->get_id() === $clean[$y]->get_id()) {
                     return true;

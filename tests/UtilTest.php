@@ -45,7 +45,7 @@ class UtilTest extends TestCase {
         $this->assertFalse(Util::has_array_duplicate([$str1, 1]));
         $this->assertFalse(Util::has_array_duplicate([]));
     }
-/*
+    /*
     public function test_has_array_duplicate_object() {
         $game = $this->createMock(Game_Interface::class);
         $item1 = new Item("une pomme", "pomme", []);
@@ -100,7 +100,7 @@ class UtilTest extends TestCase {
             $this->assertTrue(false);
         }
     }
-/*
+    /*
     public function test_check_array_object() {
         $game = $this->createMock(Game_Interface::class);
         $item1 = new Item("une pomme", "pomme", []);
@@ -155,7 +155,7 @@ class UtilTest extends TestCase {
         $this->assertTrue($this->array_equal(Util::clean_array([$str1, 1], 'string'), [$str1]));
         $this->assertTrue($this->array_equal(Util::clean_array([], 'string'), []));
     }
-/*
+    /*
     public function test_clean_array_object() {
         $game = $this->createMock(Game_Interface::class);
         $item1 = new Item("une pomme", "pomme", []);
@@ -169,11 +169,11 @@ class UtilTest extends TestCase {
         $this->assertTrue($this->array_equal(Util::clean_array([], 'string'), []));
     }*/
 
-    function array_equal($a, $b) {
+    private function array_equal($a, $b) {
         return (
-             is_array($a) 
-             && is_array($b) 
-             && count($a) == count($b) 
+             is_array($a)
+             && is_array($b)
+             && count($a) == count($b)
              && array_diff($a, $b) === array_diff($b, $a)
         );
     }
