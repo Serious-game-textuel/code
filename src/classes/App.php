@@ -392,7 +392,7 @@ class App implements App_Interface {
         if ($entity2 == null) {
             $status = $member2;
         }
-        return new Leaf_Condition($entity1, $entity2, $connector, [$status], $reactions);
+        return new Leaf_Condition($entity1, $entity2, $connector, array_filter([$status]), $reactions);
     }
 
     private function get_row($str) {

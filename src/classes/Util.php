@@ -15,27 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 class Util {
     public static function check_array(array $array, string $class) {
-        if ($class == 'string') {
-            if (self::has_array_duplicate($array)) {
-                throw new InvalidArgumentException('Invalid array : duplicate value.');
+        if (self::has_array_duplicate($array)) {
+            throw new InvalidArgumentException('Invalid array : duplicate value.');
+        }
+        for ($i = 0; $i < count($array); $i++) {
+            if ($array[$i] == null) {
+                throw new InvalidArgumentException('Invalid array : value at index '.$i.' is null.');
             }
-            for ($i = 0; $i < count($array); $i++) {
-                if ($array[$i] == null) {
-                    throw new InvalidArgumentException('Invalid array : value at index '.$i.' is null.');
-                }
+            if ($class == 'string') {
                 if (!is_string($array[$i])) {
                     throw new InvalidArgumentException('Invalid array : value at index '.$i.
                     ' is wrong class : '.gettype($array[$i]).' instead of '.$class.'.');
                 }
-            }
-        } else {
-            if (self::has_array_duplicate_name_or_id($array)) {
-                throw new InvalidArgumentException('Invalid array : duplicate value (due to id or name).');
-            }
-            for ($i = 0; $i < count($array); $i++) {
-                if ($array[$i] == null) {
-                    throw new InvalidArgumentException('Invalid array : value at index '.$i.' is null.');
-                }
+            } else {
                 if (!$array[$i] instanceof $class) {
                     throw new InvalidArgumentException('Invalid array : value at index '.$i.
                     ' is wrong class : '.gettype($array[$i]).' instead of '.$class.'.');
@@ -61,7 +53,7 @@ class Util {
         }
         for ($i = 0; $i < count($result); $i++) {
             for ($y = $i + 1; $y < count($result); $y++) {
-                if ($class == 'string') {
+                if (!is_subclass_of($class, 'Entity')) {
                     if ($result[$i] === $result[$y]) {
                         $result[$i] = null;
                     }
@@ -80,19 +72,7 @@ class Util {
         $clean = array_filter($array);
         for ($i = 0; $i < count($clean); $i++) {
             for ($y = $i + 1; $y < count($clean); $y++) {
-                if ($clean[$i] == $clean[$y]) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    public static function has_array_duplicate_name_or_id(array $array) {
-        $clean = array_filter($array);
-        for ($i = 0; $i < count($clean); $i++) {
-            for ($y = $i + 1; $y < count($clean); $y++) {
-                if ($clean[$i] === $clean[$y] || $clean[$i]->get_name() === $clean[$y]->get_name()
-                || $clean[$i]->get_id() === $clean[$y]->get_id()) {
+                if (gettype($clean[$i]) == gettype($clean[$y]) && $clean[$i] == $clean[$y]) {
                     return true;
                 }
             }

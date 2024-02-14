@@ -39,8 +39,8 @@ class EntityTest extends TestCase {
     public function testnpc() {
         $game = new Game(0, 0, [], new DateTime(),
         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
-        $npccharacter = new Npc_Character("description", "name", ["status"], $this->createMock(Inventory_Interface::class), $this->createMock(Location_Interface::class));
-        
+        $npccharacter = new Npc_Character("description", "name", ["status"], $this->createMock(Inventory_Interface::class),
+        $this->createMock(Location_Interface::class));
         $this->assertEquals("description", $npccharacter->get_description());
         $this->assertEquals("name", $npccharacter->get_name());
         $this->assertEquals(["status"], $npccharacter->get_status());
@@ -48,7 +48,8 @@ class EntityTest extends TestCase {
     public function testplayer() {
         $game = new Game(0, 0, [], new DateTime(),
         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
-        $Player_Character = new Player_Character("description", ["status"], $this->createMock(Inventory_Interface::class), $this->createMock(Location_Interface::class));
+        $Player_Character = new Player_Character("description", ["status"], $this->createMock(Inventory_Interface::class),
+        $this->createMock(Location_Interface::class));
         
         $this->assertEquals("description", $Player_Character->get_description());
         $this->assertEquals(["status"], $Player_Character->get_status());

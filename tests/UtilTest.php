@@ -30,10 +30,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_React
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 use PHPUnit\Framework\TestCase;
 
 class UtilTest extends TestCase {
-
     public function test_has_array_duplicate_string() {
         $str1 = "a";
         $str2 = "b";
@@ -45,19 +45,18 @@ class UtilTest extends TestCase {
         $this->assertFalse(Util::has_array_duplicate([$str1, 1]));
         $this->assertFalse(Util::has_array_duplicate([]));
     }
-    /*
+    
     public function test_has_array_duplicate_object() {
-        $game = $this->createMock(Game_Interface::class);
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
-        $item3 = new Item("une poire", "poire", []);
-        $this->assertFalse(Util::has_array_duplicate_name_or_id([$item1, $item2]));
-        $this->assertTrue(Util::has_array_duplicate_name_or_id([$item1, $item1]));
-        $this->assertTrue(Util::has_array_duplicate_name_or_id([$item2, $item3]));
-        $this->assertFalse(Util::has_array_duplicate_name_or_id([$item1, null]));
-        $this->assertFalse(Util::has_array_duplicate_name_or_id([$item1, 1]));
-        $this->assertFalse(Util::has_array_duplicate_name_or_id([]));
-    }*/
+        $this->assertFalse(Util::has_array_duplicate([$item1, $item2]));
+        $this->assertTrue(Util::has_array_duplicate([$item1, $item1]));
+        $this->assertFalse(Util::has_array_duplicate([$item1, null]));
+        $this->assertFalse(Util::has_array_duplicate([$item1, 1]));
+        $this->assertFalse(Util::has_array_duplicate([]));
+    }
 
     public function test_check_array_string() {
         $str1 = "a";
@@ -100,12 +99,12 @@ class UtilTest extends TestCase {
             $this->assertTrue(false);
         }
     }
-    /*
+    
     public function test_check_array_object() {
-        $game = $this->createMock(Game_Interface::class);
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
-        $item3 = new Item("une poire", "poire", []);
         try {
             Util::check_array([$item1, $item2], Item_Interface::class);
             $this->assertTrue(true);
@@ -114,12 +113,6 @@ class UtilTest extends TestCase {
         }
         try {
             Util::check_array([$item1, $item1], Item_Interface::class);
-            $this->assertTrue(false);
-        } catch (Exception $e) {
-            $this->assertTrue(true);
-        }
-        try {
-            Util::check_array([$item2, $item3], Item_Interface::class);
             $this->assertTrue(false);
         } catch (Exception $e) {
             $this->assertTrue(true);
@@ -142,7 +135,7 @@ class UtilTest extends TestCase {
         } catch (Exception $e) {
             $this->assertTrue(false);
         }
-    }*/
+    }
 
     public function test_clean_array_string() {
         $str1 = "a";
@@ -155,26 +148,22 @@ class UtilTest extends TestCase {
         $this->assertTrue($this->array_equal(Util::clean_array([$str1, 1], 'string'), [$str1]));
         $this->assertTrue($this->array_equal(Util::clean_array([], 'string'), []));
     }
-    /*
+    
     public function test_clean_array_object() {
-        $game = $this->createMock(Game_Interface::class);
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
-        $item3 = new Item("une poire", "poire", []);
-        $this->assertTrue($this->array_equal(Util::clean_array([$item1, $item2], 'string'), [$item1, $item2]));
-        $this->assertTrue($this->array_equal(Util::clean_array([$item1, $item1], 'string'), [$item1]));
-        $this->assertTrue($this->array_equal(Util::clean_array([$item2, $item3], 'string'), [$item2]));
-        $this->assertTrue($this->array_equal(Util::clean_array([$item1, null], 'string'), [$item1]));
-        $this->assertTrue($this->array_equal(Util::clean_array([$item1, 1], 'string'), [$item1]));
-        $this->assertTrue($this->array_equal(Util::clean_array([], 'string'), []));
-    }*/
+        $this->assertTrue($this->array_equal(Util::clean_array([$item1, $item2], Item_Interface::class), [$item1, $item2]));
+        $this->assertTrue($this->array_equal(Util::clean_array([$item1, $item1], Item_Interface::class), [$item1]));
+        $this->assertTrue($this->array_equal(Util::clean_array([$item1, null], Item_Interface::class), [$item1]));
+        $this->assertTrue($this->array_equal(Util::clean_array([$item1, 1], Item_Interface::class), [$item1]));
+        $this->assertTrue($this->array_equal(Util::clean_array([], Item_Interface::class), []));
+    }
 
     private function array_equal($a, $b) {
-        return (
-             is_array($a)
-             && is_array($b)
-             && count($a) == count($b)
-             && array_diff($a, $b) === array_diff($b, $a)
-        );
+        sort($a);
+        sort($b);
+        return $a === $b;
     }
 }
