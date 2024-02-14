@@ -68,29 +68,6 @@ class Action implements Action_Interface {
                 echo($result);
                 array_push($return, $result);
             }
-        } else {
-            $tokens = explode(' ', App::tokenize($this->description));
-            if ($tokens[0] == "fouiller") {
-                if ($game->get_entity($tokens[1]) !== null) {
-                    if ($game->get_default_action_search() !== null) {
-                        $result = $game->get_default_action_search()->do_conditions_verb($tokens[0]);
-                        echo($result);
-                        array_push($return, $result);
-                    }
-                } else {
-                    if ($game->get_default_action_interact() !== null) {
-                        $result = $game->get_default_action_interact()->do_conditions_verb($tokens[0]);
-                        echo($result);
-                        array_push($return, $result);
-                    }
-                }
-            } else {
-                if ($game->get_default_action_interact() !== null) {
-                    $result = $game->get_default_action_interact()->do_conditions_verb($tokens[0]);
-                    echo($result);
-                        array_push($return, $result);
-                }
-            }
         }
         return $return;
     }

@@ -64,21 +64,51 @@ class Location extends Entity implements Location_Interface {
         return $this->hints;
     }
 
-    public function check_actions(string $action) {
-        $action = explode(" ", $action);
-        $connector = $action[0];
-        $entity1 = $action[1];
-        $entity2 = $action[2];
+    public function is_action_valide(string $action) {
         for ($i = 0; $i < count($this->actions); $i++) {
-            if ($this->actions[$i]->get_entity1()->get_name() == $entity1
-                    && $this->actions[$i]->get_entity2()->get_name() == $entity2
-                    && $this->actions[$i]->get_connector() == $connector) {
-                    $this->actions[$i]->do_condition();
-                    return true;
+            if ($this->actions[$i]->get_description() == $action) {
+                return $action[$i];
             }
         }
-        return false;
+        return null;
     }
+
+    public function check_actions(string $action) {
+        $return = [];
+        $game = Game::getinstance();
+        $action = App::tokenize($action);
+        $actionvalide = $this->is_action_valide($action);
+        if ($actionvalide != null) {
+            array_push($return, $actionvalide->do_conditions());
+        } else {
+            $defaultaction = "fouiller";
+            if (strpos($action, $defaultaction) === 0) {
+                $entity = substr($action, strlen($defaultaction) + 1);
+                if ($game->get_entity($entity) !== null) {
+                    if ($game->get_default_action_interact() !== null) {
+                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
+                        echo($result);
+                        array_push($return, $result);
+                    } else {
+                        if ($game->get_default_action_search() !== null) {
+                            $result = $game->get_default_action_search()->do_conditions_verb($defaultaction);
+                            echo($result);
+                            array_push($return, $result);
+                        }
+                    }
+                } else {
+                    if ($game->get_default_action_interact() !== null) {
+                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
+                        echo($result);
+                        array_push($return, $result);
+                    }
+                }
+
+            }
+        }
+        return $return;
+    }
+
     public function has_item_location(Item_Interface $item) {
         return $this->inventory->check_item($item);
     }
