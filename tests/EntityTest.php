@@ -37,48 +37,56 @@ class EntityTest extends TestCase {
       * vérifie le bon fonctionnement du constructeur de la classe Entity
       */
     public function testnpc() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         $npccharacter = new Npc_Character("description", "name", ["status"], [], $this->createMock(Location_Interface::class));
-        
+
         $this->assertEquals("description", $npccharacter->get_description());
         $this->assertEquals("name", $npccharacter->get_name());
         $this->assertEquals(["status"], $npccharacter->get_status());
     }
     public function testplayer() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
-        $Player_Character = new Player_Character("description","name", ["status"], [], $this->createMock(Location_Interface::class));
-        
-        $this->assertEquals("description", $Player_Character->get_description());
-        $this->assertEquals(["status"], $Player_Character->get_status());
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
+        $playercharacter = new Player_Character(
+            "description",
+            "name",
+            ["status"],
+            [],
+            $this->createMock(Location_Interface::class));
+
+        $this->assertEquals("description", $playercharacter->get_description());
+        $this->assertEquals(["status"], $playercharacter->get_status());
     }
-    public function testItem() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
-        $Item = new Item("description", "name", ["status"]);
-        $this->assertEquals("description", $Item->get_description());
-        $this->assertEquals("name", $Item->get_name());
-        $this->assertEquals(["status"], $Item->get_status());
+    public function testitem() {
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
+        $item = new Item("description", "name", ["status"]);
+        $this->assertEquals("description", $item->get_description());
+        $this->assertEquals("name", $item->get_name());
+        $this->assertEquals(["status"], $item->get_status());
     }
-    public function testLocation() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
-        $Location = new Location("name", ["status"],[], [], [], []);
-        $this->assertEquals("description", $Location->get_description());
-        $this->assertEquals("name", $Location->get_name());
-        $this->assertEquals(["status"], $Location->get_status());
-      }
+    public function testlocation() {
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
+        $location = new Location("name", ["status"], [], [], [], []);
+        $this->assertEquals("description", $location->get_description());
+        $this->assertEquals("name", $location->get_name());
+        $this->assertEquals(["status"], $location->get_status());
+    }
 
     /**
-    * vérifie le bon fonctionnement des changements de status
-    */
+     * vérifie le bon fonctionnement des changements de status
+     */
     public function teststatus() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         $npccharacter = new Npc_Character("description", "name", ["status"], [], $this->createMock(Location_Interface::class));
-        $playercharacter = new Player_Character("description", "name", ["status"], [], $this->createMock(Location_Interface::class));
+        $playercharacter = new Player_Character(
+            "description",
+            "name", ["status"],
+            [],
+            $this->createMock(Location_Interface::class));
         $item = new Item("description", "nameitem", ["status"]);
-        $location = new Location("namelocation", ["status"],[], [], [], []);
-
+        $location = new Location("namelocation", ["status"], [], [], [], []);
 
             $npccharacter->add_status(["new_status"]);
-            $this->assertEquals(["status","new_status"], $npccharacter->get_status());
+            $this->assertEquals(["status", "new_status"], $npccharacter->get_status());
             $npccharacter->remove_status(["status"]);
             $this->assertEquals(["new_status"], $npccharacter->get_status());
             $npccharacter->remove_status(["status"]);
@@ -87,7 +95,7 @@ class EntityTest extends TestCase {
             $this->assertEquals(["new_status"], $npccharacter->get_status());
 
             $playercharacter->add_status(["new_status"]);
-            $this->assertEquals(["status","new_status"], $playercharacter->get_status());
+            $this->assertEquals(["status", "new_status"], $playercharacter->get_status());
             $playercharacter->remove_status(["status"]);
             $this->assertEquals(["new_status"], $playercharacter->get_status());
             $playercharacter->remove_status(["status"]);
@@ -96,7 +104,7 @@ class EntityTest extends TestCase {
             $this->assertEquals(["new_status"], $playercharacter->get_status());
 
             $item->add_status(["new_status"]);
-            $this->assertEquals(["status","new_status"], $item->get_status());
+            $this->assertEquals(["status", "new_status"], $item->get_status());
             $item->remove_status(["status"]);
             $this->assertEquals(["new_status"], $item->get_status());
             $item->remove_status(["status"]);
@@ -105,14 +113,12 @@ class EntityTest extends TestCase {
             $this->assertEquals(["new_status"], $item->get_status());
 
             $location->add_status(["new_status"]);
-            $this->assertEquals(["status","new_status"], $location->get_status());
+            $this->assertEquals(["status", "new_status"], $location->get_status());
             $location->remove_status(["status"]);
             $this->assertEquals(["new_status"], $location->get_status());
             $location->remove_status(["status"]);
             $this->assertEquals(["new_status"], $location->get_status());
             $location->add_status(["new_status"]);
             $this->assertEquals(["new_status"], $location->get_status());
-        }
-    
-    
+    }
 }

@@ -66,7 +66,7 @@ class ConditionTest extends TestCase {
      * vérifie le bon fonctionnement de la méthode is_true pour une leaf_condition
      */
     public function testistrueforleafcondition() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $entity1 = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
         $entity2 = new Character("description", "character2", ["status"], [], $this->createMock(Location_Interface::class));
@@ -81,9 +81,9 @@ class ConditionTest extends TestCase {
      * vérifie le bon fonctionnement de la méthode is_true pour une leaf_condition un character qui possède ou pas un item
      */
     public function testistrueforleafconditionwithitem() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $entity1 = new Character("description", "character", ["status"],[], $this->createMock(Location_Interface::class));
+        $entity1 = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
         $entity2 = new Item("description", "item", ["status"]);
         // Test when entity1 has item.
         $entity1->get_inventory()->add_items([$entity2]);
@@ -103,7 +103,7 @@ class ConditionTest extends TestCase {
         $condition = new Leaf_Condition($entity1, $entity2, "possède", [], []);
         $this->assertFalse($condition->is_true());
 
-        $condition = new Leaf_Condition($entity1, $entity2, "a", [],  []);
+        $condition = new Leaf_Condition($entity1, $entity2, "a", [], []);
         $this->assertFalse($condition->is_true());
 
         // Test when entity1 does not have item.
@@ -119,9 +119,9 @@ class ConditionTest extends TestCase {
      * vérifie le bon fonctionnement de la méthode is_true pour une leaf_condition un character qui est ou pas un status
      */
     public function testistrueforleafconditionwithstatus() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $entity1 = new Character("description", "character1", ["status"],[], $this->createMock(Location_Interface::class));
+        $entity1 = new Character("description", "character1", ["status"], [], $this->createMock(Location_Interface::class));
         $entity2 = new Character("description", "character2", ["status"], [], $this->createMock(Location_Interface::class));
         // Test when entity1 has status.
         $condition = new Leaf_Condition($entity1, null, "est", ["status"], []);
@@ -141,14 +141,14 @@ class ConditionTest extends TestCase {
      * vérifie le bon fonctionnement de la méthode is_true pour une leaf_condition un item qui est ou pas un status
      */
     public function testistrueforleafconditionwithstatusitem() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $entity1 = new Item("description", "item", ["status"]);
         // Test when entity1 has status.
         $condition = new Leaf_Condition($entity1, null, "est", ["status"], []);
         $this->assertTrue($condition->is_true());
 
-        $condition = new Leaf_Condition($entity1, null, "est", ["different_status"],[]);
+        $condition = new Leaf_Condition($entity1, null, "est", ["different_status"], []);
         $this->assertFalse($condition->is_true());
         // Test when entity1 does not have status.
         $condition = new Leaf_Condition($entity1, null, "est pas", ["different_status"], []);
@@ -162,9 +162,9 @@ class ConditionTest extends TestCase {
      * vérifie le bon fonctionnement de la méthode is_true pour une leaf_condition un location qui est ou pas un status
      */
     public function testistrueforleafconditionwithstatuslocation() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $entity1 = new Location("description",  ["status"], [], [], [], []);
+        $entity1 = new Location("description", ["status"], [], [], [], []);
         // Test when entity1 has status.
         $condition = new Leaf_Condition($entity1, null, "est", ["status"], []);
         $this->assertTrue($condition->is_true());
@@ -183,7 +183,7 @@ class ConditionTest extends TestCase {
      * vérifie le bon fonctionnement de la méthode is_true pour une leaf_condition un location qui possède ou pas un item
      */
     public function testistrueforleafconditionwithitemlocation() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $entity1 = new Location("description", ["status"], [], [], [], []);
         $entity2 = new Item("description", "item", ["status"]);
@@ -220,9 +220,9 @@ class ConditionTest extends TestCase {
      * vérifie le bon fonctionnement de la méthode is_true pour une node_condition
      */
     public function testistruefornodecondition() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $entity1 = new Character("description", "character", ["status"], [],$this->createMock(Location_Interface::class));
+        $entity1 = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
         $entity2 = new Character("description", "character2", ["status"], [], $this->createMock(Location_Interface::class));
         $condition1 = new Leaf_Condition($entity1, null, "est", ["status"], []);
         $condition2 = new Leaf_Condition($entity2, null, "est", ["status"], []);
@@ -244,7 +244,7 @@ class ConditionTest extends TestCase {
      * vérifie le bon fonctionnement de la méthode do_reactions pour une leaf_condition qui ajoute un status
      */
     public function testcharacterdoreactionsaddstatus() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $character = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
         $newlocation = $this->createMock(Location_Interface::class);
@@ -267,7 +267,7 @@ class ConditionTest extends TestCase {
      * leaf_condition pour un character_reaction qui retire un status
      */
     public function testcharacterdoreactionsremovestatus() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $character = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
         $newlocation = $this->createMock(Location_Interface::class);
@@ -286,7 +286,7 @@ class ConditionTest extends TestCase {
      * pour une leaf_condition pour un character_reaction qui ajoute ou retire un item
      */
     public function testcharacterdoreactionsaddremoveitem() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $item1 = new Item("description", "item1", ["status"]);
         $character = new Character("description", "character", ["status"], [$item1], $this->createMock(Location_Interface::class));
@@ -311,7 +311,7 @@ class ConditionTest extends TestCase {
      *  pour une leaf_condition pour un location_reaction qui ajoute ou retire un item
      */
     public function testlocationdoreactionsaddremoveitem() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $item1 = new Item("description", "item1", ["status"]);
         $location = new Location( "location", ["status"], [$item1], [], [], []);
@@ -337,7 +337,7 @@ class ConditionTest extends TestCase {
      *  pour une leaf_condition pour un location_reaction qui ajoute ou retire un status
      */
     public function testlocationdoreactionsaddremovestatus() {
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), null, null,[]);
+        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $location = new Location( "location", ["status"], [], [], [], []);
         // Mock reactions.
