@@ -16,7 +16,7 @@
 
 class Character_Reaction extends Reaction {
 
-    private Character_Interface  $character;
+    private Character_Interface $character;
     private ?Location_Interface $newlocation;
 
     public function __construct(string $description, array $oldstatus, array $newstatus,
@@ -33,10 +33,6 @@ class Character_Reaction extends Reaction {
 
     public function get_character() {
         return $this->character;
-    }
-
-    public function set_character(Character_Interface $character) {
-        $this->character = $character;
     }
 
     public function get_new_location() {

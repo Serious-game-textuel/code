@@ -20,10 +20,14 @@ class Character extends Entity implements Character_Interface {
 
     private Inventory_Interface $inventory;
 
-    public function __construct(string $description, string $name, array $status, Inventory_Interface $inventory) {
+    private ?Location_Interface $currentlocation;
+
+    public function __construct(string $description, string $name,
+    array $status, array $items, ?Location_Interface $currentlocation) {
         Util::check_array($status, 'string');
         parent::__construct($description, $name, $status);
-        $this->inventory = $inventory;
+        $this->inventory = new Inventory($items);
+        $this->currentlocation = $currentlocation;
     }
     public function get_inventory() {
         return $this->inventory;
@@ -34,6 +38,14 @@ class Character extends Entity implements Character_Interface {
             return $this->inventory->check_item($item);
         }
         return false;
+    }
+
+    public function get_current_location() {
+        return $this->currentlocation;
+    }
+
+    public function set_currentlocation(Location_Interface $newlocation) {
+        $this->currentlocation = $newlocation;
     }
 
 }

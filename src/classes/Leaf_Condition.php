@@ -20,10 +20,9 @@ class Leaf_Condition extends Condition {
     private ?Entity_Interface $entity2;
     private string $connector;
     private ?array $status;
-    private ?Condition_Interface $condition;
 
-    public function __construct(Entity_Interface $entity1, Entity_Interface $entity2, string $connector,
-    ?array $status, ?Condition_Interface $condition, array $reactions) {
+    public function __construct(?Entity_Interface $entity1, ?Entity_Interface $entity2, string $connector,
+    ?array $status, array $reactions) {
         Util::check_array($reactions, Reaction_Interface::class);
         parent::__construct($reactions);
         $this->entity1 = $entity1;
@@ -34,7 +33,6 @@ class Leaf_Condition extends Condition {
             $status = array_filter($status);
         }
         $this->status = $status;
-        $this->condition = $condition;
     }
 
     public function get_entity1() {
@@ -68,15 +66,6 @@ class Leaf_Condition extends Condition {
     public function set_status(array $status) {
         $this->status = Util::clean_array($status, 'string');
     }
-
-    public function get_condition() {
-        return $this->condition;
-    }
-
-    public function set_condition(Condition_Interface $condition) {
-        $this->condition = $condition;
-    }
-
 
 }
 

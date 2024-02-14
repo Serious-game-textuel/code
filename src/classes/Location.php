@@ -20,17 +20,14 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_In
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;
-    private array $npccharacters;
     private array $hints;
     private array $actions;
 
-    public function __construct(string $description, string $name, array $status,
-     Inventory_Interface $inventory, array $npccharacters, array $hints, array $actions) {
+    public function __construct(string $name, array $status, array $items, array $hints, array $actions) {
         Util::check_array($status, 'string');
-        parent::__construct($description, $name, $status);
-        $this->inventory = $inventory;
-        Util::check_array($npccharacters, Npc_Character::class);
-        $this->npccharacters = $npccharacters;
+        parent::__construct("", $name, $status);
+        Util::check_array($items, Item_Interface::class);
+        $this->inventory = new Inventory($items);
         $this->hints = $hints;
         Util::check_array($actions, Action_Interface::class);
         $this->actions = $actions;
@@ -38,25 +35,6 @@ class Location extends Entity implements Location_Interface {
     public function get_inventory() {
         return $this->inventory;
     }
-
-
-    public function add_npc_character(Npc_Character $npccharacter) {
-        array_push($this->npccharacters, $npccharacter);
-        $this->entities = Util::clean_array($this->npccharacters, Location_Interface::class);
-    }
-
-    public function remove_npc_character(Npc_Character $npccharacter) {
-        $key = array_search($npccharacter, $this->npccharacters);
-        if ($key !== false) {
-            unset($this->npccharacters[$key]);
-        }
-    }
-
-
-    public function get_characters() {
-        return $this->npccharacters;
-    }
-
     public function get_actions() {
         return $this->actions;
     }
@@ -75,7 +53,7 @@ class Location extends Entity implements Location_Interface {
 
     public function check_actions(string $action) {
         $return = [];
-        $game = Game::getinstance();
+        $game = App::get_instance()->get_game();
         $action = App::tokenize($action);
         $actionvalide = $this->is_action_valide($action);
         if ($actionvalide != null) {

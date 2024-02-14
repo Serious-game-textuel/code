@@ -41,6 +41,7 @@ class Inventory implements Inventory_Interface {
     public function add_item(array $item) {
         $this->items = Util::clean_array(array_merge($this->items, $item), Item_Interface::class);
     }
+
     public function remove_item(array $item) {
         $item = Util::clean_array($item, Item_Interface::class);
         $key = array_search($item, $this->items);

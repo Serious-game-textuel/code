@@ -26,16 +26,16 @@ abstract class Entity implements Entity_Interface {
 
     private array $status;
     public function __construct(string $description, string $name, array $status) {
-        $game = Game::getinstance();
-        if ($game->get_entity($name) !== null) {
-            throw new InvalidArgumentException("Chaque entité doit avoir un nom unique : ".$name);
+        $app = App::get_instance();
+        if ($app->get_startentity($name) != null) {
+            throw new InvalidArgumentException("Each entity name must be unique : ".$name);
         }
         $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
         $this->name = $name;
         Util::check_array($status, 'string');
         $this->status = $status;
-        $game->add_entity($this);
+        $app->add_startentity($this);
     }
 
     public function get_id() {
@@ -68,14 +68,16 @@ abstract class Entity implements Entity_Interface {
 
     public function add_status(array $status) {
         if (!in_array($status, $this->status)) {
-            $this->status = array_merge($this->status, Util::clean_array($status, 'string'));
+            $this->status = Util::clean_array(array_merge($this->status, $status), 'string');
         }
     }
 
     public function remove_status(array $status) {
         if (in_array($status, $this->status)) {
-            $this->status = array_diff($this->status, Util::clean_array($status, 'string'));
+            $this->status = Util::clean_array(array_diff($this->status, $status), 'string');
         }
     }
-
 }
+
+
+
