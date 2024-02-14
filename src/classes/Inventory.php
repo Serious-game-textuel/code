@@ -38,11 +38,11 @@ class Inventory implements Inventory_Interface {
         return $this->items;
     }
 
-    public function add_item(array $item) {
+    public function add_items(array $item) {
         $this->items = Util::clean_array(array_merge($this->items, $item), Item_Interface::class);
     }
 
-    public function remove_item(array $item) {
+    public function remove_items(array $item) {
         $item = Util::clean_array($item, Item_Interface::class);
         $key = array_search($item, $this->items);
         if ($key !== false) {

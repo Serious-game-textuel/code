@@ -36,13 +36,13 @@ interface Inventory_Interface {
      * @param array $item
      * @return void
      */
-    public function add_item(array $item);
+    public function add_items(array $item);
 
     /**
      * @param array $item
      * @return void
      */
-    public function remove_item(array $item);
+    public function remove_items(array $item);
 
     /**
      * @param Item_Interface $item
