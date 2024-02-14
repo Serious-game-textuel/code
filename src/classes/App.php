@@ -346,6 +346,7 @@ class App implements App_Interface {
     }
 
     private function read_tree($tokens, $reactions) {
+        global $tokens;
         if (empty($tokens)) {
             return null;
         } else if (end($tokens) == '|' || end($tokens) == '&') {
