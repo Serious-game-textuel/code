@@ -41,23 +41,21 @@ class Inventory implements Inventory_Interface {
         return $this->items;
     }
 
-    public function add_item(array $item) {
+    public function add_item(Item_Interface $item) {
         $this->items[] = $item;
     }
 
-    public function remove_item(array $item) {
-        $key = array_search($item, $this->items);
+    public function remove_item(Item_Interface $item) {
+        $key = array_search($item, $this->items, true);
         if ($key !== false) {
             unset($this->items[$key]);
         }
     }
 
     public function check_item(Item_Interface $item) {
-        foreach ($this->items as $itemarray) {
-            if (in_array($item, $itemarray, true)) {
+            if (in_array($item, $this->items , true)) {
                 return true;
             }
-        }
         return false;
     }
 

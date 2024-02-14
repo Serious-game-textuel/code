@@ -59,9 +59,11 @@ class Action implements Action_Interface {
         $game = $app->get_game();
         $game->add_action();
         $conditions = $this->get_conditions();
+        echo "this action: " . $this->description . " has " . count($conditions) . " conditions\n";
         $conditionstrue = [];
         foreach ($conditions as $condition) {
             if ($condition->is_true()) {
+                echo "condition true\n";
                 array_push($conditionstrue, $condition);
             }
         }
@@ -69,7 +71,6 @@ class Action implements Action_Interface {
         if (count($conditionstrue) > 0) {
             foreach ($conditionstrue as $condition) {
                 $result = $condition->do_reactions();
-                echo($result);
                 array_push($return, $result);
             }
         }

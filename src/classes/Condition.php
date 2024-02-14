@@ -13,6 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+use mod_forum\local\factories\entity;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -64,12 +67,16 @@ class Condition implements Condition_Interface {
                         }
                     }
                     if ($reaction->get_new_item() != null) {
-                        $newitem = $reaction->get_new_item();
-                        $character->get_inventory()->add_item($newitem);
+                        $newitems = $reaction->get_new_item();
+                        foreach ($newitems as $item) {
+                            $character->get_inventory()->add_item($item);
+                        }
                     }
                     if ($reaction->get_old_item() != null) {
                         $olditem = $reaction->get_old_item();
-                        $character->get_inventory()->remove_item($olditem);
+                        foreach ($olditem as $item) {
+                        $character->get_inventory()->remove_item($item);
+                        }
                     }
                     if ($reaction->get_new_status() != null) {
                         $newstatus = $reaction->get_new_status();
@@ -111,12 +118,16 @@ class Condition implements Condition_Interface {
                         $location->remove_status($oldstatus);
                     }
                     if ($reaction->get_new_item() != null) {
-                        $newitem = $reaction->get_new_item();
-                        $location->get_inventory()->add_item($newitem);
+                        $newitems = $reaction->get_new_item();
+                        foreach ($newitems as $item) {
+                            $location->get_inventory()->add_item($item);
+                        }
                     }
                     if ($reaction->get_old_item() != null) {
                         $olditem = $reaction->get_old_item();
-                        $location->get_inventory()->remove_item($olditem);
+                        foreach ($olditem as $item) {
+                        $location->get_inventory()->remove_item($item);
+                        }
                     }
                 }
             }
@@ -134,7 +145,20 @@ class Condition implements Condition_Interface {
             $entity2 = $this->get_entity2();
             $connector = $this->get_connector();
             $status = $this->get_status();
-            $entity1status = $entity1->get_status();
+
+            if ($entity1 != null) {
+                $entity1status = $entity1->get_status();
+                echo "entité1 : " . $entity1->get_name() . "\n";
+            }
+
+            if ($entity2 != null) {
+                echo "entity2: " . $entity2->get_name() . "\n";
+            }
+
+            if ($connector != null) {
+                echo "connector: " . $connector . "\n";
+            }
+
             if ($entity1 instanceof Character) {
                 if ($entity2 == null) {
                     if ($connector == "est") {
@@ -172,13 +196,16 @@ class Condition implements Condition_Interface {
                     }
                 }
             }
+            else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
+                return true;
+            }
         } else if ($this instanceof Node_Condition) {
             $condition1 = $this->get_condition1();
             $condition2 = $this->get_condition2();
             $connector = $this->get_connector();
-            if ($connector == "et") {
+            if ($connector == "&") {
                 return $condition1->is_true() && $condition2->is_true();
-            } else if ($connector == "ou") {
+            } else if ($connector == "|") {
                 return $condition1->is_true() || $condition2->is_true();
             }
             return false;

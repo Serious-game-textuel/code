@@ -194,7 +194,7 @@ class App implements App_Interface {
                 throw new Exception($locationname . "is not a location");
             }
             $actions = $this->create_column_actions($location, $col, $row + 6);
-
+            $location->set_actions($actions);
             $col++;
         }
     }
@@ -220,7 +220,10 @@ class App implements App_Interface {
             if (!isset($conditionnames[$action])) {
                 $conditionnames[$action] = [];
             }
-            array_push($conditionnames[$action], $condition);
+            if (!in_array($condition, $conditionnames[$action])){
+                array_push($conditionnames[$action], $condition);
+            }
+
             $reactiondescription = $this->get_cell_string($row + 2, $col);
 
             $entityname = $this->get_cell_string($row + 3, $col);
@@ -296,7 +299,10 @@ class App implements App_Interface {
 
         foreach ($descriptions as $action) {
             $conditions = [];
+            echo "-----------------------------------\n";
+            echo "action: " . $action . "\n";
             foreach ($conditionnames[$action] as $condition) {
+                echo "condition: " . $condition . "\n";
                 array_push($conditions,
                     $this->parse_condition(
                         $condition,
@@ -342,24 +348,30 @@ class App implements App_Interface {
         while (!empty($stack)) {
             $output[] = array_pop($stack);
         }
-        return $this->read_tree($output, $reactions);
+        $qdzqd = $this->read_tree($output, $reactions);
+        return $qdzqd;
     }
 
     private function read_tree($tokens, $reactions) {
-        global $tokens;
+        //global $tokens;
         if (empty($tokens)) {
+            echo "empty:\n";
             return null;
         } else if (end($tokens) == '|' || end($tokens) == '&') {
+            echo "or and:\n";
             $token = array_pop($tokens);
             return new Node_Condition($this->read_tree($tokens, $reactions),
             $this->read_tree($tokens, $reactions), $token, $reactions);
         } else {
+            echo "leaf:\n";
             $token = array_pop($tokens);
             return $this->parse_leaf_condition($token, $reactions);
         }
     }
 
     private function parse_leaf_condition($condition, $reactions) {
+        echo "condition: " ;
+        var_dump($condition);
         $entity1 = null;
         $connector = "";
         $connectorstart = 0;
@@ -376,7 +388,7 @@ class App implements App_Interface {
                 break;
             }
         }
-        if ($entity1 = null) {
+        if ($entity1 == null) {
             throw new Exception("Wrong condition syntax");
         }
 
