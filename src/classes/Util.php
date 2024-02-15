@@ -46,7 +46,7 @@ class Util {
             }
         } else {
             for ($i = 0; $i < count($array); $i++) {
-                if ($array[$i] != null && $array[$i] instanceof $class) {
+                if (isset($array[$i]) && $array[$i] instanceof $class) {
                     array_push($result, $array[$i]);
                 }
             }

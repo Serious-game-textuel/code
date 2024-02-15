@@ -92,12 +92,8 @@ class Condition implements Condition_Interface {
                                 $interval = $starttime->diff($endtime);
                                 $time = $interval->format('%H:%I:%S');
                                 $lieux = $game->get_visited_locations();
-                                $lieuxvisites = 0;
-                                foreach ($lieux as $lieu) {
-                                        $lieuxvisites++;
-                                }
                                 return "Vous avez gagné en " . $time . " avec " . $deaths
-                                . " morts et " . $lieuxvisites . " lieux visités.";
+                                . " morts et " . count($lieux) . " lieux visités.";
                             }
                         }
                     }

@@ -120,7 +120,6 @@ class LocationTest extends TestCase {
 
         // Voir le status de la cour avant que le troll ait le poisson.
         $courstatus = $game->get_entity("cour")->get_status();
-        var_dump($courstatus);
         $this->assertEquals("ferme", $courstatus[0]);
         // Donner poissons à troll.
         $action = $currentlocation->check_actions("Donner poisson a troll");
