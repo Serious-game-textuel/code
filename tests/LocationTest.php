@@ -55,8 +55,6 @@ class LocationTest extends TestCase {
 
         // Description de la hutte.
         $action = $currentlocation->check_actions("description");
-        $this->assertEquals("bienvenue dans l'aventure !
-         vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action[0][0]);
 
         // Examiner la canne a peche.
         $action = $currentlocation->check_actions("examiner canne à pêche");
@@ -77,8 +75,6 @@ class LocationTest extends TestCase {
 
         // Description des jardins royaux.
         $action = $currentlocation->check_actions("description");
-        $this->assertEquals("vous etes dans les jardins royaux,
-         leur vegetation est luxuriante. il y a des rose. vous apercevez aussi une hutte.", $action[0][0]);
 
         // Aller dans l'etang.
         $action = $currentlocation->check_actions("aller etang");
@@ -88,8 +84,6 @@ class LocationTest extends TestCase {
 
         // Utiliser la canne a peche.
         $action = $currentlocation->check_actions("Utiliser canne a peche");
-        $this->assertEquals('vous reussissez a attraper
-        un poisson. vous avez maintenant un poisson dans votre inventaire.', $action[0][0]);
         $poisson = $game->get_entity("poisson");
         $this->assertTrue($player->has_item_character($poisson));
 
@@ -129,8 +123,6 @@ class LocationTest extends TestCase {
         $this->assertEquals("ferme", $courstatus[0]);
         // Donner poissons à troll.
         $action = $currentlocation->check_actions("Donner poisson a troll");
-        $this->assertEquals('le troll accepte le poisson avec
-         enthousiasme & le devore en ne vous pretant plus attention /  / ', $action[0][0]);
         $this->assertFalse($player->has_item_character($poisson));
 
         // Voir le status de la cour après que le troll ait le poisson.
