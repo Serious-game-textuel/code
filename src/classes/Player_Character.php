@@ -17,4 +17,26 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
 class Player_Character extends Character {
+
+
+    public function set_status(array $status) {
+        if (in_array("mort", $status)) {
+            echo "Tu es mort!";
+            $app = App::get_instance();
+            if ($app->get_save() !== null) {                
+                App::get_instance()->restart_game_from_save();
+            } else {
+                App::get_instance()->restart_game_from_start();
+            }
+            
+        } else if (in_array("victoire", $status)) {
+            echo "Tu as gagné!";  
+            echo "tu est mort " . App::get_instance()->get_game()->get_deaths() . " fois!";
+            echo "Tu as fait " . App::get_instance()->get_game()->get_actions() . " actions!";    
+            echo "Tu as visité " . count(App::get_instance()->get_game()->get_visited_locations()) . " lieux!";
+
+        } else {
+            parent::set_status($status);
+        }
+    }
 }

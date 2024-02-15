@@ -90,6 +90,10 @@ class App implements App_Interface {
         $this->save = $save;
     }
 
+    public function create_save(){
+        $this->set_save(clone $this->get_game());
+    }
+
     public function get_startentity($entityname) {
         foreach ($this->startentities as $e) {
             if ($e->get_name() == $entityname) {
@@ -97,6 +101,10 @@ class App implements App_Interface {
             }
         }
         return null;
+    }
+
+    public function get_all_startentities() {
+        return $this->startentities;
     }
 
     public function add_startentity(Entity_Interface $entity) {
@@ -115,7 +123,7 @@ class App implements App_Interface {
 
         $player = $this->get_startentity(self::$playerkeyword);
 
-        $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(), $player, null, null, $this->startentities);
+        $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(), $player, null, null, array_values($this->startentities));
     }
 
     private function create_items($row) {
@@ -467,5 +475,28 @@ class App implements App_Interface {
         $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
         $str = strtolower($str);
         return $str;
+    }
+
+    public function restart_game_from_start() {
+        $this->set_game(new Game(
+            $this->get_game()->get_deaths(),
+            $this->get_game()->get_actions(),
+            $this->get_game()->get_visited_locations(),
+            $this->get_game()->get_start_time(),
+            null,
+            $this->get_game()->get_default_action_search(),
+            $this->get_game()->get_default_action_interact(),
+            array_values($this->get_all_startentities())
+        ));
+
+        foreach ($this->get_game()->get_entities() as $entity) {
+            if ($entity instanceof Player_Character) {
+                $this->get_game()->set_player($entity);
+            }
+        }
+    }
+
+    public function restart_game_from_save() {
+        $this->set_game(clone $this->get_save());
     }
 }
