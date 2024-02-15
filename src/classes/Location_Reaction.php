@@ -13,13 +13,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
 class Location_Reaction extends Reaction {
 
     private Location_Interface $location;
 
     public function __construct(string $description, array $oldstatus,
      array $newstatus, array $olditem, array $newitem, Location_Interface $location) {
+        Util::check_array($oldstatus, 'string');
+        Util::check_array($newstatus, 'string');
+        Util::check_array($olditem, Item_Interface::class);
+        Util::check_array($newitem, Item_Interface::class);
         parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
         $this->location = $location;
     }

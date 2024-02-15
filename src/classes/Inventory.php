@@ -23,15 +23,12 @@ class Inventory implements Inventory_Interface {
 
     public function __construct(array $items) {
         $this->id = Id_Class::generate_id(self::class);
+        Util::check_array($items, Item_Interface::class);
         $this->items = $items;
     }
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_item(int $id) {

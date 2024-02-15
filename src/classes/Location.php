@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
 class Location extends Entity implements Location_Interface {
 
@@ -24,15 +23,17 @@ class Location extends Entity implements Location_Interface {
     private array $actions;
 
     public function __construct(string $name, array $status, array $items, array $hints, array $actions) {
+        Util::check_array($status, 'string');
         parent::__construct("", $name, $status);
+        Util::check_array($items, Item_Interface::class);
         $this->inventory = new Inventory($items);
         $this->hints = $hints;
+        Util::check_array($actions, Action_Interface::class);
         $this->actions = $actions;
     }
     public function get_inventory() {
         return $this->inventory;
     }
-
     public function get_actions() {
         return $this->actions;
     }
@@ -56,10 +57,8 @@ class Location extends Entity implements Location_Interface {
         $return = [];
         $game = App::get_instance()->get_game();
         $action = App::tokenize($action);
-        echo "check action : " . $action . "\n";
         $actionvalide = $this->is_action_valide($action);
         if ($actionvalide != null) {
-            echo "action valide\n";
             array_push($return, $actionvalide->do_conditions());
         } else {
             $defaultaction = "fouiller";

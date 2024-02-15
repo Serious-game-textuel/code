@@ -13,7 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
 class Character_Reaction extends Reaction {
 
     private Character_Interface $character;
@@ -21,6 +23,10 @@ class Character_Reaction extends Reaction {
 
     public function __construct(string $description, array $oldstatus, array $newstatus,
     array $olditem, array $newitem, Character_Interface $character, ?Location_Interface $newlocation) {
+        Util::check_array($oldstatus, 'string');
+        Util::check_array($newstatus, 'string');
+        Util::check_array($olditem, Item_Interface::class);
+        Util::check_array($newitem, Item_Interface::class);
         parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
         $this->character = $character;
         $this->newlocation = $newlocation;

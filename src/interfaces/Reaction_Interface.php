@@ -22,12 +22,6 @@ interface Reaction_Interface {
     public function get_id();
 
     /**
-     * @param int
-     * @return void
-     */
-    public function set_id(int $id);
-
-    /**
      * @return string
      */
     public function get_description();

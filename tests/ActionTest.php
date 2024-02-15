@@ -29,6 +29,8 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reac
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 use PHPUnit\Framework\TestCase;
 
 class ActionTest extends TestCase {
@@ -36,8 +38,8 @@ class ActionTest extends TestCase {
      * vérifie que quand on appelle la méthode do_conditions, les conditions sont bien effectuées
      */
     public function testdoconditions() {
-        $game = new Game(0, 0, 0, [], new DateTime(),
-         Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         // Create a mock reaction.
         // Create mock objects for testing.
         $item1 = new Item(1, "une pomme", "pomme", ["croquée"]);

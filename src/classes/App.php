@@ -17,9 +17,16 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
-
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 
 class App implements App_Interface {
 
@@ -396,7 +403,7 @@ class App implements App_Interface {
         if ($entity2 == null) {
             $status = $member2;
         }
-        return new Leaf_Condition($entity1, $entity2, $connector, [$status], $reactions);
+        return new Leaf_Condition($entity1, $entity2, $connector, array_filter([$status]), $reactions);
     }
 
     private function get_row($str) {
