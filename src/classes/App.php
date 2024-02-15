@@ -13,14 +13,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
-
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 
 class App implements App_Interface {
 

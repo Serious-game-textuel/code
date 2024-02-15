@@ -16,8 +16,8 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
 abstract class Entity implements Entity_Interface {
 
     private int $id;
@@ -80,6 +80,3 @@ abstract class Entity implements Entity_Interface {
         }
     }
 }
-
-
-

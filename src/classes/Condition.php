@@ -16,7 +16,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
 class Condition implements Condition_Interface {
 
     private int $id;
