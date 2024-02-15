@@ -15,11 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
 
 class Game implements Game_Interface {
 
@@ -27,45 +23,29 @@ class Game implements Game_Interface {
     private int $deaths;
     private int $actions;
     private array $visitedlocations;
-    private DateTime $starttime;
-    private Language $language;
-    private Location_Interface $currentlocation;
-    private static $instance = null;
-    private Player_Character $player;
+    private ?DateTime $starttime;
+    private ?Player_Character $player;
     private ?Default_Action_Interface $defaultactionsearch;
     private ?Default_Action_Interface $defaultactioninteract;
     private array $entities = [];
 
 
-    public function __construct(int $deaths, int $actions, array $visitedlocations, DateTime $starttime,
-    Language $language, Location_Interface $currentlocation, Player_Character $player,
-    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract) {
+    public function __construct(int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
+    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
         $this->id = Id_Class::generate_id(self::class);
         $this->deaths = $deaths;
         $this->actions = $actions;
+        Util::check_array($visitedlocations, Location_Interface::class);
         $this->visitedlocations = $visitedlocations;
         $this->starttime = $starttime;
-        $this->language = $language;
-        $this->currentlocation = $currentlocation;
         $this->player = $player;
         $this->defaultactionsearch = $defaultactionsearch;
         $this->defaultactioninteract = $defaultactioninteract;
-        self::$instance = $this;
-    }
-
-    public static function getinstance() {
-        if (self::$instance == null) {
-            throw new Exception('TODO');
-        }
-
-        return self::$instance;
+        $this->entities = $entities;
     }
 
     public function get_id() {
         return $this->id;
-    }
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_deaths() {
@@ -98,11 +78,12 @@ class Game implements Game_Interface {
         return $this->visitedlocations;
     }
     public function set_visited_locations(array $visitedlocations) {
-        $this->visitedlocations = $visitedlocations;
+        $this->visitedlocations = Util::clean_array($visitedlocations, Location_Interface::class);
     }
 
     public function add_visited_location(Location_Interface $location) {
-        $this->visitedlocations[] = $location;
+        array_push($this->visitedlocations, $location);
+        $this->entities = Util::clean_array($this->visitedlocations, Location_Interface::class);
     }
 
     public function get_start_time() {
@@ -112,18 +93,11 @@ class Game implements Game_Interface {
         $this->starttime = $starttime;
     }
 
-    public function get_language() {
-        return $this->language;
-    }
-    public function set_language(Language $language) {
-        $this->language = $language;
-    }
-
     public function get_current_location() {
-        return $this->currentlocation;
+        return $this->player->get_current_location();
     }
     public function set_current_location(Location_Interface $currentlocation) {
-        $this->currentlocation = $currentlocation;
+        $this->player->set_currentlocation($currentlocation);
     }
 
     public function get_default_action_search() {
@@ -147,11 +121,12 @@ class Game implements Game_Interface {
     }
 
     public function set_entities(array $entities) {
-        $this->entities = $entities;
+        $this->entities = Util::clean_array($entities, Entity_Interface::class);
     }
 
     public function add_entity(Entity_Interface $entity) {
         array_push($this->entities, $entity);
+        $this->entities = Util::clean_array($this->entities, Entity_Interface::class);
     }
 
     /**

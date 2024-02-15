@@ -16,6 +16,8 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
 abstract class Entity implements Entity_Interface {
 
     private int $id;
@@ -26,23 +28,20 @@ abstract class Entity implements Entity_Interface {
 
     private array $status;
     public function __construct(string $description, string $name, array $status) {
-        $game = Game::getinstance();
-        if ($game->get_entity($name) !== null) {
-            throw new InvalidArgumentException("Chaque entité doit avoir un nom unique : ".$name);
+        $app = App::get_instance();
+        if ($app->get_startentity($name) != null) {
+            throw new InvalidArgumentException("Each entity name must be unique : ".$name);
         }
         $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
         $this->name = $name;
+        Util::check_array($status, 'string');
         $this->status = $status;
-        $game->add_entity($this);
+        $app->add_startentity($this);
     }
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_description() {
@@ -66,15 +65,18 @@ abstract class Entity implements Entity_Interface {
     }
 
     public function set_status(array $status) {
-        $this->status = $status;
+        $this->status = Util::clean_array($status, 'string');
     }
 
     public function add_status(array $status) {
-        $this->status = array_merge($this->status, $status);
+        if (!in_array($status, $this->status)) {
+            $this->status = Util::clean_array(array_merge($this->status, $status), 'string');
+        }
     }
 
     public function remove_status(array $status) {
-        $this->status = array_diff($this->status, $status);
+        if (in_array($status, $this->status)) {
+            $this->status = Util::clean_array(array_diff($this->status, $status), 'string');
+        }
     }
-
 }

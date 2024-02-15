@@ -22,12 +22,6 @@ interface Game_Interface {
     public function get_id();
 
     /**
-     * @param int $id
-     * @return void
-     */
-    public function set_id(int $id);
-
-    /**
      * @return Player_Character
      */
     public function get_player();
@@ -83,17 +77,6 @@ interface Game_Interface {
      * @return void
      */
     public function set_start_time(DateTime $time);
-
-    /**
-     * @return Language
-     */
-    public function get_language();
-
-    /**
-     * @param Language $language
-     * @return void
-     */
-    public function set_language(Language $language);
 
     /**
      * @return Location_Interface

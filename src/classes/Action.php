@@ -27,15 +27,12 @@ class Action implements Action_Interface {
     public function __construct(string $description, array $conditions) {
         $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
+        Util::check_array($conditions, Condition_Interface::class);
         $this->conditions = $conditions;
     }
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_description() {
@@ -51,11 +48,12 @@ class Action implements Action_Interface {
     }
 
     public function set_conditions(array $conditions) {
-        $this->conditions = $conditions;
+        $this->conditions = Util::clean_array($conditions, Condition_Interface::class);
     }
 
     public function do_conditions() {
-        $game = Game::getinstance();
+        $app = App::get_instance();
+        $game = $app->get_game();
         $game->add_action();
         $conditions = $this->get_conditions();
         $conditionstrue = [];

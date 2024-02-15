@@ -17,12 +17,4 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
 class Player_Character extends Character {
-
-    private Inventory_Interface $inventory;
-
-    public function __construct(string $description, array $status, Inventory_Interface $inventory) {
-        parent::__construct($description, "player", $status, $inventory);
-        $this->inventory = $inventory;
-    }
-
 }

@@ -16,23 +16,12 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
-class Location_Reaction extends Reaction {
+class No_Entity_Reaction extends Reaction {
 
-    private Location_Interface $location;
-
-    public function __construct(string $description, array $oldstatus,
-     array $newstatus, array $olditem, array $newitem, Location_Interface $location) {
-        Util::check_array($oldstatus, 'string');
-        Util::check_array($newstatus, 'string');
-        Util::check_array($olditem, Item_Interface::class);
-        Util::check_array($newitem, Item_Interface::class);
-        parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
-        $this->location = $location;
+    public function __construct(string $description) {
+        parent::__construct($description, [], [], [], []);
     }
 
-    public function get_location(): Location_Interface {
-        return $this->location;
-    }
 
 }
 

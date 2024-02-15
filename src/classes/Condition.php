@@ -16,24 +16,20 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
 class Condition implements Condition_Interface {
 
     private int $id;
-    private ?array $reactions;
+    private array $reactions = [];
 
     public function __construct(array $reactions) {
+        Util::check_array($reactions, Reaction_Interface::class);
         $this->id = Id_Class::generate_id(self::class);
         $this->reactions = $reactions;
-
     }
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_reactions() {
@@ -41,10 +37,12 @@ class Condition implements Condition_Interface {
     }
 
     public function set_reactions(array $reactions) {
-        $this->reactions = $reactions;
+        $this->reactions = Util::clean_array($reactions, Reaction_Interface::class);
     }
 
     public function do_reactions() {
+        $app = App::get_instance();
+        $game = $app->get_game();
         $reactions = $this->get_reactions();
         $descriptions = [];
         foreach ($reactions as $reaction) {
@@ -54,13 +52,8 @@ class Condition implements Condition_Interface {
 
                     if ($reaction->get_new_location() != null) {
                         $newlocation = $reaction->get_new_location();
-                        $game = Game::getinstance();
                         if ($character instanceof Npc_Character) {
-                            $oldlocation = $character->get_current_location();
-                            $oldlocation->remove_npc_character($character);
-                            $newlocation->add_npc_character($character);
-                            $character->set_new_location($newlocation);
-
+                            $character->set_currentlocation($newlocation);
                         } else if ($character instanceof Player_Character) {
                             $game->set_current_location($newlocation);
                             $game->add_visited_location($newlocation);
@@ -80,11 +73,9 @@ class Condition implements Condition_Interface {
                         $character->add_status($newstatus);
                         if ($character instanceof Player_Character) {
                             if ($newstatus == "mort") {
-                                $game = Game::getinstance();
                                 $game->add_deaths();
                             }
                             if ($newstatus == "victoire") {
-                                $game = Game::getinstance();
                                 $deaths = $game->get_deaths();
                                 $starttime = $game->get_start_time();
                                 $endtime = new DateTime();
@@ -181,10 +172,10 @@ class Condition implements Condition_Interface {
         } else if ($this instanceof Node_Condition) {
             $condition1 = $this->get_condition1();
             $condition2 = $this->get_condition2();
-            $connector1 = $this->get_connector1();
-            if ($connector1 == "et") {
+            $connector = $this->get_connector();
+            if ($connector == "et") {
                 return $condition1->is_true() && $condition2->is_true();
-            } else if ($connector1 == "ou") {
+            } else if ($connector == "ou") {
                 return $condition1->is_true() || $condition2->is_true();
             }
             return false;

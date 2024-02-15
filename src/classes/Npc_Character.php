@@ -13,28 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
 class Npc_Character extends Character {
-
-    private Inventory_Interface $inventory;
-    private Location_Interface $currentlocation;
-
-    public function __construct(
-        string $description,
-        string $name, array $status,
-        Inventory_Interface $inventory,
-        Location_Interface $currentlocation) {
-            parent::__construct($description, $name, $status, $inventory);
-            $this->inventory = $inventory;
-            $this->currentlocation = $currentlocation;
-    }
-
-    public function get_current_location() {
-        return $this->currentlocation;
-    }
-
-    public function set_new_location(Location_Interface $newlocation) {
-        $this->currentlocation = $newlocation;
-    }
-
 }

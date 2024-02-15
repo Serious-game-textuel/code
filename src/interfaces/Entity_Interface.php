@@ -22,12 +22,6 @@ interface Entity_Interface {
     public function get_id();
 
     /**
-     * @param int $id
-     * @return void
-     */
-    public function set_id(int $id);
-
-    /**
      * @return string
      */
     public function get_description();

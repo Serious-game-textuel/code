@@ -18,21 +18,22 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
 class Node_Condition extends Condition {
 
-    private Condition_Interface $condition1;
-    private Condition_Interface $condition2;
-    private string $connector1;
+    private ?Condition_Interface $condition1;
+    private ?Condition_Interface $condition2;
+    private string $connector;
 
 
     public function __construct(
-        Condition_Interface $condition1,
-        Condition_Interface $condition2,
-        string $connector1,
+        ?Condition_Interface $condition1,
+        ?Condition_Interface $condition2,
+        string $connector,
         ?array $reactions
     ) {
+        Util::check_array($reactions, Reaction_Interface::class);
         parent::__construct($reactions);
         $this->condition1 = $condition1;
         $this->condition2 = $condition2;
-        $this->connector1 = $connector1;
+        $this->connector = $connector;
     }
 
     public function get_condition1() {
@@ -41,17 +42,17 @@ class Node_Condition extends Condition {
     public function get_condition2() {
         return $this->condition2;
     }
-    public function get_connector1() {
-        return $this->connector1;
+    public function get_connector() {
+        return $this->connector;
     }
-    public function set_condition1(Condition_Interface $condition1) {
+    public function set_condition(Condition_Interface $condition1) {
         $this->condition1 = $condition1;
     }
     public function set_condition2(Condition_Interface $condition2) {
         $this->condition2 = $condition2;
     }
-    public function set_connector1(string $connector1) {
-        $this->connector1 = $connector1;
+    public function set_connector(string $connector) {
+        $this->connector = $connector;
     }
 }
 

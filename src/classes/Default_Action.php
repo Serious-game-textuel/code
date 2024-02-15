@@ -17,11 +17,10 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 
 class Default_Action extends Action implements Default_Action_Interface {
     public function do_conditions_verb(string $verb) {
-        $game = Game::getinstance();
+        $game = App::get_instance()->get_game();
         $game->add_action();
         $tokendescription = explode('"', $this->get_description());
         $result = [];
