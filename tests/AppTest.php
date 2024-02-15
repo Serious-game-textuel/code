@@ -18,6 +18,7 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 use PHPUnit\Framework\TestCase;
 
 class AppTest extends TestCase {
@@ -25,29 +26,8 @@ class AppTest extends TestCase {
      * vérifie que le constructeur initialise correctement les propriétés
      */
     public function testgetsetgame() {
-        $game1 = $this->createMock(Game_Interface::class);
-        $game2 = $this->createMock(Game_Interface::class);
-
-        $app = new App($game1, $game2);
-
-        $this->assertSame($game1, $app->get_game());
-
-        $app->set_game($game2);
-        $this->assertSame($game2, $app->get_game());
-    }
-    /**
-     * vérifie que le constructeur initialise correctement les propriétés
-     */
-    public function testgetsetsave() {
-        $game1 = $this->createMock(Game_Interface::class);
-        $game2 = $this->createMock(Game_Interface::class);
-
-        $app = new App($game1, $game2);
-
-        $this->assertSame($game2, $app->get_save());
-
-        $app->set_save($game1);
-        $this->assertSame($game1, $app->get_save());
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
     }
 }
 

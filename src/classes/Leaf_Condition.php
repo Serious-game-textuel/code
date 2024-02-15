@@ -13,7 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
 class Leaf_Condition extends Condition {
 
     private ?Entity_Interface $entity1;
@@ -23,10 +25,15 @@ class Leaf_Condition extends Condition {
 
     public function __construct(?Entity_Interface $entity1, ?Entity_Interface $entity2, string $connector,
     ?array $status, array $reactions) {
+        Util::check_array($reactions, Reaction_Interface::class);
         parent::__construct($reactions);
         $this->entity1 = $entity1;
         $this->entity2 = $entity2;
         $this->connector = $connector;
+        if ($status !== null) {
+            Util::check_array($status, 'string');
+            $status = array_filter($status);
+        }
         $this->status = $status;
     }
 
@@ -59,7 +66,7 @@ class Leaf_Condition extends Condition {
     }
 
     public function set_status(array $status) {
-        $this->status = $status;
+        $this->status = Util::clean_array($status, 'string');
     }
 
 }

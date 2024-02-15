@@ -16,6 +16,8 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
 abstract class Entity implements Entity_Interface {
 
     private int $id;
@@ -33,16 +35,13 @@ abstract class Entity implements Entity_Interface {
         $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
         $this->name = $name;
+        Util::check_array($status, 'string');
         $this->status = $status;
         $app->add_startentity($this);
     }
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_description() {
@@ -66,27 +65,18 @@ abstract class Entity implements Entity_Interface {
     }
 
     public function set_status(array $status) {
-        $this->status = $status;
+        $this->status = Util::clean_array($status, 'string');
     }
 
     public function add_status(array $status) {
-        // Fusionner les nouveaux statuts avec les statuts existants.
-        $mergedstatus = array_merge($this->status, $status);
-        // Supprimer les doublons de statuts.
-        $uniquestatus = array_unique($mergedstatus);
-        // Mettre à jour les statuts avec les statuts uniques.
-        $this->status = $uniquestatus;
+        if (!in_array($status, $this->status)) {
+            $this->status = Util::clean_array(array_merge($this->status, $status), 'string');
+        }
     }
 
     public function remove_status(array $status) {
-        // Supprimer les éléments spécifiés de la liste des statuts.
-        $this->status = array_diff($this->status, $status);
-        // Supprimer les indices vides après la suppression.
-        $this->status = array_filter($this->status);
-        // Réindexer le tableau pour mettre à jour les indices.
-        $this->status = array_values($this->status);
+        if (in_array($status, $this->status)) {
+            $this->status = Util::clean_array(array_diff($this->status, $status), 'string');
+        }
     }
 }
-
-
-

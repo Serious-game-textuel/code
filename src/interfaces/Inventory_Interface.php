@@ -26,12 +26,6 @@ interface Inventory_Interface {
 
     /**
      * @param int $id
-     * @return void
-     */
-    public function set_id(int $id);
-
-    /**
-     * @param int $id
      * @return Item_Interface
      */
     public function get_item(int $id);

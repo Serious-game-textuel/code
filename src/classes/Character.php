@@ -16,6 +16,7 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
 class Character extends Entity implements Character_Interface {
 
     private Inventory_Interface $inventory;
@@ -24,6 +25,7 @@ class Character extends Entity implements Character_Interface {
 
     public function __construct(string $description, string $name,
     array $status, array $items, ?Location_Interface $currentlocation) {
+        Util::check_array($status, 'string');
         parent::__construct($description, $name, $status);
         $this->inventory = new Inventory($items);
         $this->currentlocation = $currentlocation;

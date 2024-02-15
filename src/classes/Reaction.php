@@ -28,6 +28,10 @@ abstract class Reaction implements Reaction_Interface {
     public function __construct(string $description, array $oldstatus, array $newstatus,
     array $olditem, array $newitem) {
         $this->id = Id_Class::generate_id(self::class);
+        Util::check_array($oldstatus, 'string');
+        Util::check_array($newstatus, 'string');
+        Util::check_array($olditem, Item_Interface::class);
+        Util::check_array($newitem, Item_Interface::class);
         $this->description = $description;
         $this->oldstatus = $oldstatus;
         $this->newstatus = $newstatus;
@@ -37,10 +41,6 @@ abstract class Reaction implements Reaction_Interface {
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function set_id(int $id) {
-        $this->id = $id;
     }
 
     public function get_description() {
@@ -56,7 +56,7 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function set_old_status(array $status) {
-        $this->oldstatus = $status;
+        $this->oldstatus = Util::clean_array($status, 'string');
     }
 
     public function get_new_status() {
@@ -64,7 +64,7 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function set_new_status(array $status) {
-        $this->newstatus = $status;
+        $this->newstatus = Util::clean_array($status, 'string');
     }
 
     public function get_old_item() {
@@ -72,7 +72,7 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function set_old_item(array $item) {
-        $this->olditem = $item;
+        $this->olditem = Util::clean_array($item, Item_Interface::class);
     }
 
     public function get_new_item() {
@@ -80,7 +80,7 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function set_new_item(array $item) {
-        $this->newitem = $item;
+        $this->newitem = Util::clean_array($item, Item_Interface::class);
     }
 
 

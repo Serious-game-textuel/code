@@ -19,13 +19,14 @@ use mod_forum\local\factories\entity;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
 class Condition implements Condition_Interface {
 
     private int $id;
-    private ?array $reactions;
+    private array $reactions = [];
 
     public function __construct(array $reactions) {
+        Util::check_array($reactions, Reaction_Interface::class);
         $this->id = Id_Class::generate_id(self::class);
         $this->reactions = $reactions;
     }
@@ -34,16 +35,12 @@ class Condition implements Condition_Interface {
         return $this->id;
     }
 
-    public function set_id(int $id) {
-        $this->id = $id;
-    }
-
     public function get_reactions() {
         return $this->reactions;
     }
 
     public function set_reactions(array $reactions) {
-        $this->reactions = $reactions;
+        $this->reactions = Util::clean_array($reactions, Reaction_Interface::class);
     }
 
     public function do_reactions() {
@@ -151,21 +148,6 @@ class Condition implements Condition_Interface {
 
             if ($entity1 != null) {
                 $entity1status = $entity1->get_status();
-                echo "entité1 : " . $entity1->get_name() . "\n";
-                echo "entité1 status : ";
-                var_dump($entity1status);
-                if ($status != null) {
-                    echo "status : ";
-                    var_dump($status);
-                }
-            }
-
-            if ($entity2 != null) {
-                echo "entity2: " . $entity2->get_name() . "\n";
-            }
-
-            if ($connector != null) {
-                echo "connector: " . $connector . "\n";
             }
 
             if ($entity1 instanceof Character) {
@@ -208,19 +190,9 @@ class Condition implements Condition_Interface {
                 return true;
             }
         } else if ($this instanceof Node_Condition) {
-            echo "node condition\n";
             $condition1 = $this->get_condition1();
-            if ($condition1 != null) {
-                echo "condition1\n";
-            }
             $condition2 = $this->get_condition2();
-            if ($condition2 != null) {
-                echo "condition2\n";
-            }
             $connector = $this->get_connector();
-            if ($connector != null) {
-                echo "connector: " . $connector . "\n";
-            }
             if ($connector == "&") {
                 return $condition1->is_true() && $condition2->is_true();
             } else if ($connector == "|") {
