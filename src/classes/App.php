@@ -27,6 +27,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_React
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
 
 class App implements App_Interface {
 
@@ -135,10 +136,12 @@ class App implements App_Interface {
     private function create_items($row) {
         $col = 1;
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
-            $name = $this->get_cell_string($row + 3, $col);
-            $description = $this->get_cell_string($row + 4, $col);
-            $statuses = $this->get_cell_array_string($row + 5, $col);
-            new Item($description, $name, $statuses);
+            $name = $this->get_cell_string($row, $col);
+            $description = $this->get_cell_string($row + 1, $col);
+            $statuses = $this->get_cell_array_string($row + 2, $col);
+            if ($name != null && strlen($name) > 0) {
+                new Item($description, $name, $statuses);
+            }
             $col++;
         }
     }
@@ -154,7 +157,7 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . "is not an item with the row: " . $row . " and the col: " . $col ."");
+                    throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
                 }
                 array_push($items, $item);
             }
