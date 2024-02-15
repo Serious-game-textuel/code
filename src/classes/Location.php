@@ -59,6 +59,7 @@ class Location extends Entity implements Location_Interface {
         echo "check action : " . $action . "\n";
         $actionvalide = $this->is_action_valide($action);
         if ($actionvalide != null) {
+            echo "action valide\n";
             array_push($return, $actionvalide->do_conditions());
         } else {
             $defaultaction = "fouiller";

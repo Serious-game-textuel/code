@@ -220,7 +220,7 @@ class App implements App_Interface {
             if (!isset($conditionnames[$action])) {
                 $conditionnames[$action] = [];
             }
-            if (!in_array($condition, $conditionnames[$action])){
+            if (!in_array($condition, $conditionnames[$action])) {
                 array_push($conditionnames[$action], $condition);
             }
 
@@ -299,10 +299,7 @@ class App implements App_Interface {
 
         foreach ($descriptions as $action) {
             $conditions = [];
-            echo "-----------------------------------\n";
-            echo "action: " . $action . "\n";
             foreach ($conditionnames[$action] as $condition) {
-                echo "condition: " . $condition . "\n";
                 array_push($conditions,
                     $this->parse_condition(
                         $condition,
@@ -353,25 +350,19 @@ class App implements App_Interface {
     }
 
     private function read_tree($tokens, $reactions) {
-        //global $tokens;
         if (empty($tokens)) {
-            echo "empty:\n";
             return null;
         } else if (end($tokens) == '|' || end($tokens) == '&') {
-            echo "or and:\n";
             $token = array_pop($tokens);
             return new Node_Condition($this->read_tree($tokens, $reactions),
             $this->read_tree($tokens, $reactions), $token, $reactions);
         } else {
-            echo "leaf:\n";
             $token = array_pop($tokens);
             return $this->parse_leaf_condition($token, $reactions);
         }
     }
 
     private function parse_leaf_condition($condition, $reactions) {
-        echo "condition: " ;
-        var_dump($condition);
         $entity1 = null;
         $connector = "";
         $connectorstart = 0;

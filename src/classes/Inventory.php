@@ -53,9 +53,9 @@ class Inventory implements Inventory_Interface {
     }
 
     public function check_item(Item_Interface $item) {
-            if (in_array($item, $this->items , true)) {
-                return true;
-            }
+        if (in_array($item, $this->items , true)) {
+            return true;
+        }
         return false;
     }
 

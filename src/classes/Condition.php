@@ -75,15 +75,18 @@ class Condition implements Condition_Interface {
                     if ($reaction->get_old_item() != null) {
                         $olditem = $reaction->get_old_item();
                         foreach ($olditem as $item) {
-                        $character->get_inventory()->remove_item($item);
+                            $character->get_inventory()->remove_item($item);
                         }
                     }
                     if ($reaction->get_new_status() != null) {
                         $newstatus = $reaction->get_new_status();
                         $character->add_status($newstatus);
                         if ($character instanceof Player_Character) {
-                            if ($newstatus == "mort") {
-                                $game->add_deaths();
+                            foreach ($newstatus as $status) {
+                                if ($status == "mort") {
+                                    $game->add_deaths();
+                                    echo "playermort recommmencer au début(pas implémenter)\n";
+                                }
                             }
                             if ($newstatus == "victoire") {
                                 $deaths = $game->get_deaths();
@@ -126,7 +129,7 @@ class Condition implements Condition_Interface {
                     if ($reaction->get_old_item() != null) {
                         $olditem = $reaction->get_old_item();
                         foreach ($olditem as $item) {
-                        $location->get_inventory()->remove_item($item);
+                            $location->get_inventory()->remove_item($item);
                         }
                     }
                 }
@@ -149,6 +152,12 @@ class Condition implements Condition_Interface {
             if ($entity1 != null) {
                 $entity1status = $entity1->get_status();
                 echo "entité1 : " . $entity1->get_name() . "\n";
+                echo "entité1 status : ";
+                var_dump($entity1status);
+                if ($status != null) {
+                    echo "status : ";
+                    var_dump($status);
+                }
             }
 
             if ($entity2 != null) {
@@ -195,14 +204,23 @@ class Condition implements Condition_Interface {
                         return !$entity1->has_item_location($entity2);
                     }
                 }
-            }
-            else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
+            } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
                 return true;
             }
         } else if ($this instanceof Node_Condition) {
+            echo "node condition\n";
             $condition1 = $this->get_condition1();
+            if ($condition1 != null) {
+                echo "condition1\n";
+            }
             $condition2 = $this->get_condition2();
+            if ($condition2 != null) {
+                echo "condition2\n";
+            }
             $connector = $this->get_connector();
+            if ($connector != null) {
+                echo "connector: " . $connector . "\n";
+            }
             if ($connector == "&") {
                 return $condition1->is_true() && $condition2->is_true();
             } else if ($connector == "|") {
