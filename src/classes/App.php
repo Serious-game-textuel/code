@@ -90,7 +90,7 @@ class App implements App_Interface {
         $this->save = $save;
     }
 
-    public function create_save(){
+    public function create_save() {
         $this->set_save(clone $this->get_game());
     }
 
@@ -123,7 +123,15 @@ class App implements App_Interface {
 
         $player = $this->get_startentity(self::$playerkeyword);
 
-        $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(), $player, null, null, array_values($this->startentities));
+        $this->game = new Game(
+            0,
+            0,
+            [$player->get_current_location()],
+            new DateTime(),
+            $player,
+            null,
+            null,
+            array_values($this->startentities));
     }
 
     private function create_items($row) {
