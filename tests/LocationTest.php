@@ -41,19 +41,15 @@ class LocationTest extends TestCase {
      */
     public function testdoconditions() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv',Language::FR);
-         /*
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        /*
         // Create mock objects for testing.
          $item1 = new Item("une pomme", "pomme", ["croquée"]);
          $item2 = new Item("une poire", "poire", []);
          $item3 = new Item("une banane", "banane", ["longue", "jaune"]);
          $item4 = new Item("une fraise", "fraise", []);
- 
- 
          $location = new Location("marécages", ["boueux"],[$item2, $item4], [], []);
- 
          $character = new Character("Un troll", "Michel", ["fatigué"],[$item1], $location);
-        
          // Mock reactions.
         $characterreaction1 = new Character_Reaction('Michel récupère une poire', [], [], [], [$item2], $character, null);
         $characterreaction2 = new Character_Reaction('Michel grandit', [], ["grand"], [], [], $character, null);
@@ -73,11 +69,11 @@ class LocationTest extends TestCase {
         $action = new Action('action', [$conditionwithreactions1, $conditionwithreactions4]);
 
         // Create a mock game.
-        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class), $this->createMock(Default_Action_Interface::class), $this->createMock(Default_Action_Interface::class),[$item1, $item2, $item3, $item4, $character, $location]);
+        $game = new Game(0, 0,[], new DateTime(), $this->createMock(Player_Character::class),
+        $this->createMock(Default_Action_Interface::class), $this->createMock(Default_Action_Interface::class),
+        [$item1, $item2, $item3, $item4, $character, $location]);
 
         // Create a mock reaction.
-       
-        
         // Test the do_condition method.
         $result = $location->check_actions("action");
         // Check le personnage a gardé son item.

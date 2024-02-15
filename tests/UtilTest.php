@@ -46,7 +46,6 @@ class UtilTest extends TestCase {
         $this->assertFalse(Util::has_array_duplicate([$str1, 1]));
         $this->assertFalse(Util::has_array_duplicate([]));
     }
-    
     public function test_has_array_duplicate_object() {
         global $CFG;
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
@@ -100,7 +99,6 @@ class UtilTest extends TestCase {
             $this->assertTrue(false);
         }
     }
-    
     public function test_check_array_object() {
         global $CFG;
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
@@ -149,7 +147,6 @@ class UtilTest extends TestCase {
         $this->assertTrue($this->array_equal(Util::clean_array([$str1, 1], 'string'), [$str1]));
         $this->assertTrue($this->array_equal(Util::clean_array([], 'string'), []));
     }
-    
     public function test_clean_array_object() {
         global $CFG;
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
