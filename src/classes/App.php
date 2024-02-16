@@ -352,8 +352,7 @@ class App implements App_Interface {
         while (!empty($stack)) {
             $output[] = array_pop($stack);
         }
-        $qdzqd = $this->read_tree($output, $reactions);
-        return $qdzqd;
+        return $this->read_tree($output, $reactions);
     }
 
     private function read_tree($tokens, $reactions) {
