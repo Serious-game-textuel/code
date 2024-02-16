@@ -30,6 +30,9 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase {
@@ -37,7 +40,8 @@ class EntityTest extends TestCase {
       * vérifie le bon fonctionnement du constructeur de la classe Entity
       */
     public function testnpc() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $npccharacter = new Npc_Character("description", "name", ["status"], [], $this->createMock(Location_Interface::class));
 
         $this->assertEquals("description", $npccharacter->get_description());
@@ -45,7 +49,8 @@ class EntityTest extends TestCase {
         $this->assertEquals(["status"], $npccharacter->get_status());
     }
     public function testplayer() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $playercharacter = new Player_Character(
             "description",
             "name",
@@ -57,16 +62,17 @@ class EntityTest extends TestCase {
         $this->assertEquals(["status"], $playercharacter->get_status());
     }
     public function testitem() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $item = new Item("description", "name", ["status"]);
         $this->assertEquals("description", $item->get_description());
         $this->assertEquals("name", $item->get_name());
         $this->assertEquals(["status"], $item->get_status());
     }
     public function testlocation() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $location = new Location("name", ["status"], [], [], [], []);
-        $this->assertEquals("description", $location->get_description());
         $this->assertEquals("name", $location->get_name());
         $this->assertEquals(["status"], $location->get_status());
     }
@@ -75,11 +81,12 @@ class EntityTest extends TestCase {
      * vérifie le bon fonctionnement des changements de status
      */
     public function teststatus() {
-        $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
-        $npccharacter = new Npc_Character("description", "name", ["status"], [], $this->createMock(Location_Interface::class));
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $npccharacter = new Npc_Character("description", "namenpc", ["status"], [], $this->createMock(Location_Interface::class));
         $playercharacter = new Player_Character(
             "description",
-            "name", ["status"],
+            "nameplayer", ["status"],
             [],
             $this->createMock(Location_Interface::class));
         $item = new Item("description", "nameitem", ["status"]);
