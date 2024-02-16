@@ -66,7 +66,6 @@ class Action implements Action_Interface {
         if (count($conditionstrue) > 0) {
             foreach ($conditionstrue as $condition) {
                 $result = $condition->do_reactions();
-                echo($result);
                 array_push($return, $result);
             }
         }

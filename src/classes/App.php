@@ -37,7 +37,7 @@ class App implements App_Interface {
 
     private array $csvdata;
 
-    private static ?App_Interface $instance = null;
+    private static App_Interface $instance;
 
     private array $startentities;
 
@@ -217,7 +217,7 @@ class App implements App_Interface {
                 throw new Exception($locationname . "is not a location");
             }
             $actions = $this->create_column_actions($location, $col, $row + 6);
-
+            $location->set_actions($actions);
             $col++;
         }
     }
@@ -243,7 +243,10 @@ class App implements App_Interface {
             if (!isset($conditionnames[$action])) {
                 $conditionnames[$action] = [];
             }
-            array_push($conditionnames[$action], $condition);
+            if (!in_array($condition, $conditionnames[$action])) {
+                array_push($conditionnames[$action], $condition);
+            }
+
             $reactiondescription = $this->get_cell_string($row + 2, $col);
 
             $entityname = $this->get_cell_string($row + 3, $col);
@@ -398,7 +401,7 @@ class App implements App_Interface {
                 break;
             }
         }
-        if ($entity1 = null) {
+        if ($entity1 == null) {
             throw new Exception("Wrong condition syntax");
         }
 
