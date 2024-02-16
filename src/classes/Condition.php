@@ -180,6 +180,7 @@ class Condition implements Condition_Interface {
                         return !$entity1->has_item_location($entity2);
                     }
                 }
+
             } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
                 return true;
             }
