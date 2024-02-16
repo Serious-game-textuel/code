@@ -31,7 +31,7 @@ interface Location_Interface extends Entity_Interface {
 
     /**
      * @param Action_Interface[] $actions
-     * 
+     *
      * @return void
      */
     public function set_actions(array $actions);
@@ -43,7 +43,7 @@ interface Location_Interface extends Entity_Interface {
 
     /**
      * @param string $action
-     * 
+     *
      * @return string[]
      * // This method checks if the actions are valid for the location by parsing the string into a Action and called do_condition
      */
