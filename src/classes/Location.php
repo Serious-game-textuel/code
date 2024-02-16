@@ -80,7 +80,9 @@ class Location extends Entity implements Location_Interface {
                         array_push($return, $result);
                     }
                 }
-
+            } else if ($action == "sauvegarder") {
+                App::get_instance()->create_save();
+                array_push($return, "Partie sauvegardée");
             }
         }
         return $return;
