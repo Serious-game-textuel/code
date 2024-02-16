@@ -39,18 +39,43 @@ interface App_Interface {
      */
     public function set_save(Game_Interface $save);
 
+    /**
+     * @param string $entityname
+     *
+     * @return ?Entity_Interface
+     */
     public function get_startentity($entityname);
 
+    /**
+     * @return array
+     */
     public function get_all_startentities();
 
+    /**
+     * @param Entity_Interface $entity
+     *
+     * @return void
+     */
     public function add_startentity(Entity_Interface $entity);
 
+    /**
+     * @return App_Interface
+     */
     public static function get_instance();
 
+    /**
+     * @return void
+     */
     public function restart_game_from_save();
 
+    /**
+     * @return void
+     */
     public function restart_game_from_start();
 
+    /**
+     * @return void
+     */
     public function create_save();
 
 }

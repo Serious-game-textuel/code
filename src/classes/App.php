@@ -111,6 +111,7 @@ class App implements App_Interface {
 
     public function add_startentity(Entity_Interface $entity) {
         array_push($this->startentities, $entity);
+        $this->startentities = Util::clean_array($this->startentities, Entity_Interface::class);
     }
 
     private function parse() {
@@ -496,7 +497,7 @@ class App implements App_Interface {
         return $words;
     }
 
-    private static function tokenize($str) {
+    public static function tokenize($str) {
         $str = trim($str);
         $str = preg_replace('/\s+/', ' ', $str);
         $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
