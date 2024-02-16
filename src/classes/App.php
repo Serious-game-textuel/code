@@ -28,6 +28,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 
 class App implements App_Interface {
 
@@ -45,7 +46,7 @@ class App implements App_Interface {
 
     private Language $language;
 
-    public function __construct($csvfilepath, Language $language) {
+    public function __construct(string $csvfilepath, Language $language) {
         $file = fopen($csvfilepath, 'r');
         if ($file !== false) {
             $this->csvdata = [];
@@ -495,7 +496,7 @@ class App implements App_Interface {
         return $words;
     }
 
-    public static function tokenize($str) {
+    private static function tokenize($str) {
         $str = trim($str);
         $str = preg_replace('/\s+/', ' ', $str);
         $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);

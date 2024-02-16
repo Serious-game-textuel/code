@@ -27,7 +27,14 @@ class AppTest extends TestCase {
      */
     public function testgetsetgame() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        try{
+            $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+            $this->assertTrue(true);
+        } catch (Exception $e) {
+            $this->assertFalse(false);
+        }
+        $game = $app->get_game();
+        $this->assertTrue(isset($game));
     }
 }
 
