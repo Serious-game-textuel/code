@@ -37,49 +37,52 @@ class InventoryTest extends TestCase {
      * vérifie le bon fonctionnement du constructeur de la classe Inventory
      */
     public function testinventory() {
-        $game = new Game(0, 0, [], new DateTime(),
-        Language::FR, $this->createMock(Location_Interface::class), $this->createMock(Player_Character::class), null, null);
-        $item = new Item("description1", "name1", ["status1"]);
-        $item2 = new Item("description2", "name2", ["status2"]);
-        $item3 = new Item("description3", "name3", ["status3"]);
-        $playercharacter = new Player_Character("description", ["status"],
-        $this->createMock(Inventory_Interface::class), $this->createMock(Location_Interface::class));
+            $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
+            $item = new Item("description1", "name1", ["status1"]);
+            $item2 = new Item("description2", "name2", ["status2"]);
+            $item3 = new Item("description3", "name3", ["status3"]);
+            $playercharacter = new Player_Character(
+              "description",
+              "name",
+              ["status"],
+              [],
+              $this->createMock(Location_Interface::class));
 
-        $inventory = new Inventory([$item, $item2]);
-        $this->assertEquals(true, $inventory->check_item($item2));
-        $this->asserEquals(false, $inventory->check_item($item3));
+            $inventory = new Inventory([$item, $item2]);
+            $this->assertEquals(true, $inventory->check_item($item2));
+            $this->assertEquals(false, $inventory->check_item($item3));
 
-        $this->assertEquals(null, $inventory->get_item(-1));
-        $this->assertEquals($item2, $inventory->get_item($item2->get_id()));
+            $this->assertEquals(null, $inventory->get_item(-1));
+            $this->assertEquals($item2, $inventory->get_item($item2->get_id()));
 
-        $this->assertEquals([$item, $item2], $inventory->get_items());
-        $inventory->add_items([$item]);
-        $this->assertEquals([$item, $item2], $inventory->get_items());
-        $inventory->add_items([$item, $item2]);
-        $this->assertEquals([$item, $item2], $inventory->get_items());
-        $inventory->add_items([]);
-        $this->assertEquals([$item, $item2], $inventory->get_items());
-        $inventory->add_items([null]);
-        $this->assertEquals([$item, $item2], $inventory->get_items());
-        $inventory->add_items([null, $item3]);
-        $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
-        $inventory->add_items([$playercharacter, 15]);
-        $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
-        $inventory->remove_item([$item3]);
-        $inventory->add_items([$item3, $playercharacter]);
-        $this->assertEquals([$item, $item2], $inventory->get_items());
-        $inventory->remove_item([null, $item, 15, $item2, $item3, null]);
-        $this->assertEquals([], $inventory->get_items());
-        $inventory->remove_item([$item, $item2]);
-        $this->assertEquals([], $inventory->get_items());
-        $inventory->add_items([$item, $item2]);
-        $inventory->remove_item([]);
-        $this->assertEquals([$item, $item2], $inventory->get_items());
-        $inventory->add_items([$item, $item2]);
-        $inventory->remove_item($item);
-        $this->assertEquals([$item], $inventory->get_items());
-        $this->assertEquals([$item, $item2], $inventory->get_items());
-        $inventory->add_items([$item3]);
-        $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
+            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $inventory->add_items([$item]);
+            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $inventory->add_items([$item, $item2]);
+            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $inventory->add_items([]);
+            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $inventory->add_items([null]);
+            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $inventory->add_items([null, $item3]);
+            $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
+            $inventory->add_items([$playercharacter, 15]);
+            $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
+            $inventory->remove_items([$item3]);
+            $inventory->add_items([$item3, $playercharacter]);
+            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $inventory->remove_items([null, $item, 15, $item2, $item3, null]);
+            $this->assertEquals([], $inventory->get_items());
+            $inventory->remove_items([$item, $item]);
+            $this->assertEquals([], $inventory->get_items());
+            $inventory->add_items([$item, $item2]);
+            $inventory->remove_items([]);
+            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $inventory->add_items([$item, $item2]);
+            $inventory->remove_items([$item]);
+            $this->assertEquals([$item2], $inventory->get_items());
+            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $inventory->add_items([$item3]);
+            $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
     }
 }
