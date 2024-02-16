@@ -59,7 +59,6 @@ class Location extends Entity implements Location_Interface {
         $action = App::tokenize($action);
         $actionvalide = $this->is_action_valide($action);
         if ($actionvalide != null) {
-            $r = $actionvalide->do_conditions();
             array_push($return, $actionvalide->do_conditions());
         } else {
             $defaultaction = "fouiller";

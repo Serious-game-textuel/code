@@ -19,7 +19,7 @@ class Util {
             throw new InvalidArgumentException('Invalid array : duplicate value.');
         }
         for ($i = 0; $i < count($array); $i++) {
-            if ($array[$i] == null) {
+            if (!isset($array[$i])) {
                 throw new InvalidArgumentException('Invalid array : value at index '.$i.' is null.');
             }
             if ($class == 'string') {
@@ -37,17 +37,18 @@ class Util {
     }
 
     public static function clean_array(array $array, string $class) {
+        $values = array_values($array);
         $result = [];
         if ($class == "string") {
-            for ($i = 0; $i < count($array); $i++) {
-                if ($array[$i] != null && is_string($array[$i])) {
-                    array_push($result, $array[$i]);
+            for ($i = 0; $i < count($values); $i++) {
+                if (isset($values[$i]) && is_string($values[$i])) {
+                    array_push($result, $values[$i]);
                 }
             }
         } else {
-            for ($i = 0; $i < count($array); $i++) {
-                if (isset($array[$i]) && $array[$i] instanceof $class) {
-                    array_push($result, $array[$i]);
+            for ($i = 0; $i < count($values); $i++) {
+                if (isset($values[$i]) && $values[$i] instanceof $class) {
+                    array_push($result, $values[$i]);
                 }
             }
         }
@@ -65,7 +66,7 @@ class Util {
                 }
             }
         }
-        return array_filter($result);
+        return array_values(array_filter($result));
     }
 
     public static function has_array_duplicate(array $array) {

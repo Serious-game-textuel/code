@@ -140,6 +140,8 @@ class UtilTest extends TestCase {
         $str1 = "a";
         $str2 = "b";
         $str3 = "b";
+        $this->assertTrue($this->array_equal(Util::clean_array([$str1], 'string'), [$str1]));
+        $this->assertTrue($this->array_equal(Util::clean_array([1], 'string'), []));
         $this->assertTrue($this->array_equal(Util::clean_array([$str1, $str2], 'string'), [$str1, $str2]));
         $this->assertTrue($this->array_equal(Util::clean_array([$str1, $str1], 'string'), [$str1]));
         $this->assertTrue($this->array_equal(Util::clean_array([$str2, $str3], 'string'), [$str2]));
@@ -152,6 +154,8 @@ class UtilTest extends TestCase {
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
+        $this->assertTrue($this->array_equal(Util::clean_array([$item1], Item_Interface::class), [$item1]));
+        $this->assertTrue($this->array_equal(Util::clean_array([1], Item_Interface::class), []));
         $this->assertTrue($this->array_equal(Util::clean_array([$item1, $item2], Item_Interface::class), [$item1, $item2]));
         $this->assertTrue($this->array_equal(Util::clean_array([$item1, $item1], Item_Interface::class), [$item1]));
         $this->assertTrue($this->array_equal(Util::clean_array([$item1, null], Item_Interface::class), [$item1]));
