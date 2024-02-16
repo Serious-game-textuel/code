@@ -120,7 +120,8 @@ class App implements App_Interface {
 
         $player = $this->get_startentity(self::$playerkeyword);
 
-        $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(), $player, $fouillerdefaut, $interactiondefaut, $this->startentities);
+        $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(),
+        $player, $fouillerdefaut, $interactiondefaut, $this->startentities);
     }
 
     private function create_action_defaut($row) {
