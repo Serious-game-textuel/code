@@ -37,6 +37,9 @@ class Location extends Entity implements Location_Interface {
     public function get_actions() {
         return $this->actions;
     }
+    public function set_actions(array $actions) {
+        $this->actions = $actions;
+    }
     public function get_hints() {
         return $this->hints;
     }
@@ -44,7 +47,7 @@ class Location extends Entity implements Location_Interface {
     public function is_action_valide(string $action) {
         for ($i = 0; $i < count($this->actions); $i++) {
             if ($this->actions[$i]->get_description() == $action) {
-                return $action[$i];
+                return $this->actions[$i];
             }
         }
         return null;
@@ -64,19 +67,16 @@ class Location extends Entity implements Location_Interface {
                 if ($game->get_entity($entity) !== null) {
                     if ($game->get_default_action_interact() !== null) {
                         $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
-                        echo($result);
                         array_push($return, $result);
                     } else {
                         if ($game->get_default_action_search() !== null) {
                             $result = $game->get_default_action_search()->do_conditions_verb($defaultaction);
-                            echo($result);
                             array_push($return, $result);
                         }
                     }
                 } else {
                     if ($game->get_default_action_interact() !== null) {
                         $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
-                        echo($result);
                         array_push($return, $result);
                     }
                 }

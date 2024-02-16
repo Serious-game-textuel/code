@@ -16,6 +16,7 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
+
 interface Location_Interface extends Entity_Interface {
 
     /**
@@ -28,6 +29,10 @@ interface Location_Interface extends Entity_Interface {
      */
     public function get_actions();
 
+    /**
+     * @param Action_Interface[] $actions
+     */
+    public function set_actions(array $actions);
     /**
      * @return Hint_Interface[]
      */
