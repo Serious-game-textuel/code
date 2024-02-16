@@ -368,7 +368,7 @@ class App implements App_Interface {
         }
         $token = array_pop($tokens);
         if ($token != '|' && $token != '&') {
-           return [null, null, $token, $tokens];
+            return [null, null, $token, $tokens];
         } else {
             $tree1 = $this->build_tree($tokens);
             $tree2 = $this->build_tree($tree1[3]);

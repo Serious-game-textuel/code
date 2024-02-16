@@ -28,7 +28,7 @@ class AppTest extends TestCase {
     public function testgetsetgame() {
         global $CFG;
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
-        
+
         $hutte = $app->get_startentity("hutte");
         $this->assertTrue($hutte instanceof Location);
         $actions = $hutte->get_actions();
