@@ -27,6 +27,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_React
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
 
 class App implements App_Interface {
 
@@ -108,24 +109,40 @@ class App implements App_Interface {
         $itemsrow = $this->get_row("OBJETS");
         $charactersrow = $this->get_row("PERSONNAGES");
         $locationsrow = $this->get_row("LIEUX");
+        $interactiondefautrow = $this->get_row("interaction avec objet n'existant pas :");
+        $fouillerdefautrow = $this->get_row("Fouiller par défaut :");
         $this->create_items($itemsrow);
         $this->create_characters($charactersrow);
         $this->create_locations($locationsrow);
         $this->create_all_actions($locationsrow);
+        $interactiondefaut = $this->create_action_defaut($interactiondefautrow);
+        $fouillerdefaut = $this->create_action_defaut($fouillerdefautrow);
 
         $player = $this->get_startentity(self::$playerkeyword);
 
-        $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(), $player, null, null, $this->startentities);
+        $this->game = new Game(0, 0, [$player->get_current_location()], new DateTime(),
+        $player, $fouillerdefaut, $interactiondefaut, $this->startentities);
+    }
+
+    private function create_action_defaut($row) {
+        $description = $this->get_cell_string($row, 1);
+        if (strlen($description) > 0) {
+            $action = new Default_Action($description, [new Condition([])]);
+            return $action;
+        } else {
+            return null;
+        }
     }
 
     private function create_items($row) {
         $col = 1;
-        $row = $this->get_row("OBJETS");
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
-            $name = $this->get_cell_string(3, $col);
-            $description = $this->get_cell_string(4, $col);
-            $statuses = $this->get_cell_array_string(5, $col);
-            new Item($description, $name, $statuses);
+            $name = $this->get_cell_string($row, $col);
+            $description = $this->get_cell_string($row + 1, $col);
+            $statuses = $this->get_cell_array_string($row + 2, $col);
+            if ($name != null && strlen($name) > 0) {
+                new Item($description, $name, $statuses);
+            }
             $col++;
         }
     }
@@ -141,7 +158,7 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . "is not an item with the row: " . $row . " and the col: " . $col ."");
+                    throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
                 }
                 array_push($items, $item);
             }
