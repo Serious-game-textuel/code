@@ -69,14 +69,10 @@ abstract class Entity implements Entity_Interface {
     }
 
     public function add_status(array $status) {
-        if (!in_array($status, $this->status)) {
-            $this->status = Util::clean_array(array_merge($this->status, $status), 'string');
-        }
+        $this->status = Util::clean_array(array_merge($this->status, $status), 'string');
     }
 
     public function remove_status(array $status) {
-        if (in_array($status, $this->status)) {
-            $this->status = Util::clean_array(array_diff($this->status, $status), 'string');
-        }
+        $this->status = Util::clean_array(array_diff($this->status, $status), 'string');
     }
 }

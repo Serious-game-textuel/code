@@ -38,23 +38,20 @@ class Inventory implements Inventory_Interface {
         return $this->items;
     }
 
-    public function add_items(array $item) {
-        $this->items = Util::clean_array(array_merge($this->items, $item), Item_Interface::class);
+    public function add_item(Item_Interface $item) {
+        $this->items[] = $item;
     }
 
-    public function remove_items(array $item) {
-        $item = Util::clean_array($item, Item_Interface::class);
-        $key = array_search($item, $this->items);
+    public function remove_item(Item_Interface $item) {
+        $key = array_search($item, $this->items, true);
         if ($key !== false) {
             unset($this->items[$key]);
         }
     }
 
     public function check_item(Item_Interface $item) {
-        foreach ($this->items as $itemarray) {
-            if (in_array($item, $itemarray, true)) {
-                return true;
-            }
+        if (in_array($item, $this->items , true)) {
+            return true;
         }
         return false;
     }

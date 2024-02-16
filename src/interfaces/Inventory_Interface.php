@@ -13,7 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
 interface Inventory_Interface {
 
     /**
@@ -33,16 +36,16 @@ interface Inventory_Interface {
     public function get_items();
 
     /**
-     * @param array $item
+     * @param Item_Interface $item
      * @return void
      */
-    public function add_items(array $item);
+    public function add_item(Item_Interface $item);
 
     /**
-     * @param array $item
+     * @param Item_Interface $item
      * @return void
      */
-    public function remove_items(array $item);
+    public function remove_item(Item_Interface $item);
 
     /**
      * @param Item_Interface $item
