@@ -21,10 +21,27 @@
  * @copyright   2024 Your Name <serioustextualgame@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+global $CFG;
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
-
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 // Course module id.
 $id = optional_param('id', 0, PARAM_INT);
 
@@ -45,34 +62,6 @@ require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
-// Récupérez le contenu CSV de $moduleinstance->intro.
-$csvcontent = $moduleinstance->filecontent;
-// Convertissez le contenu CSV en un fichier temporaire.
-$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
-file_put_contents($tempfilepath, $csvcontent);
-
-// Ouvrez le fichier temporaire.
-$handle = fopen($tempfilepath, 'r');
-if ($handle !== false) {
-    // Ignorez la première ligne.
-    fgetcsv($handle);
-
-    // Obtenez la deuxième ligne.
-    $secondline = fgetcsv($handle);
-
-    if ($secondline !== false && count($secondline) > 1) {
-        // Obtenez la deuxième colonne de la deuxième ligne.
-        $secondcolumnvalue = $secondline[1];
-        // Utilisez $second_column_value comme vous le souhaitez.
-    }
-
-    // Fermez le fichier.
-    fclose($handle);
-}
-
-// Supprimez le fichier temporaire.
-unlink($tempfilepath);
-
 $event = \mod_serioustextualgame\event\course_module_viewed::create([
     'objectid' => $moduleinstance->id,
     'context' => $modulecontext,
@@ -85,11 +74,26 @@ $PAGE->set_url('/mod/serioustextualgame/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
+// Récupérez le contenu CSV de $moduleinstance->intro.
+$csvcontent = $moduleinstance->filecontent;
+
+// Convertissez le contenu CSV en un fichier temporaire.
+$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
+file_put_contents($tempfilepath, $csvcontent);
+
+// Utilisez le chemin du fichier temporaire comme entrée pour votre application.
+$app = new App($tempfilepath, Language::FR);
+$game = $app->get_game();
+$currentlocation = $game->get_current_location();
+$action = $currentlocation->check_actions("description");
+if ($action[0][0] == "") {
+    $texte="mauvais parsage";
+} else {
+    $texte = $action[0][0];
+}
 
 echo $OUTPUT->header();
-// Affiche le contenu de la deuxième colonne de la deuxième ligne du fichier CSV.
-echo "second_column_value: $secondcolumnvalue";
-
+echo $texte;
 
 ?>
 

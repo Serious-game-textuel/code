@@ -43,9 +43,9 @@ class App implements App_Interface {
 
     private static string $playerkeyword;
 
-    private Language $language;
+    private string $language;
 
-    public function __construct($csvfilepath, Language $language) {
+    public function __construct($csvfilepath, string $language) {
         $file = fopen($csvfilepath, 'r');
         if ($file !== false) {
             $this->csvdata = [];

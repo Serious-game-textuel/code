@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-enum Language {
-    case FR;
-    case EN;
+class Language {
+    const FR = 'fr';
+    const EN = 'en';
 }
