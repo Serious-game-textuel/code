@@ -47,7 +47,7 @@ interface App_Interface {
     public function get_startentity($entityname);
 
     /**
-     * @return array
+     * @return Entity_Interface[]
      */
     public function get_all_startentities();
 
