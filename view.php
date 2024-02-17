@@ -92,8 +92,22 @@ if ($action[0][0] == "") {
     $texte = $action[0][0];
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $inputText = $_POST['inputText'];
+    // Récupérez à nouveau la currentlocation juste avant d'appeler check_actions
+    $game = $app->get_game();
+    $currentlocation = $game->get_current_location();
+    $action = $currentlocation->check_actions($inputText);
+    $currentlocation = $game->get_current_location();
+    if ($action[0][0] == "") {
+        echo "mauvais parsage";
+    } else {
+        echo $action[0][0];
+    }
+    exit();
+}
+
 echo $OUTPUT->header();
-echo $texte;
 
 ?>
 
@@ -107,18 +121,21 @@ echo $texte;
 
 <script type = "text/javascript">
 
-    function typeWriter(element, txt, color) {
-        if (txt.length > 0) {
-            element.innerHTML += `<span style="color:${color};">${txt.charAt(0)}</span>`;
-            setTimeout(function () {
-                typeWriter(element, txt.substring(1), color)
-            }, 50);
+function typeWriter(element, txt, color) {
+    return new Promise((resolve, reject) => {
+        function type(i) {
+            if (i < txt.length) {
+                element.innerHTML += `<span style="color:${color};">${txt.charAt(i)}</span>`;
+                setTimeout(() => type(i + 1), 50);
+            } else {
+                element.innerHTML += "<br>";
+                resolve();
+            }
         }
-        else {
-            element.innerHTML += "<br>";
-        }
-    }
-    typeWriter(document.getElementById("text"), "Bonjour, je suis un texte dynamique", "white");
+        type(0);
+    });
+}
+    typeWriter(document.getElementById("text"), "<?php echo $texte; ?>", "red");
 
     document.getElementById("inputText").addEventListener("keyup", function(event) {
         if (event.keyCode === 13) { // Vérifie si la touche est "Entrée"
@@ -127,11 +144,34 @@ echo $texte;
     });
 
     function displayInputText() {
-        var inputText = document.getElementById("inputText").value;
-        typeWriter(document.getElementById("text"), inputText, "red"); 
-        document.getElementById("inputText").value = ''; 
-        
-    }
+    var inputText = document.getElementById("inputText");
+    // Désactivez le champ d'entrée
+    inputText.disabled = true;
+    // Affichez d'abord le texte saisi par l'utilisateur
+    typeWriter(document.getElementById("text"), inputText.value, "blue")
+    .then(() => {
+        // Ensuite, faites une requête AJAX à ce même script PHP
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'inputText=' + encodeURIComponent(inputText.value),
+        })
+        .then(response => response.text())
+        .then(text => {
+            // Affichez le résultat de check_actions
+            return typeWriter(document.getElementById("text"), text, "red");
+        })
+        .then(() => {
+            // Réactivez le champ d'entrée une fois que tout le texte a été affiché
+            inputText.disabled = false;
+            inputText.value = '';
+        });
+    });
+}
+
+
 </script>
 
 <?php
