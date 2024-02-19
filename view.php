@@ -93,23 +93,8 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 // Récupérez le contenu CSV de $moduleinstance->intro.
 $csvcontent = $moduleinstance->filecontent;
+unset($_SESSION['conditionsdone']);
 
-// Convertissez le contenu CSV en un fichier temporaire.
-$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
-file_put_contents($tempfilepath, $csvcontent);
-
-// Utilisez le chemin du fichier temporaire comme entrée pour votre application.
-$app = new App($tempfilepath, Language::FR);
-$game = $app->get_game();
-
-$_SESSION['gameId'] = $game->get_id();
-$currentlocation = $game->get_current_location();
-$action = $currentlocation->check_actions("description");
-if ($action[0][0] == "") {
-    $texte="mauvais parsage";
-} else {
-    $texte = $action[0][0];
-}
 
 
 echo $OUTPUT->header();
@@ -126,6 +111,27 @@ echo "gameId: " . $_SESSION['gameId'] . "<br>";
 <button onclick="displayInputText()">Valider</button>
 
 <script type = "text/javascript">
+function displayDescription() {
+    var csvcontent = <?php echo json_encode($csvcontent); ?>;
+
+    fetch(`handle_post.php`, { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'inputText=description' + '&csvcontent=' + encodeURIComponent(csvcontent),
+    })
+    .then(response => response.text())
+    .then(text => {
+        return typeWriter(document.getElementById("text"), text, "red");
+    })
+    .then(() => {
+        inputText.disabled = false;
+        inputText.value = '';
+    });
+}
+window.onload = displayDescription;
+
 
 function typeWriter(element, txt, color) {
     return new Promise((resolve, reject) => {
@@ -141,7 +147,6 @@ function typeWriter(element, txt, color) {
         type(0);
     });
 }
-    typeWriter(document.getElementById("text"), "<?php echo $texte; ?>", "red");
 
     document.getElementById("inputText").addEventListener("keyup", function(event) {
         if (event.keyCode === 13) { // Vérifie si la touche est "Entrée"

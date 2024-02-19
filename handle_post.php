@@ -47,7 +47,7 @@ $app = new App($tempfilepath, Language::FR);
 if (isset($_SESSION['conditionsdone'])) {
     $conditionsdone = $_SESSION['conditionsdone'];
     $conditionsdone= unserialize($conditionsdone);
-    var_dump($conditionsdone);
+    //var_dump($conditionsdone);
     $app->do_actionsdone($conditionsdone);
 }
 $game = $app->get_game();
