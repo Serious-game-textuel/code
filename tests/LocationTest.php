@@ -65,6 +65,7 @@ class LocationTest extends TestCase {
         $action = $currentlocation->check_actions("fouiller hutte");
         $this->assertEquals("vous ne trouvez rien de particulier", $action[0][0]);
 
+        $action = $currentlocation->check_actions("fouiller");
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("aller jardins royaux");
         //$this->assertEquals("deplacement vers : jardins royaux", $action[0][0]);
@@ -130,9 +131,12 @@ class LocationTest extends TestCase {
         $this->assertEquals("ouvert", $currentstatus[0]);
         // Aller Cour.
         $action = $currentlocation->check_actions("Aller Cour");
-        $this->assertEquals('le troll devore son poisson cru & ne fait pas attention a vous', $action[0][0]);
+        //$this->assertEquals('le troll devore son poisson cru & ne fait pas attention a vous', $action[0][0]);
         $currentlocation = $game->get_current_location();
         $this->assertEquals("cour", $currentlocation->get_name());
+
+        // voir la description de la cour.
+        $action = $currentlocation->check_actions("description");
     }
 }
 

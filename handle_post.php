@@ -57,8 +57,8 @@ $currentlocation = $game->get_current_location();
 $action = $currentlocation->check_actions($inputText);
 
 
-if ($action[0][0] == "") {
-    echo "mauvais parsage";
+if (empty($action[0][0])) {
+    echo "donne une autre commande";
 } else {
     echo $action[0][0];
 }

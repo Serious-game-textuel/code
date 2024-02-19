@@ -98,16 +98,15 @@ unset($_SESSION['conditionsdone']);
 
 
 echo $OUTPUT->header();
-echo "gameId: " . $_SESSION['gameId'] . "<br>";
 
 ?>
 
 <div id="container" style="background-color: black; color: white; width: 100%; height: 500px; overflow: auto; position: relative;">
     <div id="text" style="padding: 10px;"></div>
-    <input type="text" id="inputText" 
-        placeholder="Écrivez quelque chose ici..." 
-        style="position: absolute; bottom: 0; width: 100%;">
 </div>
+<input type="text" id="inputText" 
+    placeholder="Écrivez quelque chose ici..." 
+    style="width: 100%;">
 <button onclick="displayInputText()">Valider</button>
 
 <script type = "text/javascript">
