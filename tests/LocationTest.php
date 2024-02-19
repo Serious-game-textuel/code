@@ -185,5 +185,23 @@ class LocationTest extends TestCase {
         $currentlocation = $game->get_current_location();
         $this->assertTrue($currentlocation->get_name() !== "cour");
     }
+
+    public function test_objets() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $currentlocation = $game->get_current_location();
+
+        // On test qu'on peut récupérer un objet qu'une seule fois
+        $action = $currentlocation->check_actions("Prendre canne a peche");
+        $action = $currentlocation->check_actions("Prendre canne a peche");
+        $count = 0;
+        foreach ($game->get_player()->get_inventory()->get_items() as $item) {
+            if ($item->get_name() == "canne a peche") {
+                $count ++;
+            }
+        }
+        $this->assertTrue($count == 1);
+    }
 }
 
