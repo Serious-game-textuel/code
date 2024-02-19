@@ -52,34 +52,35 @@ class LocationTest extends TestCase {
         $player = $game->get_player();
         $canneapeche = $game->get_entity("canne a peche");
         $this->assertTrue($player->has_item_character($canneapeche));
-        $this->assertEquals("vous avez maintenant une canne a peche dans votre inventaire. / ", $action[0][0]);
+        $this->assertTrue(in_array("vous avez maintenant une canne a peche dans votre inventaire. / ", $action));
 
         // Description de la hutte.
         $action = $currentlocation->check_actions("description");
+        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
 
         // Examiner la canne a peche.
         $action = $currentlocation->check_actions("examiner canne à pêche");
-        $this->assertEquals("la canne a peche est une simple canne a peche.", $action[0][0]);
+        $this->assertTrue(in_array("la canne a peche est une simple canne a peche.", $action));
 
         // Examiner la hutte.
         $action = $currentlocation->check_actions("fouiller hutte");
-        $this->assertEquals("vous ne trouvez rien de particulier", $action[0][0]);
+        $this->assertTrue(in_array("vous ne trouvez rien de particulier", $action));
 
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("aller jardins royaux");
-        $this->assertEquals("deplacement vers : jardins royaux", $action[0][0]);
+        $this->assertTrue(in_array("deplacement vers : jardins royaux", $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("jardins royaux", $currentlocation->get_name());
         $this->assertNotEquals("hutte", $currentlocation->get_name());
         $statuscurrentlocation = $currentlocation->get_status();
-        $this->assertEquals("ouvert", $statuscurrentlocation[0]);
+        $this->assertTrue(in_array("ouvert", $statuscurrentlocation));
 
         // Description des jardins royaux.
         $action = $currentlocation->check_actions("description");
 
         // Aller dans l'etang.
         $action = $currentlocation->check_actions("aller etang");
-        $this->assertEquals("deplacement vers : etang", $action[0][0]);
+        $this->assertTrue(in_array("deplacement vers : etang", $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("etang", $currentlocation->get_name());
 
@@ -90,49 +91,99 @@ class LocationTest extends TestCase {
 
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("aller jardins royaux");
-        $this->assertEquals("deplacement vers : jardins royaux", $action[0][0]);
+        $this->assertTrue(in_array("deplacement vers : jardins royaux", $action));
         $currentlocation = $game->get_current_location();
         // Sentir les roses.
         $action = $currentlocation->check_actions("sentir rose");
-        $this->assertEquals("la rose sent bon", $action[0][0]);
+        $this->assertTrue(in_array("la rose sent bon", $action));
 
         // Cueillir une rose quand le lieu en contient.
         $action = $currentlocation->check_actions("cueillir rose");
         $player = $game->get_player();
         $rose = $game->get_entity("rose");
         $this->assertTrue($player->has_item_character($rose));
-        $this->assertEquals('vous avez maintenant une rose dans votre inventaire / ', $action[0][0]);
+        $this->assertTrue(in_array('vous avez maintenant une rose dans votre inventaire / ', $action));
         $this->assertFalse($currentlocation->has_item_location($rose));
         // Sentir la rose quand le joueur l'a dans son inventaire.
 
         // Aller sentier sinueux.
         $action = $currentlocation->check_actions("aller sentier sinueux");
-        $this->assertEquals("deplacement vers : sentier sinueux", $action[0][0]);
+        $this->assertTrue(in_array("deplacement vers : sentier sinueux", $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("sentier sinueux", $currentlocation->get_name());
 
         // Aller au pont levis.
         $action = $currentlocation->check_actions("Aller Pont-Levis");
-        $this->assertEquals("deplacement vers : pont-levis", $action[0][0]);
+        $this->assertTrue(in_array("deplacement vers : pont-levis", $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("pont-levis", $currentlocation->get_name());
         // Attaquer Troll.
 
         // Voir le status de la cour avant que le troll ait le poisson.
         $courstatus = $game->get_entity("cour")->get_status();
-        $this->assertEquals("ferme", $courstatus[0]);
+        $this->assertTrue(in_array("ferme", $courstatus));
         // Donner poissons à troll.
         $action = $currentlocation->check_actions("Donner poisson a troll");
         $this->assertFalse($player->has_item_character($poisson));
 
         // Voir le status de la cour après que le troll ait le poisson.
         $currentstatus = $currentlocation->get_status();
-        $this->assertEquals("ouvert", $currentstatus[0]);
+        $this->assertTrue(in_array("ouvert", $currentstatus));
         // Aller Cour.
         $action = $currentlocation->check_actions("Aller Cour");
-        $this->assertEquals('le troll devore son poisson cru & ne fait pas attention a vous', $action[0][0]);
+        $this->assertTrue(in_array('le troll devore son poisson cru & ne fait pas attention a vous', $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("cour", $currentlocation->get_name());
+    }
+
+    public function test_description() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $currentlocation = $game->get_current_location();
+
+        // La description est demandable en permanance plusieurs fois
+        $action = $currentlocation->check_actions("description");
+        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+        $action = $currentlocation->check_actions("description");
+        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+        $action = $currentlocation->check_actions("description");
+        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+        $action = $currentlocation->check_actions("description");
+        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+
+        // La description est demandable dans n'importe quel lieu
+        $action = $currentlocation->check_actions("aller jardins royaux");
+        $currentlocation = $game->get_current_location();
+        $action = $currentlocation->check_actions("description");
+        $this->assertTrue(in_array("vous etes dans les jardins royaux, leur vegetation est luxuriante. il y a des rose. vous apercevez aussi une hutte.", $action));
+    }
+
+    public function test_deplacements() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $currentlocation = $game->get_current_location();
+
+        // On test d'aller à un endroit pas accessible d'ici (trop loin)
+        $action = $currentlocation->check_actions("aller cour");
+        $this->assertTrue(in_array("aller quoi ?", $action));
+
+        // On test d'aller à un endroit qui n'existe pas
+        $action = $currentlocation->check_actions("aller cave");
+        $this->assertTrue(in_array("aller quoi ?", $action));
+
+        // On test d'aller à un endroit fermé
+        $currentlocation->check_actions("aller jardins royaux");
+        $currentlocation = $game->get_current_location();
+        $currentlocation->check_actions("aller sentier sinueux");
+        $currentlocation = $game->get_current_location();
+        $currentlocation->check_actions("Aller Pont-Levis");
+        $currentlocation = $game->get_current_location();
+        $this->assertTrue($currentlocation->get_name() === "pont-levis");
+        $currentlocation->check_actions("Aller Cour");
+        $currentlocation = $game->get_current_location();
+        $this->assertTrue($currentlocation->get_name() !== "cour");
     }
 }
 
