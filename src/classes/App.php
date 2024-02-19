@@ -46,7 +46,7 @@ class App implements App_Interface {
 
     private string $language;
 
-    private $conditionsdone = [];
+    private $actionsdone = [];
 
     public function __construct($csvfilepath, string $language) {
         $file = fopen($csvfilepath, 'r');
@@ -70,17 +70,17 @@ class App implements App_Interface {
         }
     }
 
-    public function store_conditionsdone($condition) {
-        $this->conditionsdone[] = $condition;
+    public function store_actionsdone($actionsdone) {
+        $this->actionsdone[] = $actionsdone;
     }
 
-    public function do_conditionsdone($conditionsdone) {
-        foreach ($conditionsdone as $condition) {
-            $condition->do_reactions();
+    public function do_actionsdone($actionsdone) {
+        foreach ($actionsdone as $action) {
+            $this->get_game()->get_current_location()->check_actions($action);
         }
     }
-    public function get_conditionsdone() {
-        return $this->conditionsdone;
+    public function get_actionsdone() {
+        return $this->actionsdone;
     }
         
     public static function get_instance() {

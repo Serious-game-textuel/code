@@ -47,7 +47,8 @@ $app = new App($tempfilepath, Language::FR);
 if (isset($_SESSION['conditionsdone'])) {
     $conditionsdone = $_SESSION['conditionsdone'];
     $conditionsdone= unserialize($conditionsdone);
-    $app->do_conditionsdone($conditionsdone);
+    var_dump($conditionsdone);
+    $app->do_actionsdone($conditionsdone);
 }
 $game = $app->get_game();
 $inputText = $_POST['inputText'];
@@ -62,7 +63,7 @@ if ($action[0][0] == "") {
     echo $action[0][0];
 }
 
-$conditionsdone = $app->get_conditionsdone();
+$conditionsdone = $app->get_actionsdone();
 $conditionsdone = serialize($conditionsdone);
 $_SESSION['conditionsdone'] = $conditionsdone;
 
