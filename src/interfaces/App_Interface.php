@@ -16,6 +16,23 @@
 
 interface App_Interface {
     /**
+     * @param Condition_Interface $condition
+     * @return void
+     * 
+     */
+    public function store_conditionsdone(Condition_Interface $condition);
+
+    /**
+     * @param array $conditionsdone
+     * @return void
+     * 
+     */
+    public function do_conditionsdone($conditionsdone);
+    /**
+     * @return array
+     */
+    public function get_conditionsdone();
+    /**
      * @return Game_Interface
      */
     public function get_game();

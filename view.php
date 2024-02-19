@@ -21,6 +21,7 @@
  * @copyright   2024 Your Name <serioustextualgame@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 global $CFG;
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
@@ -34,11 +35,27 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_In
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Hint_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
@@ -84,6 +101,8 @@ file_put_contents($tempfilepath, $csvcontent);
 // Utilisez le chemin du fichier temporaire comme entrée pour votre application.
 $app = new App($tempfilepath, Language::FR);
 $game = $app->get_game();
+
+$_SESSION['gameId'] = $game->get_id();
 $currentlocation = $game->get_current_location();
 $action = $currentlocation->check_actions("description");
 if ($action[0][0] == "") {
@@ -92,22 +111,9 @@ if ($action[0][0] == "") {
     $texte = $action[0][0];
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $inputText = $_POST['inputText'];
-    // Récupérez à nouveau la currentlocation juste avant d'appeler check_actions
-    $game = $app->get_game();
-    $currentlocation = $game->get_current_location();
-    $action = $currentlocation->check_actions($inputText);
-    $currentlocation = $game->get_current_location();
-    if ($action[0][0] == "") {
-        echo "mauvais parsage";
-    } else {
-        echo $action[0][0];
-    }
-    exit();
-}
 
 echo $OUTPUT->header();
+echo "gameId: " . $_SESSION['gameId'] . "<br>";
 
 ?>
 
@@ -144,32 +150,28 @@ function typeWriter(element, txt, color) {
     });
 
     function displayInputText() {
-    var inputText = document.getElementById("inputText");
-    // Désactivez le champ d'entrée
-    inputText.disabled = true;
-    // Affichez d'abord le texte saisi par l'utilisateur
-    typeWriter(document.getElementById("text"), inputText.value, "blue")
-    .then(() => {
-        // Ensuite, faites une requête AJAX à ce même script PHP
-        fetch(window.location.href, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'inputText=' + encodeURIComponent(inputText.value),
-        })
-        .then(response => response.text())
-        .then(text => {
-            // Affichez le résultat de check_actions
-            return typeWriter(document.getElementById("text"), text, "red");
-        })
+        var inputText = document.getElementById("inputText");
+        inputText.disabled = true;
+       var csvcontent = <?php echo json_encode($csvcontent); ?>;
+        typeWriter(document.getElementById("text"), inputText.value, "blue")
         .then(() => {
-            // Réactivez le champ d'entrée une fois que tout le texte a été affiché
-            inputText.disabled = false;
-            inputText.value = '';
+            fetch(`handle_post.php`, { 
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'inputText=' + encodeURIComponent(inputText.value) + '&csvcontent=' + encodeURIComponent(csvcontent),
+})
+.then(response => response.text())
+.then(text => {
+    return typeWriter(document.getElementById("text"), text, "red");
+})
+.then(() => {
+    inputText.disabled = false;
+    inputText.value = '';
+});
         });
-    });
-}
+    }
 
 
 </script>

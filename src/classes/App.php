@@ -28,7 +28,8 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
-
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 class App implements App_Interface {
 
     private Game_Interface $game;
@@ -44,6 +45,8 @@ class App implements App_Interface {
     private static string $playerkeyword;
 
     private string $language;
+
+    private $conditionsdone = [];
 
     public function __construct($csvfilepath, string $language) {
         $file = fopen($csvfilepath, 'r');
@@ -67,6 +70,19 @@ class App implements App_Interface {
         }
     }
 
+    public function store_conditionsdone($condition) {
+        $this->conditionsdone[] = $condition;
+    }
+
+    public function do_conditionsdone($conditionsdone) {
+        foreach ($conditionsdone as $condition) {
+            $condition->do_reactions();
+        }
+    }
+    public function get_conditionsdone() {
+        return $this->conditionsdone;
+    }
+        
     public static function get_instance() {
         if (isset(self::$instance)) {
             return self::$instance;
