@@ -56,7 +56,8 @@ class LocationTest extends TestCase {
 
         // Description de la hutte.
         $action = $currentlocation->check_actions("description");
-        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+        $this->assertTrue(in_array(
+        "bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
 
         // Examiner la canne a peche.
         $action = $currentlocation->check_actions("examiner canne à pêche");
@@ -142,21 +143,27 @@ class LocationTest extends TestCase {
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
 
-        // La description est demandable en permanance plusieurs fois
+        // La description est demandable en permanance plusieurs fois.
         $action = $currentlocation->check_actions("description");
-        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+        $this->assertTrue(in_array(
+        "bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
         $action = $currentlocation->check_actions("description");
-        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+        $this->assertTrue(in_array(
+        "bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
         $action = $currentlocation->check_actions("description");
-        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+        $this->assertTrue(in_array(
+        "bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
         $action = $currentlocation->check_actions("description");
-        $this->assertTrue(in_array("bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
+        $this->assertTrue(in_array(
+        "bienvenue dans l'aventure ! vous etes debout dans une petite hutte. il y a une canne a peche, ici.", $action));
 
-        // La description est demandable dans n'importe quel lieu
+        // La description est demandable dans n'importe quel lieu.
         $action = $currentlocation->check_actions("aller jardins royaux");
         $currentlocation = $game->get_current_location();
         $action = $currentlocation->check_actions("description");
-        $this->assertTrue(in_array("vous etes dans les jardins royaux, leur vegetation est luxuriante. il y a des rose. vous apercevez aussi une hutte.", $action));
+        $this->assertTrue(in_array(
+        "vous etes dans les jardins royaux, leur vegetation est luxuriante. il y a des rose. vous apercevez aussi une hutte."
+        , $action));
     }
 
     public function test_deplacements() {
@@ -165,15 +172,15 @@ class LocationTest extends TestCase {
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
 
-        // On test d'aller à un endroit pas accessible d'ici (trop loin)
+        // On test d'aller à un endroit pas accessible d'ici (trop loin).
         $action = $currentlocation->check_actions("aller cour");
         $this->assertTrue(in_array("aller quoi ?", $action));
 
-        // On test d'aller à un endroit qui n'existe pas
+        // On test d'aller à un endroit qui n'existe pas.
         $action = $currentlocation->check_actions("aller cave");
         $this->assertTrue(in_array("aller quoi ?", $action));
 
-        // On test d'aller à un endroit fermé
+        // On test d'aller à un endroit fermé.
         $currentlocation->check_actions("aller jardins royaux");
         $currentlocation = $game->get_current_location();
         $currentlocation->check_actions("aller sentier sinueux");
@@ -192,7 +199,7 @@ class LocationTest extends TestCase {
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
 
-        // On test qu'on peut récupérer un objet qu'une seule fois
+        // On test qu'on peut récupérer un objet qu'une seule fois.
         $action = $currentlocation->check_actions("Prendre canne a peche");
         $action = $currentlocation->check_actions("Prendre canne a peche");
         $count = 0;
