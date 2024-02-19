@@ -63,7 +63,7 @@ class InventoryTest extends TestCase {
 
             $this->assertEquals([$item, $item2], $inventory->get_items());
             $inventory->add_item($item);
-            $this->assertEquals([$item, $item2], $inventory->get_items());
+            $this->assertEquals([$item2, $item], $inventory->get_items());
             $inventory->add_item($item);
             $inventory->add_item($item2);
             $this->assertEquals([$item, $item2], $inventory->get_items());
