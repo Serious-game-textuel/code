@@ -29,6 +29,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 
 class App implements App_Interface {
 
@@ -46,7 +47,7 @@ class App implements App_Interface {
 
     private Language $language;
 
-    public function __construct($csvfilepath, Language $language) {
+    public function __construct(string $csvfilepath, Language $language) {
         $file = fopen($csvfilepath, 'r');
         if ($file !== false) {
             $this->csvdata = [];
@@ -111,6 +112,7 @@ class App implements App_Interface {
 
     public function add_startentity(Entity_Interface $entity) {
         array_push($this->startentities, $entity);
+        $this->startentities = Util::clean_array($this->startentities, Entity_Interface::class);
     }
 
     private function parse() {
