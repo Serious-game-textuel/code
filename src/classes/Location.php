@@ -56,6 +56,8 @@ class Location extends Entity implements Location_Interface {
     public function check_actions(string $action) {
         $return = [];
         $game = App::get_instance()->get_game();
+        $app = App::get_instance();
+        $app->store_actionsdone($action);
         $action = App::tokenize($action);
         $actionvalide = $this->is_action_valide($action);
         if ($actionvalide != null) {

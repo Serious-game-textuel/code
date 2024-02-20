@@ -17,8 +17,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk_course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
-      </KEYS>
+    </KEYS>
     </TABLE>
   </TABLES>
 </XMLDB>

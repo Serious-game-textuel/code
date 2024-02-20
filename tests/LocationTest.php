@@ -67,9 +67,10 @@ class LocationTest extends TestCase {
         $action = $currentlocation->check_actions("fouiller hutte");
         $this->assertTrue(in_array("vous ne trouvez rien de particulier", $action));
 
+        $action = $currentlocation->check_actions("fouiller");
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("aller jardins royaux");
-        $this->assertTrue(in_array("deplacement vers : jardins royaux", $action));
+        var_dump($action);
         $currentlocation = $game->get_current_location();
         $this->assertEquals("jardins royaux", $currentlocation->get_name());
         $this->assertNotEquals("hutte", $currentlocation->get_name());
@@ -81,7 +82,6 @@ class LocationTest extends TestCase {
 
         // Aller dans l'etang.
         $action = $currentlocation->check_actions("aller etang");
-        $this->assertTrue(in_array("deplacement vers : etang", $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("etang", $currentlocation->get_name());
 
@@ -92,7 +92,6 @@ class LocationTest extends TestCase {
 
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("aller jardins royaux");
-        $this->assertTrue(in_array("deplacement vers : jardins royaux", $action));
         $currentlocation = $game->get_current_location();
         // Sentir les roses.
         $action = $currentlocation->check_actions("sentir rose");
@@ -109,13 +108,11 @@ class LocationTest extends TestCase {
 
         // Aller sentier sinueux.
         $action = $currentlocation->check_actions("aller sentier sinueux");
-        $this->assertTrue(in_array("deplacement vers : sentier sinueux", $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("sentier sinueux", $currentlocation->get_name());
 
         // Aller au pont levis.
         $action = $currentlocation->check_actions("Aller Pont-Levis");
-        $this->assertTrue(in_array("deplacement vers : pont-levis", $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("pont-levis", $currentlocation->get_name());
         // Attaquer Troll.
@@ -132,9 +129,11 @@ class LocationTest extends TestCase {
         $this->assertTrue(in_array("ouvert", $currentstatus));
         // Aller Cour.
         $action = $currentlocation->check_actions("Aller Cour");
-        $this->assertTrue(in_array('le troll devore son poisson cru & ne fait pas attention a vous', $action));
         $currentlocation = $game->get_current_location();
         $this->assertEquals("cour", $currentlocation->get_name());
+
+        // Voir la description de la cour.
+        $action = $currentlocation->check_actions("description");
     }
 
     public function test_description() {

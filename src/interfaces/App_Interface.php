@@ -16,6 +16,21 @@
 
 interface App_Interface {
     /**
+     * @param string $action
+     * @return void
+     */
+    public function store_actionsdone(string $action);
+
+    /**
+     * @param array $actionsdone
+     * @return void
+     */
+    public function do_actionsdone($actionsdone);
+    /**
+     * @return array
+     */
+    public function get_actionsdone();
+    /**
      * @return Game_Interface
      */
     public function get_game();

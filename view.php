@@ -24,7 +24,8 @@
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
-
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 // Course module id.
 $id = optional_param('id', 0, PARAM_INT);
 
@@ -45,34 +46,6 @@ require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
-// Récupérez le contenu CSV de $moduleinstance->intro.
-$csvcontent = $moduleinstance->filecontent;
-// Convertissez le contenu CSV en un fichier temporaire.
-$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
-file_put_contents($tempfilepath, $csvcontent);
-
-// Ouvrez le fichier temporaire.
-$handle = fopen($tempfilepath, 'r');
-if ($handle !== false) {
-    // Ignorez la première ligne.
-    fgetcsv($handle);
-
-    // Obtenez la deuxième ligne.
-    $secondline = fgetcsv($handle);
-
-    if ($secondline !== false && count($secondline) > 1) {
-        // Obtenez la deuxième colonne de la deuxième ligne.
-        $secondcolumnvalue = $secondline[1];
-        // Utilisez $second_column_value comme vous le souhaitez.
-    }
-
-    // Fermez le fichier.
-    fclose($handle);
-}
-
-// Supprimez le fichier temporaire.
-unlink($tempfilepath);
-
 $event = \mod_serioustextualgame\event\course_module_viewed::create([
     'objectid' => $moduleinstance->id,
     'context' => $modulecontext,
@@ -85,36 +58,61 @@ $PAGE->set_url('/mod/serioustextualgame/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
+// Récupérez le contenu CSV de $moduleinstance->intro.
+$csvcontent = $moduleinstance->filecontent;
+unset($_SESSION['conditionsdone']);
+
+
 
 echo $OUTPUT->header();
-// Affiche le contenu de la deuxième colonne de la deuxième ligne du fichier CSV.
-echo "second_column_value: $secondcolumnvalue";
-
 
 ?>
 
 <div id="container" style="background-color: black; color: white; width: 100%; height: 500px; overflow: auto; position: relative;">
     <div id="text" style="padding: 10px;"></div>
-    <input type="text" id="inputText" 
-        placeholder="Écrivez quelque chose ici..." 
-        style="position: absolute; bottom: 0; width: 100%;">
 </div>
+<input type="text" id="inputText" 
+    placeholder="Écrivez quelque chose ici..." 
+    style="width: 100%;">
 <button onclick="displayInputText()">Valider</button>
 
 <script type = "text/javascript">
+function displayDescription() {
+    var csvcontent = <?php echo json_encode($csvcontent); ?>;
 
-    function typeWriter(element, txt, color) {
-        if (txt.length > 0) {
-            element.innerHTML += `<span style="color:${color};">${txt.charAt(0)}</span>`;
-            setTimeout(function () {
-                typeWriter(element, txt.substring(1), color)
-            }, 50);
+    fetch(`handle_post.php`, { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'inputText=description' + '&csvcontent=' + encodeURIComponent(csvcontent),
+    })
+    .then(response => response.text())
+    .then(text => {
+        return typeWriter(document.getElementById("text"), text, "red");
+    })
+    .then(() => {
+        inputText.disabled = false;
+        inputText.value = '';
+    });
+}
+window.onload = displayDescription;
+
+
+function typeWriter(element, txt, color) {
+    return new Promise((resolve, reject) => {
+        function type(i) {
+            if (i < txt.length) {
+                element.innerHTML += `<span style="color:${color};">${txt.charAt(i)}</span>`;
+                setTimeout(() => type(i + 1), 50);
+            } else {
+                element.innerHTML += "<br>";
+                resolve();
+            }
         }
-        else {
-            element.innerHTML += "<br>";
-        }
-    }
-    typeWriter(document.getElementById("text"), "Bonjour, je suis un texte dynamique", "white");
+        type(0);
+    });
+}
 
     document.getElementById("inputText").addEventListener("keyup", function(event) {
         if (event.keyCode === 13) { // Vérifie si la touche est "Entrée"
@@ -123,11 +121,30 @@ echo "second_column_value: $secondcolumnvalue";
     });
 
     function displayInputText() {
-        var inputText = document.getElementById("inputText").value;
-        typeWriter(document.getElementById("text"), inputText, "red"); 
-        document.getElementById("inputText").value = ''; 
-        
+        var inputText = document.getElementById("inputText");
+        inputText.disabled = true;
+       var csvcontent = <?php echo json_encode($csvcontent); ?>;
+        typeWriter(document.getElementById("text"), inputText.value, "blue")
+        .then(() => {
+            fetch(`handle_post.php`, { 
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'inputText=' + encodeURIComponent(inputText.value) + '&csvcontent=' + encodeURIComponent(csvcontent),
+})
+.then(response => response.text())
+.then(text => {
+    return typeWriter(document.getElementById("text"), text, "red");
+})
+.then(() => {
+    inputText.disabled = false;
+    inputText.value = '';
+});
+        });
     }
+
+
 </script>
 
 <?php
