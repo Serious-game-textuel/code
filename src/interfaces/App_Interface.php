@@ -47,11 +47,6 @@ interface App_Interface {
     public function get_startentity($entityname);
 
     /**
-     * @return Entity_Interface[]
-     */
-    public function get_all_startentities();
-
-    /**
      * @param Entity_Interface $entity
      *
      * @return void
