@@ -38,10 +38,10 @@ $currentlocation = $game->get_current_location();
 $action = $currentlocation->check_actions($inputtext);
 
 
-if (empty($action[0][0])) {
+if (empty($action[0])) {
     echo "donne une autre commande";
 } else {
-    echo $action[0][0];
+    echo $action[0];
 }
 
 $conditionsdone = $app->get_actionsdone();

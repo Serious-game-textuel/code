@@ -61,7 +61,10 @@ class Location extends Entity implements Location_Interface {
         $action = App::tokenize($action);
         $actionvalide = $this->is_action_valide($action);
         if ($actionvalide != null) {
-            array_push($return, $actionvalide->do_conditions());
+            $result = $actionvalide->do_conditions();
+            foreach ($result as $res) {
+                array_push($return, $res);
+            }
         } else {
             $defaultaction = "fouiller";
             if (strpos($action, $defaultaction) === 0) {
@@ -69,22 +72,40 @@ class Location extends Entity implements Location_Interface {
                 if ($game->get_entity($entity) !== null) {
                     if ($game->get_default_action_interact() !== null) {
                         $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
-                        array_push($return, $result);
+                        foreach ($result as $res) {
+                            array_push($return, $res);
+                        }
                     } else {
                         if ($game->get_default_action_search() !== null) {
                             $result = $game->get_default_action_search()->do_conditions_verb($defaultaction);
-                            array_push($return, $result);
+                            foreach ($result as $res) {
+                                array_push($return, $res);
+                            }
                         }
                     }
                 } else {
                     if ($game->get_default_action_interact() !== null) {
                         $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
-                        array_push($return, $result);
+                        foreach ($result as $res) {
+                            array_push($return, $res);
+                        }
+                    } else {
+                        array_push($return, $defaultaction.' quoi ?');
                     }
                 }
             } else if ($action == "sauvegarder") {
                 App::get_instance()->create_save();
                 array_push($return, "Partie sauvegardée");
+            } else {
+                $firstword = explode(' ', $action)[0];
+                if ($game->get_default_action_interact() !== null) {
+                    $result = $game->get_default_action_interact()->do_conditions_verb($firstword);
+                    foreach ($result as $res) {
+                        array_push($return, $res);
+                    }
+                } else {
+                    array_push($return, $firstword.' quoi ?');
+                }
             }
         }
         return $return;

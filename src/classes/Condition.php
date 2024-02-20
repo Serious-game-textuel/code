@@ -131,8 +131,8 @@ class Condition implements Condition_Interface {
         if (empty($descriptions)) {
             return "pas de réaction";
         }
-        if (isset($descriptionreturn[0][0])) {
-            array_push($descriptions, $descriptionreturn[0][0]);
+        if (isset($descriptionreturn[0])) {
+            array_push($descriptions, $descriptionreturn[0]);
         }
         return implode(' / ', $descriptions);
     }
