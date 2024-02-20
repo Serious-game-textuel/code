@@ -40,9 +40,6 @@ interface App_Interface {
     public function set_save(Game_Interface $save);
 
     public function get_startentity($entityname);
-
-    public function get_all_startentities();
-
     public function add_startentity(Entity_Interface $entity);
 
     public static function get_instance();
