@@ -105,7 +105,7 @@ class App implements App_Interface {
         return null;
     }
 
-    public function get_all_startentities() {
+    public function get_startentities() {
         return $this->startentities;
     }
 
@@ -200,7 +200,10 @@ class App implements App_Interface {
                 }
                 array_push($items, $item);
             }
-            $hints = explode('/', $this->csvdata[18][$col]);
+            $hints = [];
+            if ($this->csvdata[18][$col] != null) {
+                $hints = explode('/', $this->csvdata[18][$col]);
+            }
             new Location($name, $statuses, $items, $hints, []);
             $col++;
         }
@@ -535,7 +538,7 @@ class App implements App_Interface {
             null,
             $this->get_game()->get_default_action_search(),
             $this->get_game()->get_default_action_interact(),
-            array_values($this->get_all_startentities())
+            array_values($this->get_startentities())
         ));
 
         foreach ($this->get_game()->get_entities() as $entity) {
