@@ -58,7 +58,7 @@ class Condition implements Condition_Interface {
                         } else if ($character instanceof Player_Character) {
                             $game->set_current_location($newlocation);
                             $game->add_visited_location($newlocation);
-                            $descriptionreturn= $newlocation->check_actions("description");
+                            $descriptionreturn = $newlocation->check_actions("description");
 
                         }
                     }

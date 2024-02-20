@@ -18,14 +18,12 @@ interface App_Interface {
     /**
      * @param string $action
      * @return void
-     * 
      */
     public function store_actionsdone(string $action);
 
     /**
      * @param array $actionsdone
      * @return void
-     * 
      */
     public function do_actionsdone($actionsdone);
     /**

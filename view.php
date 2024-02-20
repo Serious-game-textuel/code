@@ -22,41 +22,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-global $CFG;
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Hint_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 // Course module id.

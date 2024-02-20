@@ -83,7 +83,6 @@ class App implements App_Interface {
     public function get_actionsdone() {
         return $this->actionsdone;
     }
-        
     public static function get_instance() {
         if (isset(self::$instance)) {
             return self::$instance;

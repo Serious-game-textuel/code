@@ -1,39 +1,21 @@
 <?php
-global $CFG;
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Hint_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 
@@ -46,15 +28,14 @@ file_put_contents($tempfilepath, $csvcontent);
 $app = new App($tempfilepath, Language::FR);
 if (isset($_SESSION['conditionsdone'])) {
     $conditionsdone = $_SESSION['conditionsdone'];
-    $conditionsdone= unserialize($conditionsdone);
-    //var_dump($conditionsdone);
+    $conditionsdone = unserialize($conditionsdone);
     $app->do_actionsdone($conditionsdone);
 }
 $game = $app->get_game();
-$inputText = $_POST['inputText'];
+$inputtext = $_POST['inputText'];
 $currentlocation = $game->get_current_location();
 
-$action = $currentlocation->check_actions($inputText);
+$action = $currentlocation->check_actions($inputtext);
 
 
 if (empty($action[0][0])) {
