@@ -70,7 +70,6 @@ class LocationTest extends TestCase {
         $action = $currentlocation->check_actions("fouiller");
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("aller jardins royaux");
-        var_dump($action);
         $currentlocation = $game->get_current_location();
         $this->assertEquals("jardins royaux", $currentlocation->get_name());
         $this->assertNotEquals("hutte", $currentlocation->get_name());

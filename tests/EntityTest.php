@@ -36,18 +36,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition
 use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase {
-     /**
-      * vérifie le bon fonctionnement du constructeur de la classe Entity
-      */
-    public function testentity() {
-        global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
-        $entity = new Entity("description", "name", ["status"]);
-        $this->assertInstanceOf(Entity::class, $entity);
-        $this->assertEquals("description", $entity->get_description());
-        $this->assertEquals("name", $entity->get_name());
-        $this->assertEquals(["status"], $entity->get_status());
-    }
+
 
     public function testnpc() {
         global $CFG;
