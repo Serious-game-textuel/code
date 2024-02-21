@@ -23,7 +23,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
 /**
@@ -39,15 +38,14 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-        global $CFG;
-
+        global $CFG, $PAGE;
         $mform = $this->_form;
 
         // Adding the "general" fieldset, where all the common settings are shown.
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('serioustextualgamename', 'mod_serioustextualgame'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('serioustextualgamename', 'mod_serioustextualgame'), ['size' => '64']);
 
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -58,23 +56,30 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'serioustextualgamename', 'mod_serioustextualgame');
-
         // Adding the standard "intro" and "introformat" fields.
         if ($CFG->branch >= 29) {
             $this->standard_intro_elements();
         } else {
             $this->add_intro_editor();
         }
+        $mform->addElement('filepicker', 'userfile', get_string('file'),
+         null, ['maxbytes' => 1111111111, 'accepted_types' => '.csv']);
+        // Adding your new field here.
+        $mform->addHelpButton('userfile', 'file');
 
         // Adding the rest of mod_serioustextualgame settings, spreading all them into this fieldset
         // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'serioustextualgamesettings', get_string('serioustextualgamesettings', 'mod_serioustextualgame'));
-        $mform->addElement('header', 'serioustextualgamefieldset', get_string('serioustextualgamefieldset', 'mod_serioustextualgame'));
+        $mform->addElement('static', 'label1', 'serioustextualgamesettings',
+        get_string('serioustextualgamesettings', 'mod_serioustextualgame'));
+        $mform->addElement('header', 'serioustextualgamefieldset',
+        get_string('serioustextualgamefieldset', 'mod_serioustextualgame'));
 
         // Add standard elements.
         $this->standard_coursemodule_elements();
 
         // Add standard buttons.
         $this->add_action_buttons();
+        $PAGE->requires->js_call_amd('mod_serioustextualgame/filepicker', 'init');
+
     }
 }

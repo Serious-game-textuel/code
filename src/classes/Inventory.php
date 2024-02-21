@@ -1,0 +1,68 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+
+class Inventory implements Inventory_Interface {
+
+    private int $id;
+    private array $items;
+
+    public function __construct(array $items) {
+        $this->id = Id_Class::generate_id(self::class);
+        Util::check_array($items, Item_Interface::class);
+        $this->items = $items;
+    }
+
+    public function get_id() {
+        return $this->id;
+    }
+
+    public function get_item(int $id) {
+        foreach ($this->items as $item) {
+            if ($item->get_id() === $id) {
+                return $item;
+            }
+        }
+        return null;
+    }
+    public function get_items() {
+        return $this->items;
+    }
+
+    public function add_item(Item_Interface $item) {
+        array_push($this->items, $item);
+        $this->items = util::clean_array($this->items, Item_Interface::class);
+    }
+
+    public function remove_item(Item_Interface $item) {
+        $key = array_search($item, $this->items, true);
+        if ($key !== false) {
+            unset($this->items[$key]);
+        }
+    }
+
+    public function check_item(Item_Interface $item) {
+        if (in_array($item, $this->items , true)) {
+            return true;
+        }
+        return false;
+    }
+
+}

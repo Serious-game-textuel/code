@@ -15,22 +15,20 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin upgrade helper functions are defined here.
- *
+ * External services for mod_serioustextualgame.
  * @package     mod_serioustextualgame
- * @category    upgrade
+ * @category    services
  * @copyright   2024 Your Name <serioustextualgame@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
-/**
- * Helper function used by the upgrade.php file.
- */
-function mod_serioustextualgame_helper_function() {
-    global $DB;
-
-    // Please note: you can only use raw low level database access here.
-    // Avoid Moodle API calls in upgrade steps.
-    //
-    // For more information please read {@link https://docs.moodle.org/dev/Upgrade_API}.
-}
+$functions = [
+    'mod_serioustextualgame_get_file_info' => [
+        'classname'   => 'mod_serioustextualgame_external',
+        'methodname'  => 'get_file_info',
+        'description' => 'Get file information',
+        'type'        => 'read',
+        'ajax'        => true,
+    ],
+];

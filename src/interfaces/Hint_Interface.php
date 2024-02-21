@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,21 +12,23 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Code to be executed after the plugin's database scheme has been installed is defined here.
- *
- * @package     mod_serioustextualgame
- * @category    upgrade
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+interface Hint_Interface {
 
-/**
- * Custom code to be run on installing the plugin.
- */
-function xmldb_serioustextualgame_install() {
+    /**
+     * @return int
+     */
+    public function get_id();
 
-    return true;
+    /**
+     * @return string
+     */
+    public function get_description();
+
+    /**
+     * @param string $description
+     * @return void
+     */
+    public function set_description(string $description);
 }

@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,20 +12,16 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-
-/**
- * Plugin version and other meta-data are defined here.
- *
- * @package     mod_serioustextualgame
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
+class No_Entity_Reaction extends Reaction {
 
-$plugin->component = 'mod_serioustextualgame';
-$plugin->release = '1.0.0';
-$plugin->version = 2024013100;
-$plugin->requires = 2022112800;
-$plugin->maturity = MATURITY_ALPHA;
+    public function __construct(string $description) {
+        parent::__construct($description, [], [], [], []);
+    }
+
+
+}
+
