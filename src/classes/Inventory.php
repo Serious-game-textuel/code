@@ -13,9 +13,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+
 class Inventory implements Inventory_Interface {
 
     private int $id;
@@ -32,14 +35,20 @@ class Inventory implements Inventory_Interface {
     }
 
     public function get_item(int $id) {
-        return $this->items[$id] ?? null;
+        foreach ($this->items as $item) {
+            if ($item->get_id() === $id) {
+                return $item;
+            }
+        }
+        return null;
     }
     public function get_items() {
         return $this->items;
     }
 
     public function add_item(Item_Interface $item) {
-        $this->items[] = $item;
+        array_push($this->items, $item);
+        $this->items = util::clean_array($this->items, Item_Interface::class);
     }
 
     public function remove_item(Item_Interface $item) {

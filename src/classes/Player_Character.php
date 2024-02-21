@@ -20,23 +20,23 @@ class Player_Character extends Character {
 
 
     public function set_status(array $status) {
+        $return = [];
         if (in_array("mort", $status)) {
-            echo "Tu es mort!";
+            array_push($return, "Tu es mort!");
             $app = App::get_instance();
             if ($app->get_save() !== null) {
                 App::get_instance()->restart_game_from_save();
             } else {
                 App::get_instance()->restart_game_from_start();
             }
-
         } else if (in_array("victoire", $status)) {
-            echo "Tu as gagné!";
-            echo "tu est mort " . App::get_instance()->get_game()->get_deaths() . " fois!";
-            echo "Tu as fait " . App::get_instance()->get_game()->get_actions() . " actions!";
-            echo "Tu as visité " . count(App::get_instance()->get_game()->get_visited_locations()) . " lieux!";
-
+            array_push($return, "Tu as gagné!");
+            array_push($return, "Tu as fait " . App::get_instance()->get_game()->get_actions() . " actions!");
+            array_push($return, "Tu as visité " . count(App::get_instance()->get_game()->get_visited_locations()) . " lieux!");
+            array_push($return, "Tu as été tué " . App::get_instance()->get_game()->get_deaths() . " fois!");
         } else {
             parent::set_status($status);
         }
+        return $return;
     }
 }

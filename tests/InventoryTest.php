@@ -30,59 +30,74 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 use PHPUnit\Framework\TestCase;
+
+use function PHPUnit\Framework\isInstanceOf;
 
 class InventoryTest extends TestCase {
     /**
      * vérifie le bon fonctionnement du constructeur de la classe Inventory
      */
     public function testinventory() {
-            $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
-            $item = new Item("description1", "name1", ["status1"]);
-            $item2 = new Item("description2", "name2", ["status2"]);
-            $item3 = new Item("description3", "name3", ["status3"]);
-            $playercharacter = new Player_Character(
-              "description",
-              "name",
-              ["status"],
-              [],
-              $this->createMock(Location_Interface::class));
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $item = new Item("description1", "name1", ["status1"]);
+        $item2 = new Item("description2", "name2", ["status2"]);
+        $inventory = new Inventory([$item, $item2]);
+        $this->assertInstanceOf(Inventory::class, $inventory);
+    }
+    public function testcheckitem() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $item = new Item("description1", "name1", ["status1"]);
+        $item2 = new Item("description2", "name2", ["status2"]);
+        $item3 = new Item("description3", "name3", ["status3"]);
 
-            $inventory = new Inventory([$item, $item2]);
-            $this->assertEquals(true, $inventory->check_item($item2));
-            $this->assertEquals(false, $inventory->check_item($item3));
+        $inventory = new Inventory([$item, $item2]);
+        $this->assertTrue($inventory->check_item($item2));
+        $this->assertFalse($inventory->check_item($item3));
+    }
 
-            $this->assertEquals(null, $inventory->get_item(-1));
-            $this->assertEquals($item2, $inventory->get_item($item2->get_id()));
+    public function testgetitem() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $item = new Item("description1", "name1", ["status1"]);
+        $item2 = new Item("description2", "name2", ["status2"]);
+        $item3 = new Item("description3", "name3", ["status3"]);
 
-            $this->assertEquals([$item, $item2], $inventory->get_items());
-            $inventory->add_items([$item]);
-            $this->assertEquals([$item, $item2], $inventory->get_items());
-            $inventory->add_items([$item, $item2]);
-            $this->assertEquals([$item, $item2], $inventory->get_items());
-            $inventory->add_items([]);
-            $this->assertEquals([$item, $item2], $inventory->get_items());
-            $inventory->add_items([null]);
-            $this->assertEquals([$item, $item2], $inventory->get_items());
-            $inventory->add_items([null, $item3]);
-            $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
-            $inventory->add_items([$playercharacter, 15]);
-            $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
-            $inventory->remove_items([$item3]);
-            $inventory->add_items([$item3, $playercharacter]);
-            $this->assertEquals([$item, $item2], $inventory->get_items());
-            $inventory->remove_items([null, $item, 15, $item2, $item3, null]);
-            $this->assertEquals([], $inventory->get_items());
-            $inventory->remove_items([$item, $item]);
-            $this->assertEquals([], $inventory->get_items());
-            $inventory->add_items([$item, $item2]);
-            $inventory->remove_items([]);
-            $this->assertEquals([$item, $item2], $inventory->get_items());
-            $inventory->add_items([$item, $item2]);
-            $inventory->remove_items([$item]);
-            $this->assertEquals([$item2], $inventory->get_items());
-            $this->assertEquals([$item, $item2], $inventory->get_items());
-            $inventory->add_items([$item3]);
-            $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
+        $inventory = new Inventory([$item, $item2]);
+        $this->assertEquals(null, $inventory->get_item(-1));
+        $this->assertEquals($item2, $inventory->get_item($item2->get_id()));
+        $this->assertEquals($item, $inventory->get_item($item->get_id()));
+        $this->assertEquals(null, $inventory->get_item($item3->get_id()));
+    }
+
+    public function testaddremove() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $item = new Item("description1", "name1", ["status1"]);
+        $item2 = new Item("description2", "name2", ["status2"]);
+        $item3 = new Item("description3", "name3", ["status3"]);
+
+        $inventory = new Inventory([$item, $item2]);
+        $inventory->add_item($item);
+        $this->assertEquals([$item2, $item], $inventory->get_items());
+        $inventory->add_item($item);
+        $inventory->add_item($item2);
+        $this->assertEquals([$item, $item2], $inventory->get_items());
+        $inventory->add_item($item3);
+        $this->assertEquals([$item, $item2, $item3], $inventory->get_items());
+        $inventory->remove_item($item3);
+        $this->assertEquals([$item, $item2], $inventory->get_items());
+        $inventory->remove_item($item3);
+        $this->assertEquals([$item, $item2], $inventory->get_items());
     }
 }

@@ -21,6 +21,11 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_In
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 use PHPUnit\Framework\TestCase;
 
 class ReactionTest extends TestCase {
@@ -28,26 +33,39 @@ class ReactionTest extends TestCase {
      * vérifie le comportement de la classe Character_Reaction
      */
     public function testcharacterreaction() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $olditem = new Item("description1", "name1", ["status1"]);
+        $newitem = new Item("description2", "name2", ["status2"]);
         $character = $this->createMock(Character_Interface::class);
         $newlocation = $this->createMock(Location_Interface::class);
 
         $reaction = new Character_Reaction("Description",
-        ['old_status'], ['new_status'], ['old_item'], ['new_item'], $character, $newlocation);
+        ['old_status'], ['new_status'], [$olditem], [$newitem], $character, $newlocation);
 
         $this->assertInstanceOf(Character_Reaction::class, $reaction);
         $this->assertEquals($character, $reaction->get_character());
         $this->assertEquals($newlocation, $reaction->get_new_location());
+        $this->assertEquals([$newitem], $reaction->get_new_item());
     }
     /**
      * vérifie le comportement de la classe Location_Reaction
      */
     public function testlocationreaction() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $game = $app->get_game();
+        $olditem = new Item("description1", "name1", ["status1"]);
+        $newitem = new Item("description2", "name2", ["status2"]);
         $location = $this->createMock(Location_Interface::class);
 
-        $reaction = new Location_Reaction("Description", ['old_status'], ['new_status'], ['old_item'], ['new_item'], $location);
+        $reaction = new Location_Reaction("Description", ['old_status'], ['new_status'], [$olditem], [$newitem], $location);
 
         $this->assertInstanceOf(Location_Reaction::class, $reaction);
         $this->assertEquals($location, $reaction->get_location());
+        $this->assertEquals([$newitem], $reaction->get_new_item());
+
     }
 
 }

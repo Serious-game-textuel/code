@@ -66,6 +66,7 @@ abstract class Entity implements Entity_Interface {
 
     public function set_status(array $status) {
         $this->status = Util::clean_array($status, 'string');
+        return [];
     }
 
     public function add_status(array $status) {
