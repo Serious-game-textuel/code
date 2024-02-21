@@ -218,8 +218,11 @@ class App implements App_Interface {
                 array_push($items, $item);
             }
             $hints = [];
-            if ($this->csvdata[18][$col] != null) {
-                $hints = explode('/', $this->csvdata[18][$col]);
+            if ($this->csvdata[$row + 4][$col] != null) {
+                $hints = explode('/', $this->csvdata[$row + 4][$col]);
+                for ($i = 0; $i < count($hints); $i++) {
+                    $hints[$i] = new Hint($hints[$i]);
+                }
             }
             new Location($name, $statuses, $items, $hints, []);
             $col++;

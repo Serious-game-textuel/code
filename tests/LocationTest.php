@@ -32,6 +32,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 
 use core\check\check;
@@ -66,6 +67,10 @@ class LocationTest extends TestCase {
         // Examiner la hutte.
         $action = $currentlocation->check_actions("fouiller hutte");
         $this->assertTrue(in_array("vous ne trouvez rien de particulier", $action));
+
+        // Vérifier que la location a des indices(hints).
+        $hints = $currentlocation->get_hints();
+        $this->assertTrue(count($hints) > 0);
 
         $action = $currentlocation->check_actions("fouiller");
         // Aller dans les jardins royaux.
