@@ -71,7 +71,8 @@ echo $OUTPUT->header();
 <div id="container" style="background-color: black; color: white; width: 100%; height: 500px; overflow: auto; position: relative;">
     <div id="text" style="padding: 10px;"></div>
     <button id="helpButton" style="position: absolute; top: 0; right: 0; background-color: white; color: black;">?</button>
-    <div id="helpText" style="display: none; position: absolute; top: 30px; right: 0; background-color: white; color: black; padding: 10px;">
+    <div id="helpText" style="display: none; position: absolute; top: 30px; right: 0;
+     background-color: white; color: black; padding: 10px;">
         Avoir de l'aide = Help<br>
         Avoir des indices = Indices
     </div>
