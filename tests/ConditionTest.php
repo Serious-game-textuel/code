@@ -184,7 +184,7 @@ class ConditionTest extends TestCase {
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $entity1 = new Location("description", ["status"], [], [], [], []);
+        $entity1 = new Location("description", ["status"], [], [], [], 0);
         // Test when entity1 has status.
         $condition = new Leaf_Condition($entity1, null, "est", ["status"], []);
         $this->assertTrue($condition->is_true());
@@ -207,7 +207,7 @@ class ConditionTest extends TestCase {
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $entity1 = new Location("description", ["status"], [], [], [], []);
+        $entity1 = new Location("description", ["status"], [], [], [], 0);
         $entity2 = new Item("description", "item", ["status"]);
         // Test when entity1 has item.
         $entity1->get_inventory()->add_item($entity2);
@@ -346,7 +346,7 @@ class ConditionTest extends TestCase {
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $item1 = new Item("description", "item1", ["status"]);
-        $location = new Location( "location", ["status"], [$item1], [], [], []);
+        $location = new Location( "location", ["status"], [$item1], [], [], 0);
         $item = new Item("description", "item", ["status"]);
         // Mock reactions.
         $locationreaction = new Location_Reaction('location_reaction', [], [], [], [$item], $location);
@@ -373,7 +373,7 @@ class ConditionTest extends TestCase {
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $location = new Location( "location", ["status"], [], [], [], []);
+        $location = new Location( "location", ["status"], [], [], [], 0);
         // Mock reactions.
         $locationreaction = new Location_Reaction('location_reaction', [], ['new_status'], [], [], $location);
 

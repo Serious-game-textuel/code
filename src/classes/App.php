@@ -226,7 +226,7 @@ class App implements App_Interface {
                     $hints[$i] = new Hint($hints[$i]);
                 }
             }
-            new Location($name, $statuses, $items, $hints, []);
+            new Location($name, $statuses, $items, $hints, [], 0);
             $col++;
         }
         $col = 1;
