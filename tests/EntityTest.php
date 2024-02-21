@@ -39,11 +39,22 @@ class EntityTest extends TestCase {
      /**
       * vérifie le bon fonctionnement du constructeur de la classe Entity
       */
+    public function testentity() {
+        global $CFG;
+        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $entity = new Entity("description", "name", ["status"]);
+        $this->assertInstanceOf(Entity::class, $entity);
+        $this->assertEquals("description", $entity->get_description());
+        $this->assertEquals("name", $entity->get_name());
+        $this->assertEquals(["status"], $entity->get_status());
+    }
+
     public function testnpc() {
         global $CFG;
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $npccharacter = new Npc_Character("description", "name", ["status"], [], $this->createMock(Location_Interface::class));
 
+        $this->assertInstanceOf(Npc_Character::class, $npccharacter);
         $this->assertEquals("description", $npccharacter->get_description());
         $this->assertEquals("name", $npccharacter->get_name());
         $this->assertEquals(["status"], $npccharacter->get_status());
@@ -58,6 +69,7 @@ class EntityTest extends TestCase {
             [],
             $this->createMock(Location_Interface::class));
 
+        $this->assertInstanceOf(Player_Character::class, $playercharacter);
         $this->assertEquals("description", $playercharacter->get_description());
         $this->assertEquals(["status"], $playercharacter->get_status());
     }

@@ -36,17 +36,18 @@ class ReactionTest extends TestCase {
         global $CFG;
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = $app->get_game();
-        $old_item = new Item("description1", "name1", ["status1"]);
-        $new_item = new Item("description2", "name2", ["status2"]);
+        $olditem = new Item("description1", "name1", ["status1"]);
+        $newitem = new Item("description2", "name2", ["status2"]);
         $character = $this->createMock(Character_Interface::class);
         $newlocation = $this->createMock(Location_Interface::class);
 
         $reaction = new Character_Reaction("Description",
-        ['old_status'], ['new_status'], [$old_item], [$new_item], $character, $newlocation);
+        ['old_status'], ['new_status'], [$olditem], [$newitem], $character, $newlocation);
 
         $this->assertInstanceOf(Character_Reaction::class, $reaction);
         $this->assertEquals($character, $reaction->get_character());
         $this->assertEquals($newlocation, $reaction->get_new_location());
+        $this->assertEquals([$newitem], $reaction->get_new_item());
     }
     /**
      * vérifie le comportement de la classe Location_Reaction
@@ -55,14 +56,16 @@ class ReactionTest extends TestCase {
         global $CFG;
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = $app->get_game();
-        $old_item = new Item("description1", "name1", ["status1"]);
-        $new_item = new Item("description2", "name2", ["status2"]);
+        $olditem = new Item("description1", "name1", ["status1"]);
+        $newitem = new Item("description2", "name2", ["status2"]);
         $location = $this->createMock(Location_Interface::class);
 
-        $reaction = new Location_Reaction("Description", ['old_status'], ['new_status'], [$old_item], [$new_item], $location);
+        $reaction = new Location_Reaction("Description", ['old_status'], ['new_status'], [$olditem], [$newitem], $location);
 
         $this->assertInstanceOf(Location_Reaction::class, $reaction);
         $this->assertEquals($location, $reaction->get_location());
+        $this->assertEquals([$newitem], $reaction->get_new_item());
+
     }
 
 }
