@@ -90,12 +90,14 @@ class Location extends Entity implements Location_Interface {
                             array_push($return, $res);
                         }
                     } else {
-                        array_push($return, $defaultaction.' quoi ?');
+                        array_push($return, "je n'ai pas compris ce que tu voulais ".$defaultaction);
                     }
                 }
             } else if ($action == "sauvegarder") {
                 App::get_instance()->create_save();
                 array_push($return, "Partie sauvegardée");
+            } else if ($action == "sortie") {
+                array_push($return, $this->get_sortie());
             } else {
                 $firstword = explode(' ', $action)[0];
                 if ($game->get_default_action_interact() !== null) {
@@ -104,7 +106,7 @@ class Location extends Entity implements Location_Interface {
                         array_push($return, $res);
                     }
                 } else {
-                    array_push($return, $firstword.' quoi ?');
+                    array_push($return, $action.'? Tu ne peux pas faire ca.');
                 }
             }
         }
@@ -113,5 +115,15 @@ class Location extends Entity implements Location_Interface {
 
     public function has_item_location(Item_Interface $item) {
         return $this->inventory->check_item($item);
+    }
+
+    public function get_sortie() {
+        $sortie = "Sorties disponibles : ";
+        foreach ($this->actions as $action) {
+            $firstword = explode(' ', $action->get_description())[0];  
+            $following =   
+            $sortie .= " ".$firstword;
+        }
+        return $sortie;
     }
 }
