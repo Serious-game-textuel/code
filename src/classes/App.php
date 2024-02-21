@@ -25,9 +25,12 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reac
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 
 class App implements App_Interface {
 
@@ -43,9 +46,11 @@ class App implements App_Interface {
 
     private static string $playerkeyword;
 
-    private Language $language;
+    private string $language;
 
-    public function __construct($csvfilepath, Language $language) {
+    private $actionsdone = [];
+
+    public function __construct($csvfilepath, string $language) {
         $file = fopen($csvfilepath, 'r');
         if ($file !== false) {
             $this->csvdata = [];
@@ -67,6 +72,18 @@ class App implements App_Interface {
         }
     }
 
+    public function store_actionsdone($actionsdone) {
+        $this->actionsdone[] = $actionsdone;
+    }
+
+    public function do_actionsdone($actionsdone) {
+        foreach ($actionsdone as $action) {
+            $this->get_game()->get_current_location()->check_actions($action);
+        }
+    }
+    public function get_actionsdone() {
+        return $this->actionsdone;
+    }
     public static function get_instance() {
         if (isset(self::$instance)) {
             return self::$instance;
@@ -104,12 +121,13 @@ class App implements App_Interface {
         return null;
     }
 
-    public function get_all_startentities() {
+    public function get_startentities() {
         return $this->startentities;
     }
 
     public function add_startentity(Entity_Interface $entity) {
         array_push($this->startentities, $entity);
+        $this->startentities = Util::clean_array($this->startentities, Entity_Interface::class);
     }
 
     private function parse() {
@@ -199,7 +217,10 @@ class App implements App_Interface {
                 }
                 array_push($items, $item);
             }
-            $hints = explode('/', $this->csvdata[18][$col]);
+            $hints = [];
+            if ($this->csvdata[18][$col] != null) {
+                $hints = explode('/', $this->csvdata[18][$col]);
+            }
             new Location($name, $statuses, $items, $hints, []);
             $col++;
         }
@@ -354,7 +375,7 @@ class App implements App_Interface {
         if ($condition == "NO_CONDITION") {
             return new Leaf_Condition(null, null, "", [], $reactions);
         }
-        $tokens = $this->get_tokens($condition);
+        $tokens = $this->get_condition_tokens($condition);
         // Shunting Yard.
         $output = [];
         $stack = [];
@@ -383,19 +404,41 @@ class App implements App_Interface {
         while (!empty($stack)) {
             $output[] = array_pop($stack);
         }
-        return $this->read_tree($output, $reactions);
+
+        return $this->create_condition($output, $reactions);
     }
 
-    private function read_tree($tokens, $reactions) {
+    private function create_condition($tokens, $reactions) {
+        $tree = $this->build_tree($tokens);
+        return $this->read_tree($tree, $reactions);
+    }
+
+    private function build_tree($tokens) {
         if (empty($tokens)) {
-            return null;
-        } else if (end($tokens) == '|' || end($tokens) == '&') {
-            $token = array_pop($tokens);
-            return new Node_Condition($this->read_tree($tokens, $reactions),
-            $this->read_tree($tokens, $reactions), $token, $reactions);
+            throw new Exception("Algorithm error : tokens should not be empty");
+        }
+        $token = array_pop($tokens);
+        if ($token != '|' && $token != '&') {
+            return [null, null, $token, $tokens];
         } else {
-            $token = array_pop($tokens);
-            return $this->parse_leaf_condition($token, $reactions);
+            $tree1 = $this->build_tree($tokens);
+            $tree2 = $this->build_tree($tree1[3]);
+            return [$tree1, $tree2, $token, $tokens];
+        }
+    }
+
+    private function read_tree($tree, $reactions) {
+        if ($tree[0] == null && $tree[1] == null) {
+            return $this->parse_leaf_condition($tree[2], $reactions);
+        } else if ($tree[0] != null && $tree[1] != null) {
+            return new Node_Condition(
+                $this->read_tree($tree[1], $reactions),
+                $this->read_tree($tree[0], $reactions),
+                $tree[2],
+                $reactions
+            );
+        } else {
+            throw new Exception("Algorithm error");
         }
     }
 
@@ -417,13 +460,13 @@ class App implements App_Interface {
             }
         }
         if ($entity1 == null) {
-            throw new Exception("Wrong condition syntax");
+            throw new Exception("Wrong condition syntax : " . $condition);
         }
 
         $connector .= $tokens[$connectorstart];
 
         if ($tokens[$connectorstart + 1] == "pas") {
-            $connector .= $tokens[$connectorstart + 1];
+            $connector .= ' ' . $tokens[$connectorstart + 1];
             $member2start++;
         }
 
@@ -460,7 +503,7 @@ class App implements App_Interface {
         return self::tokenize($this->csvdata[$row][$column]);
     }
 
-    private function get_tokens($str) {
+    private function get_condition_tokens($str) {
         $tokens = [];
         $token = "";
         for ($i = 0; $i < strlen($str); $i++) {
@@ -512,7 +555,7 @@ class App implements App_Interface {
             null,
             $this->get_game()->get_default_action_search(),
             $this->get_game()->get_default_action_interact(),
-            array_values($this->get_all_startentities())
+            array_values($this->get_startentities())
         ));
 
         foreach ($this->get_game()->get_entities() as $entity) {

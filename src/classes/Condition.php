@@ -58,7 +58,8 @@ class Condition implements Condition_Interface {
                         } else if ($character instanceof Player_Character) {
                             $game->set_current_location($newlocation);
                             $game->add_visited_location($newlocation);
-                            $newlocation->check_actions("description");
+                            $descriptionreturn = $newlocation->check_actions("description");
+
                         }
                     }
                     if ($reaction->get_new_item() != null) {
@@ -129,6 +130,9 @@ class Condition implements Condition_Interface {
         }
         if (empty($descriptions)) {
             return "pas de réaction";
+        }
+        if (isset($descriptionreturn[0])) {
+            array_push($descriptions, $descriptionreturn[0]);
         }
         return implode(' / ', $descriptions);
     }

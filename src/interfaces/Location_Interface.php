@@ -25,35 +25,40 @@ interface Location_Interface extends Entity_Interface {
     public function get_inventory();
 
     /**
-     * @param Action_Interface[]
+     * @return Action_Interface[]
      */
     public function get_actions();
 
     /**
      * @param Action_Interface[] $actions
+     *
+     * @return void
      */
     public function set_actions(array $actions);
+
     /**
      * @return Hint_Interface[]
      */
     public function get_hints();
+
     /**
      * @param string $action
-     * @return bool
+     *
+     * @return string[]
      * // This method checks if the actions are valid for the location by parsing the string into a Action and called do_condition
      */
     public function check_actions(string $action);
+
     /**
      * @param string $action
-     * @return Action_Interface
+     * @return ?Action_Interface
      */
     public function is_action_valide(string $action);
+
     /**
      * @param Item_Interface $item
      * @return bool
      */
-
-
     public function has_item_location(Item_Interface $item);
 
 }

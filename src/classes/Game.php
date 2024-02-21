@@ -28,7 +28,7 @@ class Game implements Game_Interface {
     private ?Default_Action_Interface $defaultactionsearch;
     private ?Default_Action_Interface $defaultactioninteract;
     private array $entities = [];
-
+    private static array $instances = [];
 
     public function __construct(int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
     ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
@@ -42,6 +42,11 @@ class Game implements Game_Interface {
         $this->defaultactionsearch = $defaultactionsearch;
         $this->defaultactioninteract = $defaultactioninteract;
         $this->entities = $entities;
+        self::$instances[$this->id] = $this;
+    }
+
+    public static function get_instance_by_id(int $id): ?self {
+        return self::$instances[$id] ?? null;
     }
 
     public function get_id() {
