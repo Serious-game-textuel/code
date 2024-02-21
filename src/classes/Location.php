@@ -96,6 +96,15 @@ class Location extends Entity implements Location_Interface {
             } else if ($action == "sauvegarder") {
                 App::get_instance()->create_save();
                 array_push($return, "Partie sauvegardée");
+            } else if ($action == "indices") {
+                $hints = $this->get_hints();
+                $descriptions = [];
+                foreach ($hints as $hint) {
+                    $descriptions[] = $hint->get_description();
+                }
+                $descriptionsString = implode(' / ', $descriptions);
+                array_push($return, $descriptionsString);
+                return $return;
             } else {
                 $firstword = explode(' ', $action)[0];
                 if ($game->get_default_action_interact() !== null) {
