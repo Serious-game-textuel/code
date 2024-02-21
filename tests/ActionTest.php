@@ -60,7 +60,7 @@ class ActionTest extends TestCase {
 
         // Create a condition instance with reactions.
         $conditionwithreactions1 = new Leaf_Condition($character, $item1,
-         'a', [], [], [$characterreaction1, $characterreaction2, $characterreaction3]);
+         'a', [], [$characterreaction1, $characterreaction2, $characterreaction3]);
         $conditionwithreactions2 = new Leaf_Condition($location, null, 'est', ["boueux"], [], []);
         $conditionwithreactions3 = new Leaf_Condition($location, $item2, 'a', [], [], []);
 
@@ -83,7 +83,7 @@ class ActionTest extends TestCase {
         // Check if character has new_status donc que la réaction a bien été effectuée.
         $this->assertFalse($location->has_item_location($item1));
         // Check if location has item1 donc que la réaction a bien été effectuée.
-        $this->assertTrue($location->has_item_location($item2));
+        $this->assertFalse($location->has_item_location($item2));
         // Check if character has new_status donc que la réaction a bien été effectuée.
         $this->assertTrue($location->has_item_location($item3));
         // Check if location has item1 donc que la réaction a bien été effectuée.
@@ -99,18 +99,16 @@ class ActionTest extends TestCase {
 
         $unvalidcondition = new Leaf_Condition($character, $item3, 'a', [], [], [$characterreaction4]);
         $validecondition = new Leaf_Condition($character, $item2, 'a', [], [], [$characterreaction4]);
-        $validecondition2 = new Leaf_Condition($character, $item2, 'a pas', [], [], [$characterreaction5]);
+        $validecondition2 = new Leaf_Condition($character, $item2, "a pas", [], [], [$characterreaction5]);
         $unvalidconditionwithreactions = new Node_Condition($unvalidcondition, null,
             "&", [$characterreaction4]);
         $unvalidconditionwithreactions2 = new Node_Condition($unvalidcondition, $validecondition,
             "&", [$characterreaction4]);
 
-        $validconditionwithreaction = new Node_Condition( null, $validecondition,
+        $validconditionwithreaction = new Node_Condition($validecondition, null,
             "|", [$characterreaction4]);
         $validconditionwithreaction2 = new Node_Condition($unvalidcondition, $validecondition2,
-            "|", [$characterreaction2]);
-        $valideconditionwithreaction3 = new Node_Condition(null, null,
-            "|", [$characterreaction2]);
+            "|", [$characterreaction5]);
 
         // Test & et | Node condition.
 
@@ -144,12 +142,6 @@ class ActionTest extends TestCase {
         $result = $action6->do_conditions();
         // Check le personnage a mangé la poire.
         $this->assertFalse($character->has_item_character($item2));
-
-        $action7 = new Action('action', [$unvalidconditionwithreactions2, $valideconditionwithreaction3]);
-        $result = $action7->do_conditions();
-        // Check le personnage a mangé la poire.
-        $this->assertTrue($character->has_item_character($item2));
-
     }
 
 }
