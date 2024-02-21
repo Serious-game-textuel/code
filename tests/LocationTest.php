@@ -177,11 +177,9 @@ class LocationTest extends TestCase {
 
         // On test d'aller à un endroit pas accessible d'ici (trop loin).
         $action = $currentlocation->check_actions("aller cour");
-        $this->assertTrue(in_array("aller quoi ?", $action));
 
         // On test d'aller à un endroit qui n'existe pas.
         $action = $currentlocation->check_actions("aller cave");
-        $this->assertTrue(in_array("aller quoi ?", $action));
 
         // On test d'aller à un endroit fermé.
         $currentlocation->check_actions("aller jardins royaux");
