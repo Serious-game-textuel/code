@@ -125,8 +125,8 @@ class Location extends Entity implements Location_Interface {
                 $reactions = $condition->get_reactions();
                 foreach ($reactions as $reaction) {
                     if ($reaction instanceof Character_Reaction) {
-                        if ($reaction->get_new_location() != null && $reaction->get_character() instanceOf Player_Character){
-                            $description = explode(" ",$action->get_description());
+                        if ($reaction->get_new_location() != null && $reaction->get_character() instanceOf Player_Character) {
+                            $description = explode(" ", $action->get_description());
                             $sortie .= implode(' ', array_slice($description, 1)).", ";
                         }
                     }
