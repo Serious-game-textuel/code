@@ -98,6 +98,8 @@ class Location extends Entity implements Location_Interface {
                 array_push($return, "Partie sauvegardée");
             } else if ($action == "sortie") {
                 array_push($return, $this->get_exit());
+            } else if ($action == "inventaire") {
+                array_push($return, $this->get_inventory_description());
             } else {
                 $firstword = explode(' ', $action)[0];
                 if ($game->get_default_action_interact() !== null) {
@@ -134,5 +136,22 @@ class Location extends Entity implements Location_Interface {
             }
         }
         return rtrim($sortie, " ,");
+    }
+
+    public function get_inventory_description() {
+        $game = App::get_instance()->get_game();
+        $player = $game->get_player();
+        $inventory = $player->get_inventory();
+        $items = $inventory->get_items();
+        $description = "Inventaire : ";
+        if (count($items) == 0) {
+            $description .= "vide";
+        } else {
+            foreach ($items as $item) {
+                $description .= $item->get_name().", ";
+            }
+        }
+        return rtrim($description, " ,");
+
     }
 }
