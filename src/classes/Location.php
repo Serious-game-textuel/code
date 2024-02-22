@@ -21,8 +21,9 @@ class Location extends Entity implements Location_Interface {
     private Inventory_Interface $inventory;
     private array $hints;
     private array $actions;
+    private int $hintscount = 0;
 
-    public function __construct(string $name, array $status, array $items, array $hints, array $actions) {
+    public function __construct(string $name, array $status, array $items, array $hints, array $actions, int $hintscount=0) {
         Util::check_array($status, 'string');
         parent::__construct("", $name, $status);
         Util::check_array($items, Item_Interface::class);
@@ -30,6 +31,7 @@ class Location extends Entity implements Location_Interface {
         $this->hints = $hints;
         Util::check_array($actions, Action_Interface::class);
         $this->actions = $actions;
+        $this->hintscount = $hintscount;
     }
     public function get_inventory() {
         return $this->inventory;
@@ -96,6 +98,16 @@ class Location extends Entity implements Location_Interface {
             } else if ($action == "sauvegarder") {
                 App::get_instance()->create_save();
                 array_push($return, "Partie sauvegardée");
+            } else if ($action == "indices") {
+                $hints = $this->get_hints();
+                $hintcount = $this->get_hintscount();
+                if ($hintcount < count($hints)) {
+                    $hint = $hints[$hintcount];
+                    $this->increments_hintscount();
+                    array_push($return, $hint->get_description());
+                } else {
+                    array_push($return, "Aucun autre indice disponible.");
+                }
             } else if ($action == "sortie") {
                 array_push($return, $this->get_exit());
             } else if ($action == "inventaire") {
@@ -115,6 +127,12 @@ class Location extends Entity implements Location_Interface {
         return $return;
     }
 
+    public function get_hintscount() {
+        return $this->hintscount;
+    }
+    public function increments_hintscount() {
+        $this->hintscount++;
+    }
     public function has_item_location(Item_Interface $item) {
         return $this->inventory->check_item($item);
     }

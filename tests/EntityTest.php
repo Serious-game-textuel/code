@@ -73,7 +73,7 @@ class EntityTest extends TestCase {
     public function testlocation() {
         global $CFG;
         $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
-        $location = new Location("name", ["status"], [], [], [], []);
+        $location = new Location("name", ["status"], [], [], [], 0);
         $this->assertEquals("name", $location->get_name());
         $this->assertEquals(["status"], $location->get_status());
     }
@@ -91,7 +91,7 @@ class EntityTest extends TestCase {
             [],
             $this->createMock(Location_Interface::class));
         $item = new Item("description", "nameitem", ["status"]);
-        $location = new Location("namelocation", ["status"], [], [], [], []);
+        $location = new Location("namelocation", ["status"], [], [], [], 0);
 
             $npccharacter->add_status(["new_status"]);
             $this->assertEquals(["status", "new_status"], $npccharacter->get_status());

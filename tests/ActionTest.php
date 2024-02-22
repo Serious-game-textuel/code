@@ -47,7 +47,7 @@ class ActionTest extends TestCase {
         $item3 = new Item("une banane", "banane", ["longue", "jaune"]);
         $item4 = new Item("une fraise", "fraise", []);
 
-        $location = new Location("un marécage boueux", ["boueux"], [$item2, $item4], [], []);
+        $location = new Location("un marécage boueux", ["boueux"], [$item2, $item4], [], [], 0 );
         $character = new Character("Un troll", "Michel", ["fatigué"], [$item1], $location);
 
         // Mock reactions.

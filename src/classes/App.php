@@ -31,6 +31,8 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
+
 
 class App implements App_Interface {
 
@@ -218,10 +220,13 @@ class App implements App_Interface {
                 array_push($items, $item);
             }
             $hints = [];
-            if ($this->csvdata[18][$col] != null) {
-                $hints = explode('/', $this->csvdata[18][$col]);
+            if ($this->csvdata[$row + 4][$col] != null) {
+                $hints = explode('/', $this->csvdata[$row + 4][$col]);
+                for ($i = 0; $i < count($hints); $i++) {
+                    $hints[$i] = new Hint($hints[$i]);
+                }
             }
-            new Location($name, $statuses, $items, $hints, []);
+            new Location($name, $statuses, $items, $hints, [], 0);
             $col++;
         }
         $col = 1;

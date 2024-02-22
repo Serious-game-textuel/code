@@ -74,7 +74,11 @@ echo $OUTPUT->header();
     <div id="helpText" style="display: none; position: absolute; top: 30px; right: 0;
      background-color: white; color: black; padding: 10px;">
         Avoir de l'aide = Help<br>
-        Avoir des indices = Indices
+        Avoir des indices = indices <br>
+        Connaître les sorties = sortie <br>
+        Sauvegarder une partie = sauvegarder <br>
+        Fouiller un endroit = fouiller [nom de l'endroit] <br>
+        Connaître son inventaire = inventaire <br>
     </div>
 </div>
 <input type="text" id="inputText" placeholder="Écrivez quelque chose ici..." style="width: 100%;">
