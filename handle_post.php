@@ -25,7 +25,7 @@ $csvcontent = $_POST['csvcontent'];
 $tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
 file_put_contents($tempfilepath, $csvcontent);
 
-$app = new App($tempfilepath, Language::FR);
+$app = new App($tempfilepath);
 if (isset($_SESSION['conditionsdone'])) {
     $conditionsdone = $_SESSION['conditionsdone'];
     $conditionsdone = unserialize($conditionsdone);
