@@ -32,6 +32,12 @@ $id = optional_param('id', 0, PARAM_INT);
 // Activity instance id.
 $s = optional_param('s', 0, PARAM_INT);
 
+foreach (Language::get_all_languages() as $lang) {
+    if (!$DB->record_exists('language', ['name' => $lang])) {
+        $DB->insert_record('language', ['name' => $lang]);
+    }
+}
+
 if ($id) {
     $cm = get_coursemodule_from_id('serioustextualgame', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);

@@ -17,4 +17,8 @@
 class Language {
     const FR = 'fr';
     const EN = 'en';
+
+    public static function get_all_languages() {
+        return [self::FR, self::EN];
+    }
 }
