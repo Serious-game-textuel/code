@@ -21,18 +21,33 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 
 class Default_Action extends Action implements Default_Action_Interface {
     public function do_conditions_verb(string $verb) {
-        $game = App::get_instance()->get_game();
+        $app = App::get_instance();
+        $game = $app->get_game();
+        $language = $app->get_language();
         $game->add_action();
         $tokendescription = explode('"', $this->get_description());
         $result = [];
-        foreach ($tokendescription as $token) {
-            if (str_replace(' ', '', $token) == '+verbe+' ||
-            str_replace(' ', '', $token) == 'verbe+' ||
-            str_replace(' ', '', $token) == '+verbe' ||
-            str_replace(' ', '', $token) == 'verbe') {
-                array_push($result, $verb);
-            } else {
-                array_push($result, $token);
+        if ($language == 'fr') {
+            foreach ($tokendescription as $token) {
+                if (str_replace(' ', '', $token) == '+verbe+' ||
+                    str_replace(' ', '', $token) == 'verbe+' ||
+                    str_replace(' ', '', $token) == '+verbe' ||
+                    str_replace(' ', '', $token) == 'verbe') {
+                    array_push($result, $verb);
+                } else {
+                    array_push($result, $token);
+                }
+            }
+        } else {
+            foreach ($tokendescription as $token) {
+                if (str_replace(' ', '', $token) == '+verb+' ||
+                    str_replace(' ', '', $token) == 'verb+' ||
+                    str_replace(' ', '', $token) == '+verb' ||
+                    str_replace(' ', '', $token) == 'verb') {
+                    array_push($result, $verb);
+                } else {
+                    array_push($result, $token);
+                }
             }
         }
         return implode("", $result);

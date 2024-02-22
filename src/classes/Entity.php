@@ -29,8 +29,13 @@ abstract class Entity implements Entity_Interface {
     private array $status;
     public function __construct(string $description, string $name, array $status) {
         $app = App::get_instance();
+        $language = $app->get_language();
         if ($app->get_startentity($name) != null) {
-            throw new InvalidArgumentException("Each entity name must be unique : ".$name);
+            if ($language == 'fr') {
+                throw new InvalidArgumentException("Chaque nom d'entité doit être unique : ".$name);
+            } else {
+                throw new InvalidArgumentException("Each entity name must be unique : ".$name);
+            }
         }
         $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;
