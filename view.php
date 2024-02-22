@@ -78,6 +78,7 @@ echo $OUTPUT->header();
         Connaître les sorties = sortie <br>
         Sauvegarder une partie = sauvegarder <br>
         Fouiller un endroit = fouiller [nom de l'endroit] <br>
+        Connaître son inventaire = inventaire <br>
     </div>
 </div>
 <input type="text" id="inputText" placeholder="Écrivez quelque chose ici..." style="width: 100%;">
