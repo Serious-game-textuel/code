@@ -90,7 +90,8 @@ class App implements App_Interface {
         $game = $DB->get_field_sql($sql, ['id' => $gameid]);
 
         $visitedlocations = [];
-        $sql = "select location from {game_visitedlocations} where " . $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':game');
+        $sql = "select location from {game_visitedlocations} where "
+        . $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':game');
         foreach ($DB->get_fieldset_sql($sql, ['game' => $gameid]) as $locationid) {
             array_push($visitedlocations, Location::get_instance($locationid));
         }
@@ -104,9 +105,10 @@ class App implements App_Interface {
 
     public function get_startentity($entityname) {
         global $DB;
-        $sql = "select e.id from {app_startentities} as s left join {entity} as e on s.entity = e.id where "
-        . $DB->sql_compare_text('e.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
-        . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select {entity}.id from {app_startentities} left join {entity} "
+        . "on {app_startentities}.entity = {entity}.id where "
+        . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
+        . $DB->sql_compare_text('{app_startentities}.app') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->get_id(), 'entityname' => $entityname]);
         return Entity::get_instance($id);
     }
@@ -114,8 +116,8 @@ class App implements App_Interface {
     public function get_startentities() {
         $startentities = [];
         global $DB;
-        $sql = "select e.id from {app_startentities} as s left join {entity} as e on s.entity = e.id where "
-        . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select {entity}.id from {app_startentities} left join {entity} on {app_startentities}.entity = {entity}.id where "
+        . $DB->sql_compare_text('{app_startentities}.app') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($startentities, Entity::get_instance($id));
