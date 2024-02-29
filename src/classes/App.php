@@ -36,104 +36,102 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
 
 class App implements App_Interface {
 
-    private Game_Interface $game;
-
-    private Game_Interface $save;
-
+    private $id;
     private array $csvdata;
 
-    private static App_Interface $instance;
-
-    private array $startentities;
-
-    private static string $playerkeyword;
-
-    private string $language;
-
-    private $actionsdone = [];
-
-    public function __construct($csvfilepath, string $language) {
-        $file = fopen($csvfilepath, 'r');
-        if ($file !== false) {
-            $this->csvdata = [];
-            while (($line = fgetcsv($file)) !== false) {
-                $this->csvdata[] = $line;
-            }
-            fclose($file);
-            self::$instance = $this;
-            $this->language = $language;
-            $this->startentities = [];
-            if ($this->language == Language::FR) {
-                self::$playerkeyword = "joueur";
+    public function __construct(?int $id, ?string $csvfilepath, ?string $language) {
+        if (!isset($id)) {
+            $file = fopen($csvfilepath, 'r');
+            if ($file !== false) {
+                $this->csvdata = [];
+                while (($line = fgetcsv($file)) !== false) {
+                    $this->csvdata[] = $line;
+                }
+                fclose($file);
+                $playerkeyword = "";
+                if ($language == Language::FR) {
+                    $playerkeyword = "joueur";
+                } else {
+                    $playerkeyword = "player";
+                }
+                self::$instance = $this;
+                global $DB;
+                global $USER;
+                $sql = "select id from {language} where " . $DB->sql_compare_text('name') . " = ".$DB->sql_compare_text(':name');
+                $languageid = $DB->get_field_sql($sql, ['name' => $language]);
+                $this->id = $DB->insert_record('app', [
+                    'studentid' => $USER->id,
+                    'language' => $languageid,
+                    'playerkeyword' => $playerkeyword,
+                ]);
+                $this->parse();
             } else {
-                self::$playerkeyword = "player";
+                throw new Exception("File not found");
             }
-            $this->parse();
         } else {
-            throw new Exception("File not found");
+            $this->id = $id;
         }
     }
 
-    public function store_actionsdone($actionsdone) {
-        $this->actionsdone[] = $actionsdone;
-    }
-
-    public function do_actionsdone($actionsdone) {
-        foreach ($actionsdone as $action) {
-            $this->get_game()->get_current_location()->check_actions($action);
-        }
-    }
-    public function get_actionsdone() {
-        return $this->actionsdone;
-    }
     public static function get_instance() {
-        if (isset(self::$instance)) {
-            return self::$instance;
-        } else {
-            throw new Exception("App not initialized");
-        }
+        global $DB;
+        global $USER;
+        $sql = "select id from {app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid');
+        $id = $DB->get_field_sql($sql, ['studentid' => $USER->id]);
+        return new App($id, null, null);
     }
 
     public function get_game() {
-        return $this->game;
+        global $DB;
+        $sql = "select game from {app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $gameid = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+
+        $sql = "select * from {game} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $game = $DB->get_field_sql($sql, ['id' => $gameid]);
+
+        $visitedlocations = [];
+        $sql = "select location from {game_visitedlocations} where " . $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':game');
+        foreach ($DB->get_fieldset_sql($sql, ['game' => $gameid]) as $locationid) {
+            array_push($visitedlocations, Location::get_instance($locationid));
+        }
+        return Game::get_instance($game['id']);
     }
 
     public function set_game(Game_Interface $game) {
-        $this->game = $game;
-    }
-
-    public function get_save() {
-        return $this->save;
-    }
-
-    public function set_save(Game_Interface $save) {
-        $this->save = $save;
-    }
-
-    public function create_save() {
-        $this->set_save(clone $this->get_game());
+        global $DB;
+        $DB->set_field('app', 'game', $game->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_startentity($entityname) {
-        foreach ($this->startentities as $e) {
-            if ($e->get_name() == $entityname) {
-                return $e;
-            }
-        }
-        return null;
+        global $DB;
+        $sql = "select e.id from {app_startentities} as s left join {entity} as e on s.entity = e.id where "
+        . $DB->sql_compare_text('e.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
+        . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $this->get_id(), 'entityname' => $entityname]);
+        return Entity::get_instance($id);
     }
 
     public function get_startentities() {
-        return $this->startentities;
+        $startentities = [];
+        global $DB;
+        $sql = "select e.id from {app_startentities} as s left join {entity} as e on s.entity = e.id where "
+        . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($startentities, Entity::get_instance($id));
+        }
+        return $startentities;
     }
 
     public function add_startentity(Entity_Interface $entity) {
-        array_push($this->startentities, $entity);
-        $this->startentities = Util::clean_array($this->startentities, Entity_Interface::class);
+        global $DB;
+        $DB->insert_record('app_startentities', [
+            'app' => $this->get_id(),
+            'entity' => $entity->get_id(),
+        ]);
     }
 
     private function parse() {
-
         $itemsrow = $this->get_row("OBJETS");
         $charactersrow = $this->get_row("PERSONNAGES");
         $locationsrow = $this->get_row("LIEUX");
@@ -146,16 +144,30 @@ class App implements App_Interface {
         $interactiondefaut = $this->create_action_defaut($interactiondefautrow);
         $fouillerdefaut = $this->create_action_defaut($fouillerdefautrow);
 
-        $player = $this->get_startentity(self::$playerkeyword);
-        $this->game = new Game(
-            0,
-            0,
-            [$player->get_current_location()],
-            new DateTime(),
-            $player,
-            null,
-            null,
-            array_values($this->startentities));
+        global $DB;
+        $sql = "select playerkeyword from {app} where "
+        . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
+        $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        $player = $this->get_startentity($playerkeyword);
+        $arguments = [
+            'deaths' => 0,
+            'actions' => 0,
+            'starttime' => time(),
+            'player' => $player->get_id(),
+        ];
+        if (isset($fouillerdefaut)) {
+            $arguments = array_merge($arguments, ['defaultactionsearch' => $fouillerdefaut->get_id()]);
+        }
+        if (isset($interactiondefaut)) {
+            $arguments = array_merge($arguments, ['defaultactioninteract' => $interactiondefaut->get_id()]);
+        }
+        $idgame = $DB->insert_record('game', $arguments);
+        foreach ($this->get_startentities() as $entity) {
+            $DB->insert_record('game_entities', [
+                'game' => $idgame,
+                'entity' => $entity->get_id(),
+            ]);
+        }
     }
 
     private function create_action_defaut($row) {
@@ -183,6 +195,10 @@ class App implements App_Interface {
 
     private function create_characters($row) {
         $col = 1;
+        global $DB;
+        $sql = "select playerkeyword from {app} where "
+        . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
+        $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string($row, $col);
             $description = $this->get_cell_string($row + 1, $col);
@@ -196,7 +212,7 @@ class App implements App_Interface {
                 }
                 array_push($items, $item);
             }
-            if ($name == self::$playerkeyword) {
+            if ($name == $playerkeyword) {
                 new Player_Character($description, $name, $statuses, $items, null);
             } else {
                 new Npc_Character($description, $name, $statuses, $items, null);
@@ -265,7 +281,6 @@ class App implements App_Interface {
 
     private function create_column_actions($location, $col, $row) {
         $rowstep = 10;
-
         $actions = [];
         $descriptions = [];
         $conditionnames = [];
@@ -552,25 +567,18 @@ class App implements App_Interface {
     }
 
     public function restart_game_from_start() {
-        $this->set_game(new Game(
-            $this->get_game()->get_deaths(),
-            $this->get_game()->get_actions(),
-            $this->get_game()->get_visited_locations(),
-            $this->get_game()->get_start_time(),
-            null,
-            $this->get_game()->get_default_action_search(),
-            $this->get_game()->get_default_action_interact(),
-            array_values($this->get_startentities())
-        ));
+        $game = $this->get_game();
+        global $DB;
+        $DB->delete_records('game_entities', ['game' => $game->get_id()]);
 
-        foreach ($this->get_game()->get_entities() as $entity) {
+        foreach ($game->get_entities() as $entity) {
             if ($entity instanceof Player_Character) {
-                $this->get_game()->set_player($entity);
+                $game->set_player($entity);
             }
         }
     }
 
-    public function restart_game_from_save() {
-        $this->set_game(clone $this->get_save());
+    public function get_id() {
+        return $this->id;
     }
 }

@@ -33,7 +33,13 @@ $id = optional_param('id', 0, PARAM_INT);
 $s = optional_param('s', 0, PARAM_INT);
 
 foreach (Language::get_all_languages() as $lang) {
-    if (!$DB->record_exists('language', ['name' => $lang])) {
+    $comparedescription = $DB->sql_compare_text('name');
+    $comparedescriptionplaceholder = $DB->sql_compare_text(':name');
+    $todogroups = $DB->record_exists_sql(
+        "SELECT id FROM {language} WHERE {$comparedescription} = {$comparedescriptionplaceholder}",
+        ['name' => $lang]
+    );
+    if (!$todogroups) {
         $DB->insert_record('language', ['name' => $lang]);
     }
 }
@@ -121,16 +127,8 @@ window.onload = displayDescription;
 
 function typeWriter(element, txt, color) {
     return new Promise((resolve, reject) => {
-        function type(i) {
-            if (i < txt.length) {
-                element.innerHTML += `<span style="color:${color};">${txt.charAt(i)}</span>`;
-                setTimeout(() => type(i + 1), 50);
-            } else {
-                element.innerHTML += "<br>";
-                resolve();
-            }
-        }
-        type(0);
+        element.innerHTML += `<span style="color:${color};">${txt}</span>`;
+        element.innerHTML += "<br>";
     });
 }
 

@@ -16,20 +16,9 @@
 
 interface App_Interface {
     /**
-     * @param string $action
-     * @return void
+     * @return int
      */
-    public function store_actionsdone(string $action);
-
-    /**
-     * @param array $actionsdone
-     * @return void
-     */
-    public function do_actionsdone($actionsdone);
-    /**
-     * @return array
-     */
-    public function get_actionsdone();
+    public function get_id();
     /**
      * @return Game_Interface
      */
@@ -41,18 +30,6 @@ interface App_Interface {
      * @return void
      */
     public function set_game(Game_Interface $game);
-
-    /**
-     * @return Game_Interface
-     */
-    public function get_save();
-
-    /**
-     * @param Game_Interface $save
-     *
-     * @return void
-     */
-    public function set_save(Game_Interface $save);
 
     /**
      * @param string $entityname
@@ -76,17 +53,7 @@ interface App_Interface {
     /**
      * @return void
      */
-    public function restart_game_from_save();
-
-    /**
-     * @return void
-     */
     public function restart_game_from_start();
-
-    /**
-     * @return void
-     */
-    public function create_save();
 
 }
 
