@@ -344,7 +344,8 @@ class App implements App_Interface {
                 }
             }
             if ($entity instanceof Location_Interface) {
-                $reaction = new Location_Reaction(null, $reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity);
+                $reaction = new Location_Reaction(null, $reactiondescription, $oldstatuses, $newstatuses,
+                $olditems, $newitems, $entity);
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
