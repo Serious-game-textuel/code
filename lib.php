@@ -52,10 +52,22 @@ function serioustextualgame_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
     $moduleinstance->timecreated = time();
-
+    $context = context_module::instance($moduleinstance->coursemodule);
     $filecontent = $mform->get_file_content('userfile');
     if ($filecontent) {
         $moduleinstance->filecontent = $filecontent;
+    }
+    $draftitemid = file_get_submitted_draft_itemid('imagefile');
+
+    // Stocker le fichier dans le système de fichiers de Moodle
+    file_save_draft_area_files($draftitemid, $context->id, 'mod_serioustextualgame', 'imagefile', 0);
+
+    // Récupérer l'ID du fichier
+    $fs = get_file_storage();
+    $files = $fs->get_area_files($context->id, 'mod_serioustextualgame', 'imagefile', 0, 'itemid, filepath, filename', false);
+    if (count($files) > 0) {
+        $file = reset($files);
+        $moduleinstance->fileid = $file->get_id();
     }
     $id = $DB->insert_record('serioustextualgame', $moduleinstance);
 
@@ -164,9 +176,32 @@ function serioustextualgame_pluginfile($course, $cm, $context, $filearea, $args,
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
-        send_file_not_found();
+        return false;
     }
 
     require_login($course, true, $cm);
-    send_file_not_found();
+    if (!has_capability('mod/serioustextualgame:view', $context)) {
+        return false;
+    }
+    if ($filearea !== 'content' && $filearea !== 'imagefile') {
+        // intro is handled automatically in pluginfile.php
+        return false;
+    }
+    array_shift($args); // ignore revision - designed to prevent caching problems only
+
+    
+    $fs = get_file_storage();
+    $relativepath = implode('/', $args);
+    $fullpath = "/$context->id/mod_serioustextualgame/imagefile/0/$relativepath";
+    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+        return false;
+    }
+
+    // Set security posture for in-browser display.
+    if (!$forcedownload) {
+        header("Content-Security-Policy: default-src 'none'; img-src 'self'; media-src 'self'");
+    }
+
+    // Finally send the file.
+    send_stored_file($file, 0, 0, $forcedownload, $options);
 }

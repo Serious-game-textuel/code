@@ -65,6 +65,19 @@ unset($_SESSION['conditionsdone']);
 
 
 echo $OUTPUT->header();
+$fs = get_file_storage();
+$file = $fs->get_file_by_id($moduleinstance->fileid);
+if ($file) {
+    $url = moodle_url::make_pluginfile_url(
+        $file->get_contextid(),
+        $file->get_component(),
+        $file->get_filearea(),
+        $file->get_itemid(),
+        $file->get_filepath(),
+        $file->get_filename()
+    );
+    echo html_writer::empty_tag('img', ['src' => $url, 'alt' => format_string($moduleinstance->name)]);
+}
 
 ?>
 
