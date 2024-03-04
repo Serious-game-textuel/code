@@ -34,7 +34,7 @@ class Player_Character extends Character {
         }
     }
 
-    public static function get_instance(int $id) {
+    public static function get_instance(int $id): Player_Character {
         return new Player_Character($id, "", "", [], [], null);
     }
 

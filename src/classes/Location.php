@@ -28,7 +28,7 @@ class Location extends Entity implements Location_Interface {
             $super = new Entity(null, "", $name, $status);
             parent::__construct($super->get_id(), "", "", []);
             global $DB;
-            $inventory = new Inventory($items);
+            $inventory = new Inventory(null, $items);
             $this->id = $DB->insert_record('game', [
                 'entity' => $super->get_id(),
                 'inventory' => $inventory->get_id(),
@@ -51,7 +51,7 @@ class Location extends Entity implements Location_Interface {
     }
 
     public static function get_instance(int $id) {
-        return new Location($id, 0, 0, [], null, null, null, null, []);
+        return new Location($id, "", [], [], [], []);
     }
 
     public function get_inventory() {

@@ -42,4 +42,8 @@ class Item extends Entity implements Item_Interface {
         return $this->id;
     }
 
+    public function get_inventory() {
+        return null;
+    }
+
 }

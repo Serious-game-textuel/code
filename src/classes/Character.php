@@ -26,7 +26,7 @@ class Character extends Entity implements Character_Interface {
         if (!isset($id)) {
             $super = new Entity(null, $description, $name, $status);
             parent::__construct($super->get_id(), "", "", []);
-            $inventory = new Inventory($items);
+            $inventory = new Inventory(null, $items);
             global $DB;
             $this->id = $DB->insert_record('character', [
                 'entity' => $super->get_id(),

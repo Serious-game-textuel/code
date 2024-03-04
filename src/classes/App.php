@@ -174,7 +174,7 @@ class App implements App_Interface {
     private function create_action_defaut($row) {
         $description = $this->get_cell_string($row, 1);
         if (strlen($description) > 0) {
-            $action = new Default_Action($description, [new Condition([])]);
+            $action = new Default_Action(null, $description, [new Condition(null, [])]);
             return $action;
         } else {
             return null;
@@ -188,7 +188,7 @@ class App implements App_Interface {
             $description = $this->get_cell_string($row + 1, $col);
             $statuses = $this->get_cell_array_string($row + 2, $col);
             if ($name != null && strlen($name) > 0) {
-                new Item($description, $name, $statuses);
+                new Item(null, $description, $name, $statuses);
             }
             $col++;
         }
@@ -214,9 +214,9 @@ class App implements App_Interface {
                 array_push($items, $item);
             }
             if ($name == $playerkeyword) {
-                new Player_Character($description, $name, $statuses, $items, null);
+                new Player_Character(null, $description, $name, $statuses, $items, null);
             } else {
-                new Npc_Character($description, $name, $statuses, $items, null);
+                new Npc_Character(null, $description, $name, $statuses, $items, null);
             }
             $col++;
         }
@@ -240,10 +240,10 @@ class App implements App_Interface {
             if ($this->csvdata[$row + 4][$col] != null) {
                 $hints = explode('/', $this->csvdata[$row + 4][$col]);
                 for ($i = 0; $i < count($hints); $i++) {
-                    $hints[$i] = new Hint($hints[$i]);
+                    $hints[$i] = new Hint(null, $hints[$i]);
                 }
             }
-            new Location($name, $statuses, $items, $hints, [], 0);
+            new Location(null, $name, $statuses, $items, $hints, [], 0);
             $col++;
         }
         $col = 1;
@@ -344,7 +344,7 @@ class App implements App_Interface {
                 }
             }
             if ($entity instanceof Location_Interface) {
-                $reaction = new Location_Reaction($reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity);
+                $reaction = new Location_Reaction(null, $reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity);
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
@@ -358,14 +358,14 @@ class App implements App_Interface {
                         throw new Exception($locationname . " is not a location");
                     }
                 }
-                $reaction = new Character_Reaction($reactiondescription,
+                $reaction = new Character_Reaction(null, $reactiondescription,
                 $oldstatuses, $newstatuses, $olditems, $newitems, $entity, $location);
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
                 array_push($reactions[$action][$condition], $reaction);
             } else if ($entityname == "") {
-                $reaction = new No_Entity_Reaction($reactiondescription);
+                $reaction = new No_Entity_Reaction(null, $reactiondescription);
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
@@ -387,14 +387,14 @@ class App implements App_Interface {
                     )
                 );
             }
-            array_push($actions, new Action($action, $conditions));
+            array_push($actions, new Action(null, $action, $conditions));
         }
         return $actions;
     }
 
     private function parse_condition($condition, $reactions) {
         if ($condition == "NO_CONDITION") {
-            return new Leaf_Condition(null, null, "", [], $reactions);
+            return new Leaf_Condition(null, null, null, "", [], $reactions);
         }
         $tokens = $this->get_condition_tokens($condition);
         // Shunting Yard.
@@ -453,6 +453,7 @@ class App implements App_Interface {
             return $this->parse_leaf_condition($tree[2], $reactions);
         } else if ($tree[0] != null && $tree[1] != null) {
             return new Node_Condition(
+                null,
                 $this->read_tree($tree[1], $reactions),
                 $this->read_tree($tree[0], $reactions),
                 $tree[2],
@@ -497,7 +498,7 @@ class App implements App_Interface {
         if ($entity2 == null) {
             $status = $member2;
         }
-        return new Leaf_Condition($entity1, $entity2, $connector, array_filter([$status]), $reactions);
+        return new Leaf_Condition(null, $entity1, $entity2, $connector, array_filter([$status]), $reactions);
     }
 
     private function get_row($str) {
