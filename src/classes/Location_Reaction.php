@@ -18,20 +18,34 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
 class Location_Reaction extends Reaction {
 
-    private Location_Interface $location;
+    private int $id;
 
-    public function __construct(string $description, array $oldstatus,
-     array $newstatus, array $olditem, array $newitem, Location_Interface $location) {
-        Util::check_array($oldstatus, 'string');
-        Util::check_array($newstatus, 'string');
-        Util::check_array($olditem, Item_Interface::class);
-        Util::check_array($newitem, Item_Interface::class);
-        parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
-        $this->location = $location;
+    public function __construct(?int $id, string $description, array $oldstatus,
+    array $newstatus, array $olditem, array $newitem, ?Location_Interface $location) {
+        if (!isset($id)) {
+            global $DB;
+            $super = new Reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
+            $this->id = $DB->insert_record('locationreaction', [
+                'reaction' => $super->get_id(),
+                'location' => $location->get_id(),
+            ]);
+        } else {
+            $this->id = $id;
+        }
     }
 
     public function get_location(): Location_Interface {
-        return $this->location;
+        global $DB;
+        $sql = "select actions from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Location_Interface::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+    }
+
+    public static function get_instance(int $id) {
+        return new Location_Reaction($id, "", [], [], [], [], null);
+    }
+
+    public function get_id() {
+        return $this->id;
     }
 
 }

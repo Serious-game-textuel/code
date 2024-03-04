@@ -80,5 +80,9 @@ class Node_Condition extends Condition {
         }
         return false;
     }
+
+    public function get_id() {
+        return $this->id;
+    }
 }
 

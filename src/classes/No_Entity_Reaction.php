@@ -18,7 +18,7 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
 class No_Entity_Reaction extends Reaction {
 
-    private ?int $id;
+    private int $id;
 
     public function __construct(?int $id, string $description) {
         global $DB;
@@ -30,6 +30,10 @@ class No_Entity_Reaction extends Reaction {
         } else {
             $this->id = $id;
         }
+    }
+
+    public function get_id() {
+        return $this->id;
     }
 }
 

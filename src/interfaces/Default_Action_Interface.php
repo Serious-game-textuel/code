@@ -31,4 +31,9 @@ interface Default_Action_Interface extends Action_Interface {
      * @return Default_Action_Interface
      */
     public static function get_instance(int $id);
+
+    /**
+     * @return int
+     */
+    public function get_id();
 }

@@ -67,4 +67,9 @@ interface Location_Interface extends Entity_Interface {
      */
     public static function get_instance(int $id);
 
+    /**
+     * @return int
+     */
+    public function get_id();
+
 }

@@ -229,4 +229,8 @@ class Location extends Entity implements Location_Interface {
         }
         return rtrim($description, " ,");
     }
+
+    public function get_id() {
+        return $this->id;
+    }
 }

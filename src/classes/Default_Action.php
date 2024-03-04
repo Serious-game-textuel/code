@@ -21,6 +21,8 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 
 class Default_Action extends Action implements Default_Action_Interface {
 
+    private int $id;
+
     public function __construct(?int $id, string $description, array $conditions) {
         if (!isset($id)) {
             $action = new Action(null, $description, $conditions);
@@ -57,5 +59,9 @@ class Default_Action extends Action implements Default_Action_Interface {
 
     public function do_conditions() {
         return $this->do_conditions_verb('');
+    }
+
+    public function get_id() {
+        return $this->id;
     }
 }
