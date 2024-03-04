@@ -18,32 +18,45 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
 class Player_Character extends Character {
 
+    private int $id;
+
+    public function __construct(?int $id, string $description, string $name,
+    array $status, array $items, ?Location_Interface $currentlocation) {
+        if (!isset($id)) {
+            $super = new Character(null, $description, $name, $status, $items, $currentlocation);
+            parent::__construct($super->get_id(), "", "", [], [], null);
+            global $DB;
+            $this->id = $DB->insert_record('playercharacter', [
+                'character' => $super->get_id(),
+            ]);
+        } else {
+            $this->id = $id;
+        }
+    }
+
+    public static function get_instance(int $id) {
+        return new Player_Character($id, "", "", [], [], null);
+    }
+
+    public function get_id() {
+        return $this->id;
+    }
 
     public function set_status(array $status) {
         $return = [];
+        $app = App::get_instance();
         if (in_array("mort", $status)) {
             array_push($return, "Tu es mort!");
-            $app = App::get_instance();
-            if ($app->get_save() !== null) {
-                App::get_instance()->restart_game_from_save();
-            } else {
-                App::get_instance()->restart_game_from_start();
-            }
+            $app->restart_game_from_start();
         } else if (in_array("victoire", $status)) {
+            $game = $app->get_game();
             array_push($return, "Tu as gagné!");
-            array_push($return, "Tu as fait " . App::get_instance()->get_game()->get_actions() . " actions!");
-            array_push($return, "Tu as visité " . count(App::get_instance()->get_game()->get_visited_locations()) . " lieux!");
-            array_push($return, "Tu as été tué " . App::get_instance()->get_game()->get_deaths() . " fois!");
+            array_push($return, "Tu as fait " . $game->get_actions() . " actions!");
+            array_push($return, "Tu as visité " . count($game->get_visited_locations()) . " lieux!");
+            array_push($return, "Tu as été tué " . $game->get_deaths() . " fois!");
         } else {
             parent::set_status($status);
         }
         return $return;
-    }
-
-    public function get_current_location() {
-
-    }
-
-    public function set_currentlocation(Location_Interface $currentlocation) {
     }
 }
