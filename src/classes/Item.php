@@ -19,4 +19,27 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interf
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
 class Item extends Entity implements Item_Interface {
 
+    private int $id;
+
+    public function __construct(?int $id, string $description, string $name, array $status) {
+        if (!isset($id)) {
+            $super = new Entity(null, $description, $name, $status);
+            parent::__construct($super->get_id(), "", "", []);
+            global $DB;
+            $this->id = $DB->insert_record('item', [
+                'entity' => $super->get_id(),
+            ]);
+        } else {
+            $this->id = $id;
+        }
+    }
+
+    public static function get_instance(int $id) {
+        return new Item($id, "", "", []);
+    }
+
+    public function get_id() {
+        return $this->id;
+    }
+
 }
