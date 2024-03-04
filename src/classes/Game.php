@@ -21,8 +21,9 @@ class Game implements Game_Interface {
 
     private int $id;
 
-    public function __construct(?int $id, int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
-    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
+    public function __construct(?int $id, int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime,
+    ?Player_Character $player, ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract,
+    array $entities) {
         global $DB;
         if (!isset($id)) {
             $app = App::get_instance();
@@ -50,7 +51,6 @@ class Game implements Game_Interface {
         } else {
             $this->id = $id;
         }
-        
     }
 
     public static function get_instance(int $id) {
@@ -68,7 +68,7 @@ class Game implements Game_Interface {
     }
     public function add_deaths() {
         global $DB;
-        $DB->set_field('game', 'deaths', $this->get_deaths()+1, ['id' => $this->get_id()]);
+        $DB->set_field('game', 'deaths', $this->get_deaths() + 1, ['id' => $this->get_id()]);
     }
 
     public function get_actions() {
@@ -82,7 +82,7 @@ class Game implements Game_Interface {
 
     public function add_action() {
         global $DB;
-        $DB->set_field('game', 'actions', $this->get_actions()+1, ['id' => $this->get_id()]);
+        $DB->set_field('game', 'actions', $this->get_actions() + 1, ['id' => $this->get_id()]);
     }
 
     public function get_player() {
@@ -100,7 +100,8 @@ class Game implements Game_Interface {
     public function get_visited_locations() {
         $visitedlocations = [];
         global $DB;
-        $sql = "select location from {game_visitedlocations} where ". $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select location from {game_visitedlocations} where "
+        . $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($visitedlocations, Location::get_instance($id));

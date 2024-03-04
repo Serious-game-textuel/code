@@ -45,6 +45,5 @@ class Player_Character extends Character {
     }
 
     public function set_currentlocation(Location_Interface $currentlocation) {
-        
     }
 }

@@ -42,7 +42,6 @@ class Default_Action extends Action implements Default_Action_Interface {
         return $this->do_conditions_verb('');
     }
 
-    public static function get_instance(){
-        
+    public static function get_instance() {
     }
 }
