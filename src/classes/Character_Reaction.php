@@ -52,7 +52,8 @@ class Character_Reaction extends Reaction {
 
     public function get_new_location() {
         global $DB;
-        $sql = "select newlocation from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select newlocation from {characterreaction} where ". $DB->sql_compare_text('id')
+        . " = ".$DB->sql_compare_text(':id');
         return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 

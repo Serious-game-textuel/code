@@ -22,12 +22,25 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
 class Inventory implements Inventory_Interface {
 
     private int $id;
-    private array $items;
 
-    public function __construct(array $items) {
-        $this->id = Id_Class::generate_id(self::class);
-        Util::check_array($items, Item_Interface::class);
-        $this->items = $items;
+    public function __construct(?int $id, array $items) {
+        if (!isset($id)) {
+            Util::check_array($items, Item_Interface::class);
+            global $DB;
+            $this->id = $DB->insert_record('inventory', []);
+            foreach ($items as $item) {
+                $DB->insert_record('inventory_items', [
+                    'inventory' => $this->id,
+                    'location' => $item->get_id(),
+                ]);
+            }
+        } else {
+            $this->id = $id;
+        }
+    }
+
+    public static function get_instance(int $id) {
+        return new Inventory($id, []);
     }
 
     public function get_id() {
@@ -35,31 +48,50 @@ class Inventory implements Inventory_Interface {
     }
 
     public function get_item(int $id) {
-        foreach ($this->items as $item) {
-            if ($item->get_id() === $id) {
-                return $item;
-            }
+        global $DB;
+        $present = $DB->record_exists_sql(
+            "SELECT id FROM {inventory_items} WHERE ".$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+            ['id' => $id]
+        );
+        if ($present) {
+            return Item::get_instance($id);
+        } else {
+            return null;
         }
-        return null;
     }
     public function get_items() {
-        return $this->items;
+        $items = [];
+        global $DB;
+        $sql = "select item from {inventory_items} where "
+        . $DB->sql_compare_text('inventory') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($items, Location::get_instance($id));
+        }
+        return $items;
     }
 
     public function add_item(Item_Interface $item) {
-        array_push($this->items, $item);
-        $this->items = util::clean_array($this->items, Item_Interface::class);
-    }
-
-    public function remove_item(Item_Interface $item) {
-        $key = array_search($item, $this->items, true);
-        if ($key !== false) {
-            unset($this->items[$key]);
+        $items = $this->get_items();
+        array_push($items, $item);
+        $items = Util::clean_array($items, Location_Interface::class);
+        global $DB;
+        $DB->delete_records('inventory_items', ['inventory' => $this->get_id()]);
+        foreach ($items as $item) {
+            $DB->insert_record('inventory_items', [
+                'inventory' => $this->id,
+                'item' => $item->get_id(),
+            ]);
         }
     }
 
+    public function remove_item(Item_Interface $item) {
+        global $DB;
+        $DB->delete_records('inventory_items', ['inventory' => $this->get_id(), 'item' => $item->get_id()]);
+    }
+
     public function check_item(Item_Interface $item) {
-        if (in_array($item, $this->items , true)) {
+        if (in_array($item, $this->get_items() , true)) {
             return true;
         }
         return false;
