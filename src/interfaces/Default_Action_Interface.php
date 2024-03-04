@@ -24,4 +24,11 @@ interface Default_Action_Interface extends Action_Interface {
      * @return array
      */
     public function do_conditions_verb(string $verb);
+
+    /**
+     * @param int
+     *
+     * @return Default_Action_Interface
+     */
+    public static function get_instance(int $id);
 }

@@ -20,6 +20,23 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Act
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 
 class Default_Action extends Action implements Default_Action_Interface {
+
+    public function __construct(?int $id, string $description, array $conditions) {
+        if (!isset($id)) {
+            $action = new Action(null, $description, $conditions);
+            global $DB;
+            $this->id = $DB->insert_record('defaultaction', [
+                'action' => $action->get_id(),
+            ]);
+        } else {
+            $this->id = $id;
+        }
+    }
+
+    public static function get_instance(int $id) {
+        return new Default_Action($id, "", []);
+    }
+
     public function do_conditions_verb(string $verb) {
         $game = App::get_instance()->get_game();
         $game->add_action();
@@ -40,8 +57,5 @@ class Default_Action extends Action implements Default_Action_Interface {
 
     public function do_conditions() {
         return $this->do_conditions_verb('');
-    }
-
-    public static function get_instance() {
     }
 }
