@@ -18,38 +18,85 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
 class Location extends Entity implements Location_Interface {
 
-    private Inventory_Interface $inventory;
-    private array $hints;
-    private array $actions;
-    private int $hintscount = 0;
+    private int $id;
 
-    public function __construct(string $name, array $status, array $items, array $hints, array $actions, int $hintscount=0) {
-        Util::check_array($status, 'string');
-        parent::__construct("", $name, $status);
-        Util::check_array($items, Item_Interface::class);
-        $this->inventory = new Inventory($items);
-        $this->hints = $hints;
-        Util::check_array($actions, Action_Interface::class);
-        $this->actions = $actions;
-        $this->hintscount = $hintscount;
+    public function __construct(?int $id, string $name, array $status, array $items, array $hints, array $actions, int $hintscount=0) {
+        if (!isset($id)) {
+            Util::check_array($status, 'string');
+            Util::check_array($items, Item_Interface::class);
+            Util::check_array($actions, Action_Interface::class);
+            $super = new Entity(null, "", $name, $status);
+            global $DB;
+            $inventory = new Inventory($items);
+            $this->id = $DB->insert_record('game', [
+                'entity' => $super->get_id(),
+                'inventory' => $inventory->get_id(),
+            ]);
+            foreach ($hints as $hint) {
+                $DB->insert_record('location_hints', [
+                    'location' => $this->id,
+                    'hint' => $hint->get_id(),
+                ]);
+            }
+            foreach ($actions as $action) {
+                $DB->insert_record('location_actions', [
+                    'location' => $this->id,
+                    'action' => $action->get_id(),
+                ]);
+            }
+        } else {
+            $this->id = $id;
+        }
     }
+
+    public static function get_instance(int $id) {
+        return new Location($id, 0, 0, [], null, null, null, null, []);
+    }
+
     public function get_inventory() {
-        return $this->inventory;
+        global $DB;
+        $sql = "select inventory from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
     public function get_actions() {
-        return $this->actions;
+        $actions = [];
+        global $DB;
+        $sql = "select action from {location_actions} where "
+        . $DB->sql_compare_text('location') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($actions, Action::get_instance($id));
+        }
+        return $actions;
     }
     public function set_actions(array $actions) {
-        $this->actions = $actions;
+        $actions = Util::clean_array($actions, Location_Interface::class);
+        global $DB;
+        $DB->delete_records('location_actions', ['location' => $this->get_id()]);
+        foreach ($actions as $action) {
+            $DB->insert_record('location_actions', [
+                'location' => $this->id,
+                'action' => $action->get_id(),
+            ]);
+        }
     }
     public function get_hints() {
-        return $this->hints;
+        $hints = [];
+        global $DB;
+        $sql = "select hint from {location_hints} where "
+        . $DB->sql_compare_text('location') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($hints, Hint::get_instance($id));
+        }
+        return $hints;
     }
 
     public function is_action_valide(string $action) {
-        for ($i = 0; $i < count($this->actions); $i++) {
-            if ($this->actions[$i]->get_description() == $action) {
-                return $this->actions[$i];
+        $actions = $this->get_actions();
+        for ($i = 0; $i < count($actions); $i++) {
+            if ($actions[$i]->get_description() == $action) {
+                return $actions[$i];
             }
         }
         return null;
@@ -57,9 +104,8 @@ class Location extends Entity implements Location_Interface {
 
     public function check_actions(string $action) {
         $return = [];
-        $game = App::get_instance()->get_game();
         $app = App::get_instance();
-        $app->store_actionsdone($action);
+        $game = $app->get_game();
         $action = App::tokenize($action);
         $actionvalide = $this->is_action_valide($action);
         if ($actionvalide != null) {
@@ -95,9 +141,6 @@ class Location extends Entity implements Location_Interface {
                         array_push($return, "je n'ai pas compris ce que tu voulais ".$defaultaction);
                     }
                 }
-            } else if ($action == "sauvegarder") {
-                App::get_instance()->create_save();
-                array_push($return, "Partie sauvegardée");
             } else if ($action == "indices") {
                 $hints = $this->get_hints();
                 $hintcount = $this->get_hintscount();
@@ -128,24 +171,36 @@ class Location extends Entity implements Location_Interface {
     }
 
     public function get_hintscount() {
-        return $this->hintscount;
+        global $DB;
+        $sql = "select hintscount from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
     public function increments_hintscount() {
-        $this->hintscount++;
+        global $DB;
+        $DB->set_field('location', 'hintscount', $this->get_hintscount() + 1, ['id' => $this->get_id()]);
     }
     public function has_item_location(Item_Interface $item) {
-        return $this->inventory->check_item($item);
+        return $this->get_inventory()->check_item($item);
     }
 
     public function get_exit() {
+        global $DB;
         $sortie = "Sorties disponibles : ";
-        foreach ($this->actions as $action) {
+        foreach ($this->get_actions() as $action) {
             $conditions = $action->get_conditions();
             foreach ($conditions as $condition) {
                 $reactions = $condition->get_reactions();
                 foreach ($reactions as $reaction) {
-                    if ($reaction instanceof Character_Reaction) {
-                        if ($reaction->get_new_location() != null && $reaction->get_character() instanceOf Player_Character) {
+                    $ischaracterreaction = $DB->record_exists_sql(
+                        "SELECT id FROM {characterreaction} WHERE ".$DB->sql_compare_text('reaction')." = ".$DB->sql_compare_text(':id'),
+                        ['id' => $reaction->get_id()]
+                    );
+                    if ($ischaracterreaction) {
+                        $isplayercharacter = $DB->record_exists_sql(
+                            "SELECT id FROM {playercharacter} WHERE ".$DB->sql_compare_text('character')." = ".$DB->sql_compare_text(':id'),
+                            ['id' => $reaction->get_character()->get_id()]
+                        );
+                        if ($reaction->get_new_location() != null && $isplayercharacter) {
                             $description = explode(" ", $action->get_description());
                             $sortie .= implode(' ', array_slice($description, 1)).", ";
                         }
@@ -170,6 +225,5 @@ class Location extends Entity implements Location_Interface {
             }
         }
         return rtrim($description, " ,");
-
     }
 }

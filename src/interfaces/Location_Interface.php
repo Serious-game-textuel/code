@@ -61,4 +61,10 @@ interface Location_Interface extends Entity_Interface {
      */
     public function has_item_location(Item_Interface $item);
 
+    /**
+     * @param int
+     * @return Location_Interface
+     */
+    public static function get_instance(int $id);
+
 }

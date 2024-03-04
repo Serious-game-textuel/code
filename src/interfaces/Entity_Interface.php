@@ -65,6 +65,10 @@ interface Entity_Interface {
      */
     public function remove_status(array $status);
 
-
+    /**
+     * @param int
+     * @return Entity_Interface
+     */
+    public static function get_instance(int $id);
 
 }
