@@ -18,11 +18,20 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Hint_Interface.php');
 class Hint implements Hint_Interface {
     private int $id;
-    private string $description;
 
-    public function __construct(string $description) {
-        $this->id = Id_Class::generate_id(self::class);
-        $this->description = $description;
+    public function __construct(?int $id, string $description) {
+        if (!isset($id)) {
+            global $DB;
+            $this->id = $DB->insert_record('hint', [
+                'description' => $description,
+            ]);
+        } else {
+            $this->id = $id;
+        }
+    }
+
+    public static function get_instance(int $id) {
+        return new Hint($id, "");
     }
 
     public function get_id() {
@@ -30,11 +39,14 @@ class Hint implements Hint_Interface {
     }
 
     public function get_description() {
-        return $this->description;
+        global $DB;
+        $sql = "select description from {hint} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_description(string $description) {
-        $this->description = $description;
+        global $DB;
+        $DB->set_field('hint', 'description', $description, ['id' => $this->get_id()]);
     }
 
 }

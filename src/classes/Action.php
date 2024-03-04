@@ -21,14 +21,27 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Inte
 class Action implements Action_Interface {
 
     private int $id;
-    private string $description;
-    private array $conditions;
 
-    public function __construct(string $description, array $conditions) {
-        $this->id = Id_Class::generate_id(self::class);
-        $this->description = $description;
-        Util::check_array($conditions, Condition_Interface::class);
-        $this->conditions = $conditions;
+    public function __construct(?int $id, string $description, array $conditions) {
+        if (!isset($id)) {
+            Util::check_array($conditions, Condition_Interface::class);
+            global $DB;
+            $this->id = $DB->insert_record('action', [
+                'description' => $description,
+            ]);
+            foreach ($conditions as $condition) {
+                $DB->insert_record('action_conditions', [
+                    'action' => $this->id,
+                    'condition' => $condition->get_id(),
+                ]);
+            }
+        } else {
+            $this->id = $id;
+        }
+    }
+
+    public static function get_instance(int $id) {
+        return new Action($id, "", []);
     }
 
     public function get_id() {
@@ -36,19 +49,38 @@ class Action implements Action_Interface {
     }
 
     public function get_description() {
-        return $this->description;
+        global $DB;
+        $sql = "select description from {action} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_description(string $description) {
-        $this->description = $description;
+        global $DB;
+        $DB->set_field('description', 'action', $description, ['id' => $this->get_id()]);
     }
 
     public function get_conditions() {
-        return $this->conditions;
+        $conditions = [];
+        global $DB;
+        $sql = "select condition from {action_conditions} where "
+        . $DB->sql_compare_text('action') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($conditions, Condition::get_instance($id));
+        }
+        return $conditions;
     }
 
     public function set_conditions(array $conditions) {
-        $this->conditions = Util::clean_array($conditions, Condition_Interface::class);
+        $conditions = Util::clean_array($conditions, Condition_Interface::class);
+        global $DB;
+        $DB->delete_records('action_conditions', ['action' => $this->get_id()]);
+        foreach ($conditions as $condition) {
+            $DB->insert_record('game_visitedlocations', [
+                'action' => $this->id,
+                'condition' => $condition->get_id(),
+            ]);
+        }
     }
 
     public function do_conditions() {

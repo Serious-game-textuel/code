@@ -31,4 +31,10 @@ interface Hint_Interface {
      * @return void
      */
     public function set_description(string $description);
+
+    /**
+     * @param int
+     * @return Hint_Interface
+     */
+    public static function get_instance(int $id);
 }

@@ -50,4 +50,11 @@ interface Action_Interface {
      */
     public function do_conditions();
 
+    /**
+     * @param int
+     *
+     * @return Action_Interface
+     */
+    public static function get_instance(int $id);
+
 }
