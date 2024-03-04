@@ -49,10 +49,9 @@ class App implements App_Interface {
     private static string $playerkeyword;
 
     private string $language;
-
     private $actionsdone = [];
 
-    public function __construct($csvfilepath, string $language) {
+    public function __construct($csvfilepath) {
         $file = fopen($csvfilepath, 'r');
         if ($file !== false) {
             $this->csvdata = [];
@@ -61,8 +60,11 @@ class App implements App_Interface {
             }
             fclose($file);
             self::$instance = $this;
-            $this->language = $language;
             $this->startentities = [];
+            $this->language = $this->get_cell_string(2, 1);
+            if (strlen($this->language) == 0) {
+                throw new Exception("Language not found");
+            }
             if ($this->language == Language::FR) {
                 self::$playerkeyword = "joueur";
             } else {
@@ -72,6 +74,10 @@ class App implements App_Interface {
         } else {
             throw new Exception("File not found");
         }
+    }
+
+    public function get_language() {
+        return $this->language;
     }
 
     public function store_actionsdone($actionsdone) {
@@ -133,12 +139,19 @@ class App implements App_Interface {
     }
 
     private function parse() {
-
-        $itemsrow = $this->get_row("OBJETS");
-        $charactersrow = $this->get_row("PERSONNAGES");
-        $locationsrow = $this->get_row("LIEUX");
-        $interactiondefautrow = $this->get_row("interaction avec objet n'existant pas :");
-        $fouillerdefautrow = $this->get_row("Fouiller par défaut :");
+        if ($this->language == Language::FR) {
+            $itemsrow = $this->get_row("OBJETS");
+            $charactersrow = $this->get_row("PERSONNAGES");
+            $locationsrow = $this->get_row("LIEUX");
+            $interactiondefautrow = $this->get_row("interaction avec objet n'existant pas :");
+            $fouillerdefautrow = $this->get_row("Fouiller par défaut :");
+        } else {
+            $itemsrow = $this->get_row("OBJECTS");
+            $charactersrow = $this->get_row("CHARACTERS");
+            $locationsrow = $this->get_row("PLACES");
+            $interactiondefautrow = $this->get_row("interaction with non-existent object:");
+            $fouillerdefautrow = $this->get_row("Search by default:");
+        }
         $this->create_items($itemsrow);
         $this->create_characters($charactersrow);
         $this->create_locations($locationsrow);
@@ -192,7 +205,12 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
+                    if ($this->language == Language::FR) {
+                        throw new Exception($itemname .
+                         " n'est pas un objet avec la ligne: " . $row . " et la colonne: " . $col ."");
+                    } else {
+                        throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
+                    }
                 }
                 array_push($items, $item);
             }
@@ -215,7 +233,13 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . "is not an item and here is the row: " . $row . " and the col: " . $col ."");
+                    if ($this->language == Language::FR) {
+                        throw new Exception($itemname .
+                         " n'est pas un objet avec la ligne: " . $row . " et la colonne: " . $col ."");
+                    } else {
+                        throw new Exception($itemname .
+                        "is not an item and here is the row: " . $row . " and the col: " . $col ."");
+                    }
                 }
                 array_push($items, $item);
             }
@@ -234,14 +258,22 @@ class App implements App_Interface {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
-                throw new Exception($locationname . "is not a location");
+                if ($this->language == Language::FR) {
+                    throw new Exception($locationname . " n'est pas un lieu");
+                } else {
+                    throw new Exception($locationname . "is not a location");
+                }
             }
             $character = $this->get_startentity($name);
             $characternames = $this->get_cell_array_string($row + 3, $col);
             foreach ($characternames as $name) {
                 $character = $this->get_startentity($name);
                 if ($character == null || !($character instanceof Character)) {
-                    throw new Exception($name . "is not a character");
+                    if ($this->language == Language::FR) {
+                        throw new Exception($name . " n'est pas un personnage");
+                    } else {
+                        throw new Exception($name . "is not a character");
+                    }
                 }
                 $character->set_currentlocation($location);
             }
@@ -255,7 +287,11 @@ class App implements App_Interface {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
-                throw new Exception($locationname . "is not a location");
+                if ($this->language == Language::FR) {
+                    throw new Exception($locationname . " n'est pas un lieu");
+                } else {
+                    throw new Exception($locationname . "is not a location");
+                }
             }
             $actions = $this->create_column_actions($location, $col, $row + 6);
             $location->set_actions($actions);
@@ -300,8 +336,13 @@ class App implements App_Interface {
             if ($entityname != "") {
                 $entity = $this->get_startentity($entityname);
                 if ($entity == null) {
-                    throw new Exception($this->get_cell_string($row + 3, $col)
-                    . " is not an entity with the row: " . $row . " and the col: " . $col ."");
+                    if ($this->language == Language::FR) {
+                        throw new Exception($entityname .
+                        " n'est pas une entité avec la ligne: " . $row . " et la colonne: " . $col ."");
+                    } else {
+                        throw new Exception($this->get_cell_string($row + 3, $col)
+                        . " is not an entity with the row: " . $row . " and the col: " . $col ."");
+                    }
                 }
 
                 $newstatuses = $this->get_cell_array_string($row + 4, $col);
@@ -313,7 +354,11 @@ class App implements App_Interface {
                 foreach ($newitemnames as $name) {
                     $item = $this->get_startentity($name);
                     if ($item == null || !($item instanceof Item_Interface)) {
-                        throw new Exception($name . " is not an Item");
+                        if ($this->language == Language::FR) {
+                            throw new Exception($name . " n'est pas un objet");
+                        } else {
+                            throw new Exception($name . " is not an Item");
+                        }
                     }
                     array_push($newitems, $item);
                 }
@@ -322,7 +367,11 @@ class App implements App_Interface {
                 foreach ($olditemnames as $name) {
                     $item = $this->get_startentity($name);
                     if ($item == null || !($item instanceof Item_Interface)) {
-                        throw new Exception($name . " is not an Item");
+                        if ($this->language == Language::FR) {
+                            throw new Exception($name . " n'est pas un objet");
+                        } else {
+                            throw new Exception($name . " is not an Item");
+                        }
                     }
                     array_push($olditems, $item);
                 }
@@ -339,7 +388,11 @@ class App implements App_Interface {
                 if ($locationname != "") {
                     $location = $this->get_startentity($locationname);
                     if ($location == null || !($location instanceof Location_Interface)) {
-                        throw new Exception($locationname . " is not a location");
+                        if ($this->language == Language::FR) {
+                            throw new Exception($locationname . " n'est pas un lieu");
+                        } else {
+                            throw new Exception($locationname . " is not a location");
+                        }
                     }
                 }
                 $reaction = new Character_Reaction($reactiondescription,
@@ -355,7 +408,11 @@ class App implements App_Interface {
                 }
                 array_push($reactions[$action][$condition], $reaction);
             } else {
-                throw new Exception("Only characters and locations can have reactions");
+                if ($this->language == Language::FR) {
+                    throw new Exception($entityname . " n'est pas une entité");
+                } else {
+                    throw new Exception("Only characters and locations can have reactions");
+                }
             }
 
             $row = $row + $rowstep;
@@ -420,7 +477,11 @@ class App implements App_Interface {
 
     private function build_tree($tokens) {
         if (empty($tokens)) {
-            throw new Exception("Algorithm error : tokens should not be empty");
+            if ($this->language == Language::FR) {
+                throw new Exception("Erreur d'algorithme : les jetons ne doivent pas être vides");
+            } else {
+                throw new Exception("Algorithm error : tokens should not be empty");
+            }
         }
         $token = array_pop($tokens);
         if ($token != '|' && $token != '&') {
@@ -443,7 +504,11 @@ class App implements App_Interface {
                 $reactions
             );
         } else {
-            throw new Exception("Algorithm error");
+            if ($this->language == Language::FR) {
+                throw new Exception("Erreur d'algorithme");
+            } else {
+                throw new Exception("Algorithm error");
+            }
         }
     }
 
@@ -465,16 +530,25 @@ class App implements App_Interface {
             }
         }
         if ($entity1 == null) {
-            throw new Exception("Wrong condition syntax : " . $condition);
+            if ($this->language == Language::FR) {
+                throw new Exception("Syntaxe de condition incorrecte : " . $condition);
+            } else {
+                throw new Exception("Wrong condition syntax : " . $condition);
+            }
         }
 
         $connector .= $tokens[$connectorstart];
-
-        if ($tokens[$connectorstart + 1] == "pas") {
-            $connector .= ' ' . $tokens[$connectorstart + 1];
-            $member2start++;
+        if ($this->language == Language::FR) {
+            if ($tokens[$connectorstart + 1] == "pas") {
+                $connector .= ' ' . $tokens[$connectorstart + 1];
+                $member2start++;
+            }
+        } else {
+            if ($tokens[$connectorstart + 1] == "not") {
+                $connector .= ' ' . $tokens[$connectorstart + 1];
+                $member2start++;
+            }
         }
-
         $member2 = implode(' ', array_slice($tokens, $member2start));
         $entity2 = $this->get_startentity($member2);
         $status = "";
@@ -495,7 +569,11 @@ class App implements App_Interface {
             }
         }
         if (!$foundline) {
-            throw new Exception($str . " line not found");
+            if ($this->language == Language::FR) {
+                throw new Exception($str . " ligne non trouvée");
+            } else {
+                throw new Exception($str . " line not found");
+            }
         }
         return $lign;
     }

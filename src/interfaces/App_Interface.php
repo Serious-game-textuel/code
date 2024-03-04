@@ -16,6 +16,10 @@
 
 interface App_Interface {
     /**
+     * @return string
+     */
+    public function get_language();
+    /**
      * @param string $action
      * @return void
      */
