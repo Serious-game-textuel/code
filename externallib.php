@@ -24,6 +24,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 
 class mod_serioustextualgame_external extends external_api {
 
@@ -40,24 +43,10 @@ class mod_serioustextualgame_external extends external_api {
         $fileinfo = [];
         foreach ($files as $file) {
             $content = $file->get_content();
-            // Parse the CSV content.
-            $lines = str_getcsv($content, "\n");
-            if (count($lines) > 1) {
-                $secondline = str_getcsv($lines[1]);
-                if (count($secondline) > 1) {
-                    // Get the second column of the second line.
-                    $secondcolumnvalue = $secondline[1];
-                    // Check if the second column value is 'coucou'.
-                    if ($secondcolumnvalue === 'coucou') {
-                        return 'bon fichier';
-                    } else {
-                        return 'mauvais fichier';
-                    }
-                }
-            }
+            new App($content, Language::FR);
         }
         // Return 'mauvais fichier' if no file was found.
-        return 'mauvais fichier';
+        return 'Valid file';
     }
 
     public static function get_file_info_returns() {

@@ -39,7 +39,7 @@ class ActionTest extends TestCase {
      */
     public function testdoconditions() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         // Create a mock reaction.
         // Create mock objects for testing.
         $item1 = new Item("une pomme", "pomme", ["croquée"]);

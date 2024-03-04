@@ -30,7 +30,7 @@ abstract class Entity implements Entity_Interface {
     public function __construct(string $description, string $name, array $status) {
         $app = App::get_instance();
         if ($app->get_startentity($name) != null) {
-            throw new InvalidArgumentException("Each entity name must be unique : ".$name);
+            throw new InvalidArgumentException("Each entity name must be unique : " . $name);
         }
         $this->id = Id_Class::generate_id(self::class);
         $this->description = $description;

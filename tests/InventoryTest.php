@@ -44,7 +44,7 @@ class InventoryTest extends TestCase {
      */
     public function testinventory() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $item = new Item("description1", "name1", ["status1"]);
         $item2 = new Item("description2", "name2", ["status2"]);
@@ -53,7 +53,7 @@ class InventoryTest extends TestCase {
     }
     public function testcheckitem() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $item = new Item("description1", "name1", ["status1"]);
         $item2 = new Item("description2", "name2", ["status2"]);
@@ -66,7 +66,7 @@ class InventoryTest extends TestCase {
 
     public function testgetitem() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $item = new Item("description1", "name1", ["status1"]);
         $item2 = new Item("description2", "name2", ["status2"]);
@@ -81,7 +81,7 @@ class InventoryTest extends TestCase {
 
     public function testaddremove() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $item = new Item("description1", "name1", ["status1"]);
         $item2 = new Item("description2", "name2", ["status2"]);

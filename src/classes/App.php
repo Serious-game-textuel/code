@@ -52,26 +52,17 @@ class App implements App_Interface {
 
     private $actionsdone = [];
 
-    public function __construct($csvfilepath, string $language) {
-        $file = fopen($csvfilepath, 'r');
-        if ($file !== false) {
-            $this->csvdata = [];
-            while (($line = fgetcsv($file)) !== false) {
-                $this->csvdata[] = $line;
-            }
-            fclose($file);
-            self::$instance = $this;
-            $this->language = $language;
-            $this->startentities = [];
-            if ($this->language == Language::FR) {
-                self::$playerkeyword = "joueur";
-            } else {
-                self::$playerkeyword = "player";
-            }
-            $this->parse();
+    public function __construct($csvcontent, string $language) {
+        $this->csvdata = array_map('str_getcsv', explode("\n", $csvcontent));
+        self::$instance = $this;
+        $this->language = $language;
+        $this->startentities = [];
+        if ($this->language == Language::FR) {
+            self::$playerkeyword = "joueur";
         } else {
-            throw new Exception("File not found");
+            self::$playerkeyword = "player";
         }
+        $this->parse();
     }
 
     public function store_actionsdone($actionsdone) {
@@ -142,11 +133,15 @@ class App implements App_Interface {
         $this->create_items($itemsrow);
         $this->create_characters($charactersrow);
         $this->create_locations($locationsrow);
+        $this->check_items_duplicates();
         $this->create_all_actions($locationsrow);
         $interactiondefaut = $this->create_action_defaut($interactiondefautrow);
         $fouillerdefaut = $this->create_action_defaut($fouillerdefautrow);
 
         $player = $this->get_startentity(self::$playerkeyword);
+        if ($player->get_current_location() == null) {
+            throw new Exception("One location must have '" . self::$playerkeyword . "' in their list of characters.");
+        }
         $this->game = new Game(
             0,
             0,
@@ -183,6 +178,7 @@ class App implements App_Interface {
 
     private function create_characters($row) {
         $col = 1;
+        $nplayers = 0;
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string($row, $col);
             $description = $this->get_cell_string($row + 1, $col);
@@ -192,16 +188,20 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
+                    throw new Exception($itemname . " is not an item with the row: " . $row + 1 . " and the col: " . $col + 1 ."");
                 }
                 array_push($items, $item);
             }
             if ($name == self::$playerkeyword) {
                 new Player_Character($description, $name, $statuses, $items, null);
+                $nplayers++;
             } else {
                 new Npc_Character($description, $name, $statuses, $items, null);
             }
             $col++;
+        }
+        if ($nplayers < 1 || $nplayers > 1) {
+            throw new Exception("One character must be named '" . self::$playerkeyword . "'.");
         }
     }
 
@@ -215,7 +215,7 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . "is not an item and here is the row: " . $row . " and the col: " . $col ."");
+                    throw new Exception($itemname . " is not an item and here is the row: " . $row + 1 . " and the col: " . $col + 1 ."");
                 }
                 array_push($items, $item);
             }
@@ -234,18 +234,35 @@ class App implements App_Interface {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
-                throw new Exception($locationname . "is not a location");
+                throw new Exception($locationname . " is not a location");
             }
             $character = $this->get_startentity($name);
             $characternames = $this->get_cell_array_string($row + 3, $col);
             foreach ($characternames as $name) {
                 $character = $this->get_startentity($name);
                 if ($character == null || !($character instanceof Character)) {
-                    throw new Exception($name . "is not a character");
+                    throw new Exception($name . " is not a character");
                 }
                 $character->set_currentlocation($location);
             }
             $col++;
+        }
+    }
+
+    private function check_items_duplicates() {
+        $itemsentities = [];
+        foreach ($this->startentities as $e) {
+            if ($e instanceof Item) {
+                continue;
+            }
+            $ename = $e->get_name();
+            foreach ($e->get_inventory()->get_items() as $i) {
+                $iname = $i->get_name();
+                if (array_key_exists($iname, $itemsentities)) {
+                    throw new Exception("'" . $itemsentities[$iname] . "' and '" . $ename . "' have the same item : '" . $iname . "'.");
+                }
+                $itemsentities[$iname] = $ename;
+            }
         }
     }
 
@@ -301,7 +318,7 @@ class App implements App_Interface {
                 $entity = $this->get_startentity($entityname);
                 if ($entity == null) {
                     throw new Exception($this->get_cell_string($row + 3, $col)
-                    . " is not an entity with the row: " . $row . " and the col: " . $col ."");
+                    . " is not an entity with the row: " . $row + 1 . " and the col: " . $col + 1 ."");
                 }
 
                 $newstatuses = $this->get_cell_array_string($row + 4, $col);

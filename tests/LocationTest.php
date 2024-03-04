@@ -44,7 +44,7 @@ class LocationTest extends TestCase {
      */
     public function testdoconditions() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
 
         // Prendre la canne a peche dans la hutte.
@@ -142,7 +142,7 @@ class LocationTest extends TestCase {
 
     public function test_description() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
 
@@ -171,7 +171,7 @@ class LocationTest extends TestCase {
 
     public function test_deplacements() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
 
@@ -196,7 +196,7 @@ class LocationTest extends TestCase {
 
     public function test_objets() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
 

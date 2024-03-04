@@ -48,7 +48,7 @@ class UtilTest extends TestCase {
     }
     public function test_has_array_duplicate_object() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
         $this->assertFalse(Util::has_array_duplicate([$item1, $item2]));
@@ -101,7 +101,7 @@ class UtilTest extends TestCase {
     }
     public function test_check_array_object() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
         try {
@@ -151,7 +151,7 @@ class UtilTest extends TestCase {
     }
     public function test_clean_array_object() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
         $this->assertTrue($this->array_equal(Util::clean_array([$item1], Item_Interface::class), [$item1]));

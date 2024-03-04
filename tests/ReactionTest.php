@@ -34,7 +34,7 @@ class ReactionTest extends TestCase {
      */
     public function testcharacterreaction() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $olditem = new Item("description1", "name1", ["status1"]);
         $newitem = new Item("description2", "name2", ["status2"]);
@@ -54,7 +54,7 @@ class ReactionTest extends TestCase {
      */
     public function testlocationreaction() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
         $game = $app->get_game();
         $olditem = new Item("description1", "name1", ["status1"]);
         $newitem = new Item("description2", "name2", ["status2"]);
