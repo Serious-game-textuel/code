@@ -16,7 +16,7 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_Interface.php');
-abstract class Reaction implements Reaction_Interface {
+class Reaction implements Reaction_Interface {
 
     private int $id;
 
@@ -58,6 +58,10 @@ abstract class Reaction implements Reaction_Interface {
         } else {
             $this->id = $id;
         }
+    }
+
+    public static function get_instance(int $id) {
+        return new Reaction($id, "", [], [], [], []);
     }
 
     public function get_id() {

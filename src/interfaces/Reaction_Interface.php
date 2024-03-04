@@ -76,4 +76,10 @@ interface Reaction_Interface {
      */
     public function set_new_item(array $item);
 
+    /**
+     * @param int
+     * @return Reaction_Interface
+     */
+    public static function get_instance(int $id);
+
 }

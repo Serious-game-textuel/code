@@ -18,10 +18,18 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
 class No_Entity_Reaction extends Reaction {
 
-    public function __construct(string $description) {
-        parent::__construct($description, [], [], [], []);
+    private ?int $id;
+
+    public function __construct(?int $id, string $description) {
+        global $DB;
+        if (!isset($id)) {
+            $super = new Reaction(null, $description, [], [], [], []);
+            $this->id = $DB->insert_record('noentityreaction', [
+                'reaction' => $super->get_id(),
+            ]);
+        } else {
+            $this->id = $id;
+        }
     }
-
-
 }
 
