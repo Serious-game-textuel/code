@@ -24,6 +24,7 @@ class No_Entity_Reaction extends Reaction {
         global $DB;
         if (!isset($id)) {
             $super = new Reaction(null, $description, [], [], [], []);
+            parent::__construct($super->get_id(), "", [], [], [], []);
             $this->id = $DB->insert_record('noentityreaction', [
                 'reaction' => $super->get_id(),
             ]);

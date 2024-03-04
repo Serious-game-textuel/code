@@ -18,31 +18,47 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
 class Character_Reaction extends Reaction {
 
-    private Character_Interface $character;
-    private ?Location_Interface $newlocation;
+    private int $id;
 
-    public function __construct(string $description, array $oldstatus, array $newstatus,
-    array $olditem, array $newitem, Character_Interface $character, ?Location_Interface $newlocation) {
-        Util::check_array($oldstatus, 'string');
-        Util::check_array($newstatus, 'string');
-        Util::check_array($olditem, Item_Interface::class);
-        Util::check_array($newitem, Item_Interface::class);
-        parent::__construct($description, $oldstatus, $newstatus, $olditem, $newitem);
-        $this->character = $character;
-        $this->newlocation = $newlocation;
+    public function __construct(?int $id, string $description, array $oldstatus, array $newstatus,
+    array $olditem, array $newitem, ?Character_Interface $character, ?Location_Interface $newlocation) {
+        if (!isset($id)) {
+            global $DB;
+            $super = new reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
+            parent::__construct($super->get_id(), $description, $oldstatus, $newstatus, $olditem, $newitem);
+            $this->id = $DB->insert_record('characterreaction', [
+                'reaction' => $super->get_id(),
+                'character' => $character->get_id(),
+                'newlocation' => $newlocation->get_id(),
+            ]);
+        } else {
+            $this->id = $id;
+        }
+    }
 
+    public static function get_instance(int $id) {
+        return new Character_Reaction($id, "", [], [], [], [], null, null);
+    }
+
+    public function get_id() {
+        return $this->id;
     }
 
     public function get_character() {
-        return $this->character;
+        global $DB;
+        $sql = "select character from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Character::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function get_new_location() {
-        return $this->newlocation;
+        global $DB;
+        $sql = "select newlocation from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function set_new_location(Location_Interface $newlocation) {
-        $this->newlocation = $newlocation;
+        global $DB;
+        $DB->set_field('characterreaction', 'newlocation', $newlocation->get_id(), ['id' => $this->get_id()]);
     }
 
 }

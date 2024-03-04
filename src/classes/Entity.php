@@ -46,6 +46,10 @@ class Entity implements Entity_Interface {
         }
     }
 
+    public static function get_instance(int $id) {
+        return new Entity($id, "", "", []);
+    }
+
     public function get_id() {
         return $this->id;
     }

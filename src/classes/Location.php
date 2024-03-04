@@ -23,10 +23,10 @@ class Location extends Entity implements Location_Interface {
     public function __construct(?int $id, string $name, array $status, array $items,
     array $hints, array $actions, int $hintscount=0) {
         if (!isset($id)) {
-            Util::check_array($status, 'string');
             Util::check_array($items, Item_Interface::class);
             Util::check_array($actions, Action_Interface::class);
             $super = new Entity(null, "", $name, $status);
+            parent::__construct($super->get_id(), "", "", []);
             global $DB;
             $inventory = new Inventory($items);
             $this->id = $DB->insert_record('game', [

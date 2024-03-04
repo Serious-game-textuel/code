@@ -38,6 +38,10 @@ class Condition implements Condition_Interface {
         }
     }
 
+    public static function get_instance(int $id) {
+        return new Condition($id, []);
+    }
+
     public function get_id() {
         return $this->id;
     }

@@ -25,10 +25,11 @@ class Default_Action extends Action implements Default_Action_Interface {
 
     public function __construct(?int $id, string $description, array $conditions) {
         if (!isset($id)) {
-            $action = new Action(null, $description, $conditions);
+            $super = new Action(null, $description, $conditions);
+            parent::__construct($super->get_id(), "", []);
             global $DB;
             $this->id = $DB->insert_record('defaultaction', [
-                'action' => $action->get_id(),
+                'action' => $super->get_id(),
             ]);
         } else {
             $this->id = $id;
