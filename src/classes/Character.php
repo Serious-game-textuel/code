@@ -19,34 +19,56 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_I
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
 class Character extends Entity implements Character_Interface {
 
-    private Inventory_Interface $inventory;
+    private int $id;
 
-    private ?Location_Interface $currentlocation;
-
-    public function __construct(string $description, string $name,
+    public function __construct(?int $id, string $description, string $name,
     array $status, array $items, ?Location_Interface $currentlocation) {
-        Util::check_array($status, 'string');
-        parent::__construct($description, $name, $status);
-        $this->inventory = new Inventory($items);
-        $this->currentlocation = $currentlocation;
+        if (!isset($id)) {
+            $super = new Entity(null, $description, $name, $status);
+            parent::__construct($super->get_id(), "", "", []);
+            $inventory = new Inventory($items);
+            global $DB;
+            $this->id = $DB->insert_record('character', [
+                'entity' => $super->get_id(),
+                'inventory' => $inventory->get_id(),
+                'currentlocation' => $currentlocation->get_id(),
+            ]);
+        } else {
+            $this->id = $id;
+        }
     }
+
+    public static function get_instance(int $id) {
+        return new Character($id, "", "", [], [], null);
+    }
+
+    public function get_id() {
+        return $this->id;
+    }
+
     public function get_inventory() {
-        return $this->inventory;
+        global $DB;
+        $sql = "select inventory from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function has_item_character(Item_Interface $item) {
-        if ($this->inventory !== null) {
-            return $this->inventory->check_item($item);
+        $inventory = $this->get_inventory();
+        if ($inventory !== null) {
+            return $inventory->check_item($item);
         }
         return false;
     }
 
     public function get_current_location() {
-        return $this->currentlocation;
+        global $DB;
+        $sql = "select currentlocation from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function set_currentlocation(Location_Interface $newlocation) {
-        $this->currentlocation = $newlocation;
+        global $DB;
+        $DB->set_field('character', 'currentlocation', $newlocation->get_id(), ['id' => $this->get_id()]);
     }
 
 }
