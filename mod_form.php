@@ -66,7 +66,7 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
          null, ['maxbytes' => 1111111111, 'accepted_types' => '.csv']);
         // Adding your new field here.
         $mform->addHelpButton('userfile', 'file');
-        $mform->addElement('filepicker', 'imagefile', get_string('image', 'mod_serioustextualgame'),
+        $mform->addElement('filepicker', 'imagefile', "Carte(opt)",
         null, ['maxbytes' => 5242880, 'accepted_types' => ['.png', '.jpg', '.jpeg', '.gif']]);
 
         // Adding the rest of mod_serioustextualgame settings, spreading all them into this fieldset

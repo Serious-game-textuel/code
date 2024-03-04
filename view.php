@@ -76,7 +76,6 @@ if ($file) {
         $file->get_filepath(),
         $file->get_filename()
     );
-    echo html_writer::empty_tag('img', ['src' => $url, 'alt' => format_string($moduleinstance->name)]);
 }
 
 ?>
@@ -93,11 +92,28 @@ if ($file) {
         Fouiller un endroit = fouiller [nom de l'endroit] <br>
         Connaître son inventaire = inventaire <br>
     </div>
+    <?php if ($file): ?>
+    <button id="mapButton" style="position: absolute; top: 30px; right: 0; background-color: white; color: black;">🗺️</button>
+    <img id="mapImage" src="<?php echo $url; ?>" 
+    alt="<?php echo format_string($moduleinstance->name); ?>" style="display: none; position: absolute; top: 60px; right: 0;">
+    <?php endif; ?>
 </div>
 <input type="text" id="inputText" placeholder="Écrivez quelque chose ici..." style="width: 100%;">
 <button onclick="displayInputText()">Valider</button>
+<script type="text/javascript">
+    var mapButton = document.getElementById('mapButton');
+    var mapImage = document.getElementById('mapImage');
 
-<script type = "text/javascript">
+    if (mapButton && mapImage) {
+    mapButton.addEventListener('mouseover', function() {
+        mapImage.style.display = 'block';
+    });
+
+    mapButton.addEventListener('mouseout', function() {
+        mapImage.style.display = 'none';
+    });
+}
+
     document.getElementById('helpButton').addEventListener('mouseover', function() {
         document.getElementById('helpText').style.display = 'block';
     });
