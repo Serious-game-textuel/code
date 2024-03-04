@@ -261,7 +261,6 @@ class App implements App_Interface {
             } catch (Exception $e) {
                 throw new Cell_Exception($e->getMessage(), $row, $col);
             }
-            
             $col++;
         }
         $col = 1;
@@ -405,7 +404,9 @@ class App implements App_Interface {
                 }
 
                 if ($entity instanceof Location_Interface) {
-                    $reaction = new Location_Reaction($reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity);
+                    $reaction = new Location_Reaction(
+                        $reactiondescription, $oldstatuses, $newstatuses, $olditems, $newitems, $entity
+                    );
                     if (!isset($reactions[$action][$condition])) {
                         $reactions[$action][$condition] = [];
                     }
@@ -429,7 +430,6 @@ class App implements App_Interface {
                         $reactions[$action][$condition] = [];
                     }
                     array_push($reactions[$action][$condition], $reaction);
-    
                 } else {
                     throw new Cell_Exception($entityname . " must be a location or a character");
                 }
