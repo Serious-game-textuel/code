@@ -54,7 +54,6 @@ class App implements App_Interface {
                 } else {
                     $playerkeyword = "player";
                 }
-                self::$instance = $this;
                 global $DB;
                 global $USER;
                 $sql = "select id from {language} where " . $DB->sql_compare_text('name') . " = ".$DB->sql_compare_text(':name');

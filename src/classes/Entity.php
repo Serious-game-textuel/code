@@ -22,22 +22,28 @@ abstract class Entity implements Entity_Interface {
 
     private int $id;
 
-    private string $description;
-
-    private string $name;
-
-    private array $status;
-    public function __construct(string $description, string $name, array $status) {
-        $app = App::get_instance();
-        if ($app->get_startentity($name) != null) {
-            throw new InvalidArgumentException("Each entity name must be unique : ".$name);
+    public function __construct(?int $id, string $description, string $name, array $status) {
+        if (!isset($id)) {
+            $app = App::get_instance();
+            Util::check_array($status, 'string');
+            if ($app->get_startentity($name) != null) {
+                throw new InvalidArgumentException("Each entity name must be unique : ".$name);
+            }
+            global $DB;
+            $this->id = $DB->insert_record('app', [
+                'description' => $description,
+                'name' => $name,
+            ]);
+            foreach ($status as $statut) {
+                $DB->insert_record('entity_status', [
+                    'entity' => $this->id,
+                    'status' => $statut->get_id(),
+                ]);
+            }
+            $app->add_startentity($this);
+        } else {
+            $this->id = $id;
         }
-        $this->id = Id_Class::generate_id(self::class);
-        $this->description = $description;
-        $this->name = $name;
-        Util::check_array($status, 'string');
-        $this->status = $status;
-        $app->add_startentity($this);
     }
 
     public function get_id() {
@@ -45,35 +51,59 @@ abstract class Entity implements Entity_Interface {
     }
 
     public function get_description() {
-        return $this->description;
+        global $DB;
+        $sql = "select description from {entity} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_description(string $description) {
-        $this->description = $description;
+        global $DB;
+        $DB->set_field('entity', 'description', $description, ['id' => $this->get_id()]);
     }
 
     public function get_name() {
-        return $this->name;
+        global $DB;
+        $sql = "select name from {entity} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_name(string $name) {
-        $this->name = $name;
+        global $DB;
+        $DB->set_field('entity', 'name', $name, ['id' => $this->get_id()]);
     }
 
     public function get_status() {
-        return $this->status;
+        $status_array = [];
+        global $DB;
+        $sql = "select status from {entity} where "
+        . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+        $status = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($status as $statut) {
+            array_push($status_array, $statut);
+        }
+        return $status_array;
     }
 
     public function set_status(array $status) {
-        $this->status = Util::clean_array($status, 'string');
-        return [];
+        $status = Util::clean_array($status, Location_Interface::class);
+        global $DB;
+        $DB->delete_records('entity_status', ['entity' => $this->get_id()]);
+        foreach ($status as $statut) {
+            $DB->insert_record('entity_status', [
+                'entity' => $this->id,
+                'status' => $statut,
+            ]);
+        }
     }
 
     public function add_status(array $status) {
-        $this->status = Util::clean_array(array_merge($this->status, $status), 'string');
+        $statut = $this->get_status();
+        array_push($statut, $status);
+        $this->set_status($statut);
     }
 
     public function remove_status(array $status) {
-        $this->status = Util::clean_array(array_diff($this->status, $status), 'string');
+        global $DB;
+        $DB->delete_records('entity_status', ['entity' => $this->get_id(), 'status' => $status]);
     }
 }

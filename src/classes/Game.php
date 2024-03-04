@@ -27,6 +27,8 @@ class Game implements Game_Interface {
         global $DB;
         if (!isset($id)) {
             $app = App::get_instance();
+            Util::check_array($visitedlocations, Location_Interface::class);
+            Util::check_array($entities, Entity_Interface::class);
             $this->id = $DB->insert_record('game', [
                 'deaths' => $deaths,
                 'actions' => $actions,
@@ -77,7 +79,8 @@ class Game implements Game_Interface {
         return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
     public function set_actions(int $actions) {
-        $this->actions = $actions;
+        global $DB;
+        $DB->set_field('game', 'actions', $actions, ['id' => $this->get_id()]);
     }
 
     public function add_action() {
@@ -191,9 +194,9 @@ class Game implements Game_Interface {
     }
 
     public function add_entity(Entity_Interface $entity) {
-        $entities = $this->get_visited_locations();
+        $entities = $this->get_entities();
         array_push($entities, $entity);
-        $this->set_visited_locations($entities);
+        $this->set_entities($entities);
     }
 
     /**
