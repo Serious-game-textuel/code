@@ -20,7 +20,8 @@ class Location extends Entity implements Location_Interface {
 
     private int $id;
 
-    public function __construct(?int $id, string $name, array $status, array $items, array $hints, array $actions, int $hintscount=0) {
+    public function __construct(?int $id, string $name, array $status, array $items,
+    array $hints, array $actions, int $hintscount=0) {
         if (!isset($id)) {
             Util::check_array($status, 'string');
             Util::check_array($items, Item_Interface::class);
@@ -192,12 +193,14 @@ class Location extends Entity implements Location_Interface {
                 $reactions = $condition->get_reactions();
                 foreach ($reactions as $reaction) {
                     $ischaracterreaction = $DB->record_exists_sql(
-                        "SELECT id FROM {characterreaction} WHERE ".$DB->sql_compare_text('reaction')." = ".$DB->sql_compare_text(':id'),
+                        "SELECT id FROM {characterreaction} WHERE "
+                        .$DB->sql_compare_text('reaction')." = ".$DB->sql_compare_text(':id'),
                         ['id' => $reaction->get_id()]
                     );
                     if ($ischaracterreaction) {
                         $isplayercharacter = $DB->record_exists_sql(
-                            "SELECT id FROM {playercharacter} WHERE ".$DB->sql_compare_text('character')." = ".$DB->sql_compare_text(':id'),
+                            "SELECT id FROM {playercharacter} WHERE "
+                            .$DB->sql_compare_text('character')." = ".$DB->sql_compare_text(':id'),
                             ['id' => $reaction->get_character()->get_id()]
                         );
                         if ($reaction->get_new_location() != null && $isplayercharacter) {
