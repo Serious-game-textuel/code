@@ -59,6 +59,7 @@ class Location extends Entity implements Location_Interface {
         $return = [];
         $game = App::get_instance()->get_game();
         $app = App::get_instance();
+        $language = $app->get_language();
         $app->store_actionsdone($action);
         $action = App::tokenize($action);
         $actionvalide = $this->is_action_valide($action);
@@ -67,7 +68,7 @@ class Location extends Entity implements Location_Interface {
             foreach ($result as $res) {
                 array_push($return, $res);
             }
-        } else {
+        } else if ($language == "fr") {
             $defaultaction = "fouiller";
             if (strpos($action, $defaultaction) === 0) {
                 $entity = substr($action, strlen($defaultaction) + 1);
@@ -123,6 +124,62 @@ class Location extends Entity implements Location_Interface {
                     array_push($return, $action.'? Tu ne peux pas faire ca.');
                 }
             }
+        } else {
+            $defaultaction = "search";
+            if (strpos($action, $defaultaction) === 0) {
+                $entity = substr($action, strlen($defaultaction) + 1);
+                if ($game->get_entity($entity) !== null) {
+                    if ($game->get_default_action_interact() !== null) {
+                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
+                        foreach ($result as $res) {
+                            array_push($return, $res);
+                        }
+                    } else {
+                        if ($game->get_default_action_search() !== null) {
+                            $result = $game->get_default_action_search()->do_conditions_verb($defaultaction);
+                            foreach ($result as $res) {
+                                array_push($return, $res);
+                            }
+                        }
+                    }
+                } else {
+                    if ($game->get_default_action_interact() !== null) {
+                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
+                        foreach ($result as $res) {
+                            array_push($return, $res);
+                        }
+                    } else {
+                        array_push($return, "I don't understand what you want to ".$defaultaction);
+                    }
+                }
+            } else if ($action == "save") {
+                App::get_instance()->create_save();
+                array_push($return, "Saved game");
+            } else if ($action == "hints") {
+                $hints = $this->get_hints();
+                $hintcount = $this->get_hintscount();
+                if ($hintcount < count($hints)) {
+                    $hint = $hints[$hintcount];
+                    $this->increments_hintscount();
+                    array_push($return, $hint->get_description());
+                } else {
+                    array_push($return, "No other clues available.");
+                }
+            } else if ($action == "exit") {
+                array_push($return, $this->get_exit());
+            } else if ($action == "inventory") {
+                array_push($return, $this->get_inventory_description());
+            } else {
+                $firstword = explode(' ', $action)[0];
+                if ($game->get_default_action_interact() !== null) {
+                    $result = $game->get_default_action_interact()->do_conditions_verb($firstword);
+                    foreach ($result as $res) {
+                        array_push($return, $res);
+                    }
+                } else {
+                    array_push($return, $action.'? You can not do that.');
+                }
+            }
         }
         return $return;
     }
@@ -138,7 +195,13 @@ class Location extends Entity implements Location_Interface {
     }
 
     public function get_exit() {
-        $sortie = "Sorties disponibles : ";
+        $app = App::get_instance();
+        $language = $app->get_language();
+        if ($language == "fr") {
+            $sortie = "Sorties disponibles : ";
+        } else {
+            $sortie = "Available exits: ";
+        }
         foreach ($this->actions as $action) {
             $conditions = $action->get_conditions();
             foreach ($conditions as $condition) {
@@ -157,13 +220,23 @@ class Location extends Entity implements Location_Interface {
     }
 
     public function get_inventory_description() {
-        $game = App::get_instance()->get_game();
+        $app = App::get_instance();
+        $language = $app->get_language();
+        $game = $app->get_game();
         $player = $game->get_player();
         $inventory = $player->get_inventory();
         $items = $inventory->get_items();
-        $description = "Inventaire : ";
+        if ($language == "fr") {
+            $description = "Inventaire : ";
+        } else {
+            $description = "Inventory : ";
+        }
         if (count($items) == 0) {
-            $description .= "vide";
+            if ($language == "fr") {
+                $description .= "vide";
+            } else {
+                $description .= "empty";
+            }
         } else {
             foreach ($items as $item) {
                 $description .= $item->get_name().", ";

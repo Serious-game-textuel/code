@@ -58,13 +58,15 @@ $PAGE->set_url('/mod/serioustextualgame/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
-// Récupérez le contenu CSV de $moduleinstance->intro.
 $csvcontent = $moduleinstance->filecontent;
-unset($_SESSION['conditionsdone']);
 
+$rows = str_getcsv($csvcontent, "\n");
+$columns = str_getcsv($rows[2], ",");
 
+$element = $columns[1];
 
 echo $OUTPUT->header();
+
 $fs = get_file_storage();
 $file = $fs->get_file_by_id($moduleinstance->fileid);
 if ($file) {
@@ -85,12 +87,21 @@ if ($file) {
     <button id="helpButton" style="position: absolute; top: 0; right: 0; background-color: white; color: black;">?</button>
     <div id="helpText" style="display: none; position: absolute; top: 30px; right: 0;
      background-color: white; color: black; padding: 10px;">
-        Avoir de l'aide = Help<br>
-        Avoir des indices = indices <br>
-        Connaître les sorties = sortie <br>
-        Sauvegarder une partie = sauvegarder <br>
-        Fouiller un endroit = fouiller [nom de l'endroit] <br>
-        Connaître son inventaire = inventaire <br>
+        <?php if ($element === 'FR'): ?>
+            Avoir de l'aide = Help<br>
+            Avoir des indices = indices <br>
+            Connaître les sorties = sortie <br>
+            Sauvegarder une partie = sauvegarder <br>
+            Fouiller un endroit = fouiller [nom de l'endroit] <br>
+            Connaître son inventaire = inventaire <br>
+        <?php else: ?>
+            Get help = Help<br>
+            Get hints = hints <br>
+            Know the exits = exit <br>
+            Save a game = save <br>
+            Search a place = search [place name] <br>
+            Know your inventory = inventory <br>
+        <?php endif; ?>
     </div>
     <?php if ($file): ?>
     <button id="mapButton" style="position: absolute; top: 30px; right: 0; background-color: white; color: black;">🗺️</button>
