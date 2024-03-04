@@ -32,6 +32,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Cell_Exception.php');
 
 
 class App implements App_Interface {
@@ -188,7 +189,7 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . " is not an item with the row: " . $row + 1 . " and the col: " . $col + 1 ."");
+                    throw new Cell_Exception($itemname . " is not an item", $row + 3, $col);
                 }
                 array_push($items, $item);
             }
@@ -215,7 +216,7 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item == null || !($item instanceof Item)) {
-                    throw new Exception($itemname . " is not an item and here is the row: " . $row + 1 . " and the col: " . $col + 1 ."");
+                    throw new Cell_Exception($itemname . " is not an item", $row + 2, $col);
                 }
                 array_push($items, $item);
             }
@@ -234,14 +235,14 @@ class App implements App_Interface {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
-                throw new Exception($locationname . " is not a location");
+                throw new Cell_Exception($locationname . " is not a location", $row, $col);
             }
             $character = $this->get_startentity($name);
             $characternames = $this->get_cell_array_string($row + 3, $col);
             foreach ($characternames as $name) {
                 $character = $this->get_startentity($name);
                 if ($character == null || !($character instanceof Character)) {
-                    throw new Exception($name . " is not a character");
+                    throw new Cell_Exception($name . " is not a character", $row + 3, $col);
                 }
                 $character->set_currentlocation($location);
             }
@@ -259,7 +260,9 @@ class App implements App_Interface {
             foreach ($e->get_inventory()->get_items() as $i) {
                 $iname = $i->get_name();
                 if (array_key_exists($iname, $itemsentities)) {
-                    throw new Exception("'" . $itemsentities[$iname] . "' and '" . $ename . "' have the same item : '" . $iname . "'.");
+                    throw new Exception(
+                        "'" . $itemsentities[$iname] . "' and '" . $ename . "' have the same item : '" . $iname . "'."
+                    );
                 }
                 $itemsentities[$iname] = $ename;
             }
@@ -272,7 +275,7 @@ class App implements App_Interface {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location == null || !($location instanceof Location)) {
-                throw new Exception($locationname . "is not a location");
+                throw new Cell_Exception($locationname . "is not a location", $row, $col);
             }
             $actions = $this->create_column_actions($location, $col, $row + 6);
             $location->set_actions($actions);
@@ -317,8 +320,7 @@ class App implements App_Interface {
             if ($entityname != "") {
                 $entity = $this->get_startentity($entityname);
                 if ($entity == null) {
-                    throw new Exception($this->get_cell_string($row + 3, $col)
-                    . " is not an entity with the row: " . $row + 1 . " and the col: " . $col + 1 ."");
+                    throw new Cell_Exception($entityname . " is not an entity", $row + 3, $col);
                 }
 
                 $newstatuses = $this->get_cell_array_string($row + 4, $col);
@@ -330,7 +332,7 @@ class App implements App_Interface {
                 foreach ($newitemnames as $name) {
                     $item = $this->get_startentity($name);
                     if ($item == null || !($item instanceof Item_Interface)) {
-                        throw new Exception($name . " is not an Item");
+                        throw new Cell_Exception($name . " is not an item", $row + 6, $col);
                     }
                     array_push($newitems, $item);
                 }
@@ -339,7 +341,7 @@ class App implements App_Interface {
                 foreach ($olditemnames as $name) {
                     $item = $this->get_startentity($name);
                     if ($item == null || !($item instanceof Item_Interface)) {
-                        throw new Exception($name . " is not an Item");
+                        throw new Cell_Exception($name . " is not an item", $row + 7, $col);
                     }
                     array_push($olditems, $item);
                 }
@@ -356,7 +358,7 @@ class App implements App_Interface {
                 if ($locationname != "") {
                     $location = $this->get_startentity($locationname);
                     if ($location == null || !($location instanceof Location_Interface)) {
-                        throw new Exception($locationname . " is not a location");
+                        throw new Exception($locationname . " is not a location", $row + 8, $col);
                     }
                 }
                 $reaction = new Character_Reaction($reactiondescription,
