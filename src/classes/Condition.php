@@ -44,6 +44,7 @@ class Condition implements Condition_Interface {
     public function do_reactions() {
         $app = App::get_instance();
         $game = $app->get_game();
+        $language = $app->get_language();
         $reactions = $this->get_reactions();
         $descriptions = [];
         foreach ($reactions as $reaction) {
@@ -79,20 +80,40 @@ class Condition implements Condition_Interface {
                         $character->add_status($newstatus);
                         if ($character instanceof Player_Character) {
                             foreach ($newstatus as $status) {
-                                if ($status == "mort") {
-                                    $game->add_deaths();
-                                    echo "playermort recommmencer au début(pas implémenter)\n";
+                                if ($language == "fr") {
+                                    if ($status == "mort") {
+                                        $game->add_deaths();
+                                        echo App::$playerkeyword . " est mort, recommmencer au début(pas implémenté)\n";
+                                    }
+                                } else {
+                                    if ($status == "dead") {
+                                        $game->add_deaths();
+                                        echo App::$playerkeyword . " is dead, you can restart (not implemented)\n";
+                                    }
                                 }
                             }
-                            if ($newstatus == "victoire") {
-                                $deaths = $game->get_deaths();
-                                $starttime = $game->get_start_time();
-                                $endtime = new DateTime();
-                                $interval = $starttime->diff($endtime);
-                                $time = $interval->format('%H:%I:%S');
-                                $lieux = $game->get_visited_locations();
-                                return "Vous avez gagné en " . $time . " avec " . $deaths
-                                . " morts et " . count($lieux) . " lieux visités.";
+                            if ($language == "fr") {
+                                if ($newstatus == "victoire") {
+                                    $deaths = $game->get_deaths();
+                                    $starttime = $game->get_start_time();
+                                    $endtime = new DateTime();
+                                    $interval = $starttime->diff($endtime);
+                                    $time = $interval->format('%H:%I:%S');
+                                    $lieux = $game->get_visited_locations();
+                                    return "Vous avez gagné en " . $time . " avec " . $deaths
+                                    . " morts et " . count($lieux) . " lieux visités.";
+                                }
+                            } else {
+                                if ($newstatus == "victory") {
+                                    $deaths = $game->get_deaths();
+                                    $starttime = $game->get_start_time();
+                                    $endtime = new DateTime();
+                                    $interval = $starttime->diff($endtime);
+                                    $time = $interval->format('%H:%I:%S');
+                                    $lieux = $game->get_visited_locations();
+                                    return "You won in " . $time . " with " . $deaths
+                                    . " deaths and " . count($lieux) . " visited locations.";
+                                }
                             }
                         }
                     }
@@ -129,7 +150,11 @@ class Condition implements Condition_Interface {
             array_push($descriptions, $reaction->get_description());
         }
         if (empty($descriptions)) {
-            return "pas de réaction";
+            if ($language == "fr") {
+                return "pas de réaction";
+            } else {
+                return "no reaction";
+            }
         }
         if (isset($descriptionreturn[0])) {
             array_push($descriptions, $descriptionreturn[0]);
@@ -138,68 +163,133 @@ class Condition implements Condition_Interface {
     }
 
     public function is_true() {
-        if ($this instanceof Leaf_Condition) {
-            $entity1 = $this->get_entity1();
-            $entity2 = $this->get_entity2();
-            $connector = $this->get_connector();
-            $status = $this->get_status();
+        $app = App::get_instance();
+        $language = $app->get_language();
+        if ($language == "fr") {
+            if ($this instanceof Leaf_Condition) {
+                $entity1 = $this->get_entity1();
+                $entity2 = $this->get_entity2();
+                $connector = $this->get_connector();
+                $status = $this->get_status();
 
-            if ($entity1 != null) {
-                $entity1status = $entity1->get_status();
-            }
-
-            if ($entity1 instanceof Character) {
-                if ($entity2 == null) {
-                    if ($connector == "est") {
-                        return $entity1status == $status;
-                    } else if ($connector == "est pas") {
-                        return $entity1status != $status;
-                    }
-                } else if ($entity2 instanceof Item) {
-                    if ($connector == "possède" || $connector == "a") {
-                        return $entity1->has_item_character($entity2);
-                    } else if ($connector == "possède pas" || $connector == "a pas") {
-                        return !$entity1->has_item_character($entity2);
-                    }
-                }
-            } else if ($entity1 instanceof Item) {
-                if ($entity2 == null) {
-                    if ($connector == "est") {
-                        return $entity1status == $status;
-                    } else if ($connector == "est pas") {
-                        return $entity1status != $status;
-                    }
-                }
-            } else if ($entity1 instanceof Location) {
-                if ($entity2 == null) {
-                    if ($connector == "est") {
-                        return $entity1status == $status;
-                    } else if ($connector == "est pas") {
-                        return $entity1status != $status;
-                    }
-                } else if ($entity2 instanceof Item) {
-                    if ($connector == "possède" || $connector == "a") {
-                        return $entity1->has_item_location($entity2);
-                    } else if ($connector == "possède pas" || $connector == "a pas") {
-                        return !$entity1->has_item_location($entity2);
-                    }
+                if ($entity1 != null) {
+                    $entity1status = $entity1->get_status();
                 }
 
-            } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
-                return true;
+                if ($entity1 instanceof Character) {
+                    if ($entity2 == null) {
+                        if ($connector == "est") {
+                            return $entity1status == $status;
+                        } else if ($connector == "est pas") {
+                            return $entity1status != $status;
+                        }
+                    } else if ($entity2 instanceof Item) {
+                        if ($connector == "possède" || $connector == "a") {
+                            return $entity1->has_item_character($entity2);
+                        } else if ($connector == "possède pas" || $connector == "a pas") {
+                            return !$entity1->has_item_character($entity2);
+                        }
+                    }
+                } else if ($entity1 instanceof Item) {
+                    if ($entity2 == null) {
+                        if ($connector == "est") {
+                            return $entity1status == $status;
+                        } else if ($connector == "est pas") {
+                            return $entity1status != $status;
+                        }
+                    }
+                } else if ($entity1 instanceof Location) {
+                    if ($entity2 == null) {
+                        if ($connector == "est") {
+                            return $entity1status == $status;
+                        } else if ($connector == "est pas") {
+                            return $entity1status != $status;
+                        }
+                    } else if ($entity2 instanceof Item) {
+                        if ($connector == "possède" || $connector == "a") {
+                            return $entity1->has_item_location($entity2);
+                        } else if ($connector == "possède pas" || $connector == "a pas") {
+                            return !$entity1->has_item_location($entity2);
+                        }
+                    }
+
+                } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
+                    return true;
+                }
+            } else if ($this instanceof Node_Condition) {
+                $condition1 = $this->get_condition1();
+                $condition2 = $this->get_condition2();
+                $connector = $this->get_connector();
+                if ($connector == "&") {
+                    return $condition1->is_true() && $condition2->is_true();
+                } else if ($connector == "|") {
+                    return $condition1->is_true() || $condition2->is_true();
+                }
+                return false;
             }
-        } else if ($this instanceof Node_Condition) {
-            $condition1 = $this->get_condition1();
-            $condition2 = $this->get_condition2();
-            $connector = $this->get_connector();
-            if ($connector == "&") {
-                return $condition1->is_true() && $condition2->is_true();
-            } else if ($connector == "|") {
-                return $condition1->is_true() || $condition2->is_true();
+        } else {
+            if ($this instanceof Leaf_Condition) {
+                $entity1 = $this->get_entity1();
+                $entity2 = $this->get_entity2();
+                $connector = $this->get_connector();
+                $status = $this->get_status();
+
+                if ($entity1 != null) {
+                    $entity1status = $entity1->get_status();
+                }
+
+                if ($entity1 instanceof Character) {
+                    if ($entity2 == null) {
+                        if ($connector == "is") {
+                            return $entity1status == $status;
+                        } else if ($connector == "is not") {
+                            return $entity1status != $status;
+                        }
+                    } else if ($entity2 instanceof Item) {
+                        if ($connector == "has") {
+                            return $entity1->has_item_character($entity2);
+                        } else if ($connector == "has not") {
+                            return !$entity1->has_item_character($entity2);
+                        }
+                    }
+                } else if ($entity1 instanceof Item) {
+                    if ($entity2 == null) {
+                        if ($connector == "is") {
+                            return $entity1status == $status;
+                        } else if ($connector == "is not") {
+                            return $entity1status != $status;
+                        }
+                    }
+                } else if ($entity1 instanceof Location) {
+                    if ($entity2 == null) {
+                        if ($connector == "is") {
+                            return $entity1status == $status;
+                        } else if ($connector == "is not") {
+                            return $entity1status != $status;
+                        }
+                    } else if ($entity2 instanceof Item) {
+                        if ($connector == "has") {
+                            return $entity1->has_item_location($entity2);
+                        } else if ($connector == "has not") {
+                            return !$entity1->has_item_location($entity2);
+                        }
+                    }
+
+                } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
+                    return true;
+                }
+            } else if ($this instanceof Node_Condition) {
+                $condition1 = $this->get_condition1();
+                $condition2 = $this->get_condition2();
+                $connector = $this->get_connector();
+                if ($connector == "&") {
+                    return $condition1->is_true() && $condition2->is_true();
+                } else if ($connector == "|") {
+                    return $condition1->is_true() || $condition2->is_true();
+                }
+                return false;
             }
-            return false;
         }
         return false;
     }
-
 }

@@ -20,7 +20,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 
 
-$app = new App($_POST['csvcontent'], Language::FR);
+$app = new App($_POST['csvcontent']);
 if (isset($_SESSION['conditionsdone'])) {
     $conditionsdone = $_SESSION['conditionsdone'];
     $conditionsdone = unserialize($conditionsdone);
