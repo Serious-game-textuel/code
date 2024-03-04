@@ -73,15 +73,15 @@ abstract class Entity implements Entity_Interface {
     }
 
     public function get_status() {
-        $status_array = [];
+        $statusarray = [];
         global $DB;
         $sql = "select status from {entity} where "
         . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
         $status = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($status as $statut) {
-            array_push($status_array, $statut);
+            array_push($statusarray, $statut);
         }
-        return $status_array;
+        return $statusarray;
     }
 
     public function set_status(array $status) {
