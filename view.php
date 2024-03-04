@@ -66,6 +66,20 @@ $columns = str_getcsv($rows[2], ",");
 $element = $columns[1];
 
 echo $OUTPUT->header();
+
+$fs = get_file_storage();
+$file = $fs->get_file_by_id($moduleinstance->fileid);
+if ($file) {
+    $url = moodle_url::make_pluginfile_url(
+        $file->get_contextid(),
+        $file->get_component(),
+        $file->get_filearea(),
+        $file->get_itemid(),
+        $file->get_filepath(),
+        $file->get_filename()
+    );
+}
+
 ?>
 
 <div id="container" style="background-color: black; color: white; width: 100%; height: 500px; overflow: auto; position: relative;">
@@ -89,11 +103,28 @@ echo $OUTPUT->header();
             Know your inventory = inventory <br>
         <?php endif; ?>
     </div>
+    <?php if ($file): ?>
+    <button id="mapButton" style="position: absolute; top: 30px; right: 0; background-color: white; color: black;">🗺️</button>
+    <img id="mapImage" src="<?php echo $url; ?>" 
+    alt="<?php echo format_string($moduleinstance->name); ?>" style="display: none; position: absolute; top: 60px; right: 0;">
+    <?php endif; ?>
 </div>
 <input type="text" id="inputText" placeholder="Écrivez quelque chose ici..." style="width: 100%;">
 <button onclick="displayInputText()">Valider</button>
+<script type="text/javascript">
+    var mapButton = document.getElementById('mapButton');
+    var mapImage = document.getElementById('mapImage');
 
-<script type = "text/javascript">
+    if (mapButton && mapImage) {
+    mapButton.addEventListener('mouseover', function() {
+        mapImage.style.display = 'block';
+    });
+
+    mapButton.addEventListener('mouseout', function() {
+        mapImage.style.display = 'none';
+    });
+}
+
     document.getElementById('helpButton').addEventListener('mouseover', function() {
         document.getElementById('helpText').style.display = 'block';
     });
