@@ -54,5 +54,17 @@ class Node_Condition extends Condition {
     public function set_connector(string $connector) {
         $this->connector = $connector;
     }
+
+    public function is_true() {
+        $condition1 = $this->get_condition1();
+        $condition2 = $this->get_condition2();
+        $connector = $this->get_connector();
+        if ($connector == "&") {
+            return $condition1->is_true() && $condition2->is_true();
+        } else if ($connector == "|") {
+            return $condition1->is_true() || $condition2->is_true();
+        }
+        return false;
+    }
 }
 

@@ -69,5 +69,57 @@ class Leaf_Condition extends Condition {
         $this->status = Util::clean_array($status, 'string');
     }
 
+    public function is_true() {
+        $entity1 = $this->get_entity1();
+        $entity2 = $this->get_entity2();
+        $connector = $this->get_connector();
+        $status = $this->get_status();
+
+        if ($entity1 != null) {
+            $entity1status = $entity1->get_status();
+        }
+
+        if ($entity1 instanceof Character) {
+            if ($entity2 == null) {
+                if ($connector == "est") {
+                    return $entity1status == $status;
+                } else if ($connector == "est pas") {
+                    return $entity1status != $status;
+                }
+            } else if ($entity2 instanceof Item) {
+                if ($connector == "possède" || $connector == "a") {
+                    return $entity1->has_item_character($entity2);
+                } else if ($connector == "possède pas" || $connector == "a pas") {
+                    return !$entity1->has_item_character($entity2);
+                }
+            }
+        } else if ($entity1 instanceof Item) {
+            if ($entity2 == null) {
+                if ($connector == "est") {
+                    return $entity1status == $status;
+                } else if ($connector == "est pas") {
+                    return $entity1status != $status;
+                }
+            }
+        } else if ($entity1 instanceof Location) {
+            if ($entity2 == null) {
+                if ($connector == "est") {
+                    return $entity1status == $status;
+                } else if ($connector == "est pas") {
+                    return $entity1status != $status;
+                }
+            } else if ($entity2 instanceof Item) {
+                if ($connector == "possède" || $connector == "a") {
+                    return $entity1->has_item_location($entity2);
+                } else if ($connector == "possède pas" || $connector == "a pas") {
+                    return !$entity1->has_item_location($entity2);
+                }
+            }
+
+        } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
+            return true;
+        }
+    }
+
 }
 
