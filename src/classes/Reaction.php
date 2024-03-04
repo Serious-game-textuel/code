@@ -19,24 +19,45 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_In
 abstract class Reaction implements Reaction_Interface {
 
     private int $id;
-    private string $description;
-    private array $oldstatus;
-    private array $newstatus;
-    private array $olditem;
-    private array $newitem;
 
-    public function __construct(string $description, array $oldstatus, array $newstatus,
+    public function __construct(?int $id, string $description, array $oldstatus, array $newstatus,
     array $olditem, array $newitem) {
-        $this->id = Id_Class::generate_id(self::class);
-        Util::check_array($oldstatus, 'string');
-        Util::check_array($newstatus, 'string');
-        Util::check_array($olditem, Item_Interface::class);
-        Util::check_array($newitem, Item_Interface::class);
-        $this->description = $description;
-        $this->oldstatus = $oldstatus;
-        $this->newstatus = $newstatus;
-        $this->olditem = $olditem;
-        $this->newitem = $newitem;
+        if (!isset($id)) {
+            Util::check_array($oldstatus, 'string');
+            Util::check_array($newstatus, 'string');
+            Util::check_array($olditem, Item_Interface::class);
+            Util::check_array($newitem, Item_Interface::class);
+            global $DB;
+            $this->id = $DB->insert_record('reaction', [
+                'description' => $description,
+            ]);
+            foreach ($oldstatus as $oldstatut) {
+                $DB->insert_record('reaction_oldstatus', [
+                    'reaction' => $this->id,
+                    'location' => $oldstatut,
+                ]);
+            }
+            foreach ($newstatus as $newstatut) {
+                $DB->insert_record('reaction_newstatus', [
+                    'reaction' => $this->id,
+                    'location' => $newstatut,
+                ]);
+            }
+            foreach ($olditem as $item) {
+                $DB->insert_record('reaction_olditems', [
+                    'reaction' => $this->id,
+                    'location' => $item->get_id(),
+                ]);
+            }
+            foreach ($olditem as $item) {
+                $DB->insert_record('reaction_newitems', [
+                    'reaction' => $this->id,
+                    'location' => $item->get_id(),
+                ]);
+            }
+        } else {
+            $this->id = $id;
+        }
     }
 
     public function get_id() {
@@ -44,43 +65,100 @@ abstract class Reaction implements Reaction_Interface {
     }
 
     public function get_description() {
-        return $this->description;
+        global $DB;
+        $sql = "select description from {reaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_description(string $description) {
-        $this->description = $description;
+        global $DB;
+        $DB->set_field('reaction', 'description', $description, ['id' => $this->get_id()]);
     }
 
     public function get_old_status() {
-        return $this->oldstatus;
+        global $DB;
+        $sql = "select status from {reaction_oldstatus} where "
+        . $DB->sql_compare_text('reaction') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_old_status(array $status) {
-        $this->oldstatus = Util::clean_array($status, 'string');
+        $oldstatus = Util::clean_array($status, 'string');
+        global $DB;
+        $DB->delete_records('reaction_oldstatus', ['reaction' => $this->get_id()]);
+        foreach ($oldstatus as $status) {
+            $DB->insert_record('reaction_oldstatus', [
+                'reaction' => $this->id,
+                'status' => $status,
+            ]);
+        }
     }
 
     public function get_new_status() {
-        return $this->newstatus;
+        global $DB;
+        $sql = "select status from {reaction_newstatus} where "
+        . $DB->sql_compare_text('reaction') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_new_status(array $status) {
-        $this->newstatus = Util::clean_array($status, 'string');
+        $oldstatus = Util::clean_array($status, 'string');
+        global $DB;
+        $DB->delete_records('reaction_newstatus', ['reaction' => $this->get_id()]);
+        foreach ($oldstatus as $status) {
+            $DB->insert_record('reaction_newstatus', [
+                'reaction' => $this->id,
+                'status' => $status,
+            ]);
+        }
     }
 
     public function get_old_item() {
-        return $this->olditem;
+        $items = [];
+        global $DB;
+        $sql = "select item from {reaction_olditems} where "
+        . $DB->sql_compare_text('reaction') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($items, Item::get_instance($id));
+        }
+        return $items;
     }
 
     public function set_old_item(array $item) {
-        $this->olditem = Util::clean_array($item, Item_Interface::class);
+        $items = Util::clean_array($item, Item_Interface::class);
+        global $DB;
+        $DB->delete_records('reaction_olditems', ['reaction' => $this->get_id()]);
+        foreach ($items as $item) {
+            $DB->insert_record('reaction_olditems', [
+                'reaction' => $this->id,
+                'item' => $item->get_id(),
+            ]);
+        }
     }
 
     public function get_new_item() {
-        return $this->newitem;
+        $items = [];
+        global $DB;
+        $sql = "select item from {reaction_newitems} where "
+        . $DB->sql_compare_text('reaction') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($items, Item::get_instance($id));
+        }
+        return $items;
     }
 
     public function set_new_item(array $item) {
-        $this->newitem = Util::clean_array($item, Item_Interface::class);
+        $items = Util::clean_array($item, Item_Interface::class);
+        global $DB;
+        $DB->delete_records('reaction_newitems', ['reaction' => $this->get_id()]);
+        foreach ($items as $item) {
+            $DB->insert_record('reaction_newitems', [
+                'reaction' => $this->id,
+                'item' => $item->get_id(),
+            ]);
+        }
     }
 
 
