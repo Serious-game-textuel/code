@@ -18,55 +18,88 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
 class Leaf_Condition extends Condition {
 
-    private ?Entity_Interface $entity1;
-    private ?Entity_Interface $entity2;
-    private string $connector;
-    private ?array $status;
+    private ?int $id;
 
-    public function __construct(?Entity_Interface $entity1, ?Entity_Interface $entity2, string $connector,
-    ?array $status, array $reactions) {
-        Util::check_array($reactions, Reaction_Interface::class);
-        parent::__construct($reactions);
-        $this->entity1 = $entity1;
-        $this->entity2 = $entity2;
-        $this->connector = $connector;
-        if ($status !== null) {
+    public function __construct(?int $id, ?Entity_Interface $entity1, ?Entity_Interface $entity2,
+    string $connector, ?array $status, array $reactions) {
+        if (!isset($id)) {
+            Util::check_array($reactions, Reaction_Interface::class);
             Util::check_array($status, 'string');
-            $status = array_filter($status);
+            $condition = new Condition(null, $reactions);
+            global $DB;
+            $this->id = $DB->insert_record('leafcondition', [
+                'condition' => $condition->get_id(),
+                'entity1' => $entity1->get_id(),
+                'entity2' => $entity2->get_id(),
+                'connector' => $connector,
+            ]);
+            foreach ($status as $statut) {
+                $DB->insert_record('leafcondition_status', [
+                    'leafcondition' => $this->id,
+                    'status' => $statut,
+                ]);
+            }
+        } else {
+            $this->id = $id;
         }
-        $this->status = $status;
+    }
+
+    public static function get_instance(int $id) {
+        return new Leaf_Condition($id, null, null, "", null, []);
     }
 
     public function get_entity1() {
-        return $this->entity1;
+        global $DB;
+        $sql = "select entity1 from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return Entity::get_instance($id);
     }
 
     public function set_entity1(Entity_Interface $entity1) {
-        $this->entity1 = $entity1;
+        global $DB;
+        $DB->set_field('leafcondition', 'entity1', $entity1->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_entity2() {
-        return $this->entity2;
+        global $DB;
+        $sql = "select entity2 from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return Entity::get_instance($id);
     }
 
     public function set_entity2(Entity_Interface $entity2) {
-        $this->entity2 = $entity2;
+        global $DB;
+        $DB->set_field('leafcondition', 'entity2', $entity2->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_connector() {
-        return $this->connector;
+        global $DB;
+        $sql = "select connector from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_connector(string $connector) {
-        $this->connector = $connector;
+        global $DB;
+        $DB->set_field('leafcondition', 'connector', $connector, ['id' => $this->get_id()]);
     }
 
     public function get_status() {
-        return $this->status;
+        global $DB;
+        $sql = "select status from {leafcondition_status} where "
+        . $DB->sql_compare_text('leafcondition') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_status(array $status) {
-        $this->status = Util::clean_array($status, 'string');
+        $status = Util::clean_array($status, 'string');
+        global $DB;
+        $DB->delete_records('leafcondition_status', ['leafcondition' => $this->get_id()]);
+        foreach ($status as $statut) {
+            $DB->insert_record('leafcondition_status', [
+                'leafcondition' => $this->id,
+                'location' => $statut,
+            ]);
+        }
     }
 
     public function is_true() {
@@ -74,26 +107,45 @@ class Leaf_Condition extends Condition {
         $entity2 = $this->get_entity2();
         $connector = $this->get_connector();
         $status = $this->get_status();
-
+        global $DB;
         if ($entity1 != null) {
             $entity1status = $entity1->get_status();
         }
-
-        if ($entity1 instanceof Character) {
+        $ischaracter = $DB->record_exists_sql(
+            "SELECT id FROM {character} WHERE "
+            .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+            ['id' => $entity1->get_id()]
+        );
+        $isitem = $DB->record_exists_sql(
+            "SELECT id FROM {item} WHERE "
+            .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+            ['id' => $entity1->get_id()]
+        );
+        $islocation = $DB->record_exists_sql(
+            "SELECT id FROM {location} WHERE "
+            .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+            ['id' => $entity1->get_id()]
+        );
+        if ($ischaracter) {
+            $isitem = $DB->record_exists_sql(
+                "SELECT id FROM {item} WHERE "
+                .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $entity2->get_id()]
+            );
             if ($entity2 == null) {
                 if ($connector == "est") {
                     return $entity1status == $status;
                 } else if ($connector == "est pas") {
                     return $entity1status != $status;
                 }
-            } else if ($entity2 instanceof Item) {
+            } else if ($isitem) {
                 if ($connector == "possède" || $connector == "a") {
                     return $entity1->has_item_character($entity2);
                 } else if ($connector == "possède pas" || $connector == "a pas") {
                     return !$entity1->has_item_character($entity2);
                 }
             }
-        } else if ($entity1 instanceof Item) {
+        } else if ($isitem) {
             if ($entity2 == null) {
                 if ($connector == "est") {
                     return $entity1status == $status;
@@ -101,14 +153,19 @@ class Leaf_Condition extends Condition {
                     return $entity1status != $status;
                 }
             }
-        } else if ($entity1 instanceof Location) {
+        } else if ($islocation) {
+            $isitem = $DB->record_exists_sql(
+                "SELECT id FROM {item} WHERE "
+                .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $entity2->get_id()]
+            );
             if ($entity2 == null) {
                 if ($connector == "est") {
                     return $entity1status == $status;
                 } else if ($connector == "est pas") {
                     return $entity1status != $status;
                 }
-            } else if ($entity2 instanceof Item) {
+            } else if ($isitem) {
                 if ($connector == "possède" || $connector == "a") {
                     return $entity1->has_item_location($entity2);
                 } else if ($connector == "possède pas" || $connector == "a pas") {
@@ -119,6 +176,7 @@ class Leaf_Condition extends Condition {
         } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
             return true;
         }
+        return false;
     }
 
 }
