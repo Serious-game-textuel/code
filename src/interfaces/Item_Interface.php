@@ -18,4 +18,8 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
 
 interface Item_Interface extends Entity_Interface {
+    /**
+     * @return Item_Interface
+     */
+    public function get_inventory();
 }

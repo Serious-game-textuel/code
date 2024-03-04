@@ -22,6 +22,11 @@ interface Condition_Interface {
     public function get_id();
 
     /**
+     * @return Condition_Interface
+     */
+    public static function get_instance();
+
+    /**
      * @return Reaction_Interface[]
      */
     public function get_reactions();

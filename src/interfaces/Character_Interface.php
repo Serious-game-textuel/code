@@ -28,4 +28,14 @@ interface Character_Interface extends Entity_Interface {
      * @return boolean
      */
     public function has_item_character(Item_Interface $item);
+
+    /**
+     * @return int
+     */
+    public function get_id();
+
+    /**
+     * @return Character_Interface
+     */
+    public static function get_instance();
 }

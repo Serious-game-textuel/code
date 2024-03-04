@@ -52,4 +52,9 @@ interface Inventory_Interface {
      * @return boolean
      */
     public function check_item(Item_Interface $item);
+
+    /**
+     * @return Inventory_Interface
+     */
+    public static function get_instance();
 }
