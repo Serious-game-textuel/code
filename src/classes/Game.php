@@ -20,33 +20,41 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interf
 class Game implements Game_Interface {
 
     private int $id;
-    private int $deaths;
-    private int $actions;
-    private array $visitedlocations;
-    private ?DateTime $starttime;
-    private ?Player_Character $player;
-    private ?Default_Action_Interface $defaultactionsearch;
-    private ?Default_Action_Interface $defaultactioninteract;
-    private array $entities = [];
-    private static array $instances = [];
 
-    public function __construct(int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
+    public function __construct(?int $id, int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
     ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
-        $this->id = Id_Class::generate_id(self::class);
-        $this->deaths = $deaths;
-        $this->actions = $actions;
-        Util::check_array($visitedlocations, Location_Interface::class);
-        $this->visitedlocations = $visitedlocations;
-        $this->starttime = $starttime;
-        $this->player = $player;
-        $this->defaultactionsearch = $defaultactionsearch;
-        $this->defaultactioninteract = $defaultactioninteract;
-        $this->entities = $entities;
-        self::$instances[$this->id] = $this;
+        global $DB;
+        if (!isset($id)) {
+            $app = App::get_instance();
+            $this->id = $DB->insert_record('game', [
+                'deaths' => $deaths,
+                'actions' => $actions,
+                'starttime' => $starttime->getTimestamp(),
+                'player' => $player->get_id(),
+                'defaultactionsearch' => $defaultactionsearch->get_id(),
+                'defaultactioninteract' => $defaultactioninteract->get_id(),
+            ]);
+            $app->set_game($this);
+            foreach ($visitedlocations as $location) {
+                $DB->insert_record('game_visitedlocations', [
+                    'game' => $this->id,
+                    'location' => $location->get_id(),
+                ]);
+            }
+            foreach ($entities as $entity) {
+                $DB->insert_record('game_entities', [
+                    'game' => $this->id,
+                    'entity' => $entity->get_id(),
+                ]);
+            }
+        } else {
+            $this->id = $id;
+        }
+        
     }
 
-    public static function get_instance_by_id(int $id): ?self {
-        return self::$instances[$id] ?? null;
+    public static function get_instance(int $id) {
+        return new Game($id, 0, 0, [], null, null, null, null, []);
     }
 
     public function get_id() {
@@ -54,96 +62,150 @@ class Game implements Game_Interface {
     }
 
     public function get_deaths() {
-        return $this->deaths;
+        global $DB;
+        $sql = "select deaths from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
     public function add_deaths() {
-        $this->deaths ++;
+        global $DB;
+        $DB->set_field('game', 'deaths', $this->get_deaths()+1, ['id' => $this->get_id()]);
     }
 
     public function get_actions() {
-        return $this->actions;
+        global $DB;
+        $sql = "select actions from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
     }
     public function set_actions(int $actions) {
         $this->actions = $actions;
     }
 
     public function add_action() {
-        $this->actions ++;
+        global $DB;
+        $DB->set_field('game', 'actions', $this->get_actions()+1, ['id' => $this->get_id()]);
     }
 
     public function get_player() {
-        return $this->player;
+        global $DB;
+        $sql = "select player from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return Player_Character::get_instance($id);
     }
 
     public function set_player(Player_Character $player) {
-        $this->player = $player;
+        global $DB;
+        $DB->set_field('game', 'player', $player->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_visited_locations() {
-        return $this->visitedlocations;
+        $visitedlocations = [];
+        global $DB;
+        $sql = "select location from {game_visitedlocations} where ". $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($visitedlocations, Location::get_instance($id));
+        }
+        return $visitedlocations;
     }
     public function set_visited_locations(array $visitedlocations) {
-        $this->visitedlocations = Util::clean_array($visitedlocations, Location_Interface::class);
+        $visitedlocations = Util::clean_array($visitedlocations, Location_Interface::class);
+        global $DB;
+        $DB->delete_records('game_visitedlocations', ['game' => $this->get_id()]);
+        foreach ($visitedlocations as $location) {
+            $DB->insert_record('game_visitedlocations', [
+                'game' => $this->id,
+                'location' => $location->get_id(),
+            ]);
+        }
     }
 
     public function add_visited_location(Location_Interface $location) {
-        array_push($this->visitedlocations, $location);
-        $this->visitedlocations = Util::clean_array($this->visitedlocations, Location_Interface::class);
+        $locations = $this->get_visited_locations();
+        array_push($locations, $location);
+        $this->set_visited_locations($locations);
     }
 
     public function get_start_time() {
-        return $this->starttime;
+        global $DB;
+        $sql = "select starttime from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $datetime = new DateTime();
+        $datetime->setTimestamp($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        return $datetime;
     }
     public function set_start_time(DateTime $starttime) {
-        $this->starttime = $starttime;
+        global $DB;
+        $DB->set_field('game', 'starttime', $starttime->getTimestamp(), ['id' => $this->get_id()]);
     }
 
     public function get_current_location() {
-        return $this->player->get_current_location();
+        return $this->get_player()->get_current_location();
     }
     public function set_current_location(Location_Interface $currentlocation) {
-        $this->player->set_currentlocation($currentlocation);
+        $this->get_player()->set_currentlocation($currentlocation);
     }
 
     public function get_default_action_search() {
-        return $this->defaultactionsearch;
+        global $DB;
+        $sql = "select defaultactionsearch from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Default_Action::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function set_default_action_search(Default_Action_Interface $action) {
-        $this->defaultactionsearch = $action;
+        global $DB;
+        $DB->set_field('game', 'defaultactionsearch', $action->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_default_action_interact() {
-        return $this->defaultactioninteract;
+        global $DB;
+        $sql = "select defaultactioninteract from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Default_Action::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function set_default_action_interact(Default_Action_Interface $action) {
-        $this->defaultactioninteract = $action;
+        global $DB;
+        $DB->set_field('game', 'defaultactioninteract', $action->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_entities() {
-        return $this->entities;
+        $entities = [];
+        global $DB;
+        $sql = "select entity from {game_entities} where ". $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        foreach ($ids as $id) {
+            array_push($entities, Entity::get_instance($id));
+        }
+        return $entities;
     }
 
     public function set_entities(array $entities) {
-        $this->entities = Util::clean_array($entities, Entity_Interface::class);
+        $entities = Util::clean_array($entities, Entity_Interface::class);
+        global $DB;
+        $DB->delete_records('game_entities', ['game' => $this->get_id()]);
+        foreach ($entities as $entity) {
+            $DB->insert_record('game_entities', [
+                'game' => $this->id,
+                'location' => $entity->get_id(),
+            ]);
+        }
     }
 
     public function add_entity(Entity_Interface $entity) {
-        array_push($this->entities, $entity);
-        $this->entities = Util::clean_array($this->entities, Entity_Interface::class);
+        $entities = $this->get_visited_locations();
+        array_push($entities, $entity);
+        $this->set_visited_locations($entities);
     }
 
     /**
      * @return ?Entity_Interface
      */
     public function get_entity(string $name) {
-        foreach ($this->entities as $entity) {
-            if ($entity->get_name() == $name) {
-                return $entity;
-            }
-        }
-        return null;
+        global $DB;
+        $sql = "select {entity}.id from {game_entities} left join {entity} "
+        . "on {game_entities}.entity = {entity}.id where "
+        . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
+        . $DB->sql_compare_text('{game_entities}.game') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $this->get_id(), 'entityname' => $name]);
+        return Entity::get_instance($id);
     }
 
 }

@@ -132,4 +132,10 @@ interface Game_Interface {
      */
     public function get_entity(string $name);
 
+    /**
+     * @param int
+     * @return Game_Interface
+     */
+    public static function get_instance(int $id);
+
 }

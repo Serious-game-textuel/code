@@ -39,4 +39,12 @@ class Player_Character extends Character {
         }
         return $return;
     }
+
+    public function get_current_location() {
+
+    }
+
+    public function set_currentlocation(Location_Interface $currentlocation) {
+        
+    }
 }
