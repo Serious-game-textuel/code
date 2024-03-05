@@ -27,11 +27,11 @@ class Inventory implements Inventory_Interface {
         global $DB;
         if (!isset($id)) {
             Util::check_array($items, Item_Interface::class);
-            $this->id = $DB->insert_record('inventory', []);
+            $this->id = $DB->insert_record('inventory', ['test' => 'n']);
             foreach ($items as $item) {
                 $DB->insert_record('inventory_items', [
                     'inventory' => $this->id,
-                    'location' => $item->get_id(),
+                    'item' => $item->get_id(),
                 ]);
             }
         } else {

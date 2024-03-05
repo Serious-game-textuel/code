@@ -28,11 +28,14 @@ class Character extends Entity implements Character_Interface {
             $super = new Entity(null, $description, $name, $status);
             parent::__construct($super->get_id(), "", "", []);
             $inventory = new Inventory(null, $items);
-            $this->id = $DB->insert_record('character', [
+            $arguments = [
                 'entity' => $super->get_id(),
                 'inventory' => $inventory->get_id(),
-                'currentlocation' => $currentlocation->get_id(),
-            ]);
+            ];
+            if ($currentlocation != null) {
+                $arguments['currentlocation'] = $currentlocation->get_id();
+            }
+            $this->id = $DB->insert_record('character', $arguments);
         } else {
             $exists = $DB->record_exists_sql(
                 "SELECT id FROM {character} WHERE "
