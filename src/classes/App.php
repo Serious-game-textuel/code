@@ -148,25 +148,15 @@ class App implements App_Interface {
         . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         $player = $this->get_startentity($playerkeyword);
-        $arguments = [
-            'deaths' => 0,
-            'actions' => 0,
-            'starttime' => time(),
-            'player' => $player->get_id(),
-        ];
+        $arguments = [];
         if (isset($fouillerdefaut)) {
             $arguments = array_merge($arguments, ['defaultactionsearch' => $fouillerdefaut->get_id()]);
         }
         if (isset($interactiondefaut)) {
             $arguments = array_merge($arguments, ['defaultactioninteract' => $interactiondefaut->get_id()]);
         }
-        $idgame = $DB->insert_record('game', $arguments);
-        foreach ($this->get_startentities() as $entity) {
-            $DB->insert_record('game_entities', [
-                'game' => $idgame,
-                'entity' => $entity->get_id(),
-            ]);
-        }
+        new Game(null, 0, 0, [], new DateTime(), $player, $arguments['defaultactionsearch']
+        , $arguments['defaultactioninteract'], $this->get_startentities());
     }
 
     private function create_action_defaut($row) {
