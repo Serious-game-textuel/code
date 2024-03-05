@@ -18,7 +18,6 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/class/Character_Reaction.php');
 
 class Condition implements Condition_Interface {
 

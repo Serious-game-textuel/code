@@ -92,17 +92,7 @@ class App implements App_Interface {
         global $DB;
         $sql = "select game from {app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $gameid = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
-
-        $sql = "select * from {game} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        $game = $DB->get_field_sql($sql, ['id' => $gameid]);
-
-        $visitedlocations = [];
-        $sql = "select location from {game_visitedlocations} where "
-        . $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':game');
-        foreach ($DB->get_fieldset_sql($sql, ['game' => $gameid]) as $locationid) {
-            array_push($visitedlocations, Location::get_instance($locationid));
-        }
-        return Game::get_instance($game['id']);
+        return Game::get_instance($gameid);
     }
 
     public function set_game(Game_Interface $game) {
