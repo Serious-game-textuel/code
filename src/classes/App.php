@@ -171,10 +171,10 @@ class App implements App_Interface {
         }
         $arguments = [];
         if (isset($fouillerdefaut)) {
-            $arguments = array_merge($arguments, ['defaultactionsearch' => $fouillerdefaut->get_id()]);
+            $arguments = array_merge($arguments, ['defaultactionsearch' => $fouillerdefaut]);
         }
         if (isset($interactiondefaut)) {
-            $arguments = array_merge($arguments, ['defaultactioninteract' => $interactiondefaut->get_id()]);
+            $arguments = array_merge($arguments, ['defaultactioninteract' => $interactiondefaut]);
         }
         new Game(null, 0, 0, [], new DateTime(), $player, $arguments['defaultactionsearch']
         , $arguments['defaultactioninteract'], $this->get_startentities());
