@@ -29,7 +29,7 @@ class Location extends Entity implements Location_Interface {
             $super = new Entity(null, "", $name, $status);
             parent::__construct($super->get_id(), "", "", []);
             $inventory = new Inventory(null, $items);
-            $this->id = $DB->insert_record('game', [
+            $this->id = $DB->insert_record('location', [
                 'entity' => $super->get_id(),
                 'inventory' => $inventory->get_id(),
             ]);

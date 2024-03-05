@@ -27,7 +27,7 @@ class Player_Character extends Character {
             $super = new Character(null, $description, $name, $status, $items, $currentlocation);
             parent::__construct($super->get_id(), "", "", [], [], null);
             $this->id = $DB->insert_record('playercharacter', [
-                'character' => $super->get_id(),
+                'character_id' => $super->get_id(),
             ]);
         } else {
             $exists = $DB->record_exists_sql(
@@ -38,7 +38,7 @@ class Player_Character extends Character {
             if (!$exists) {
                 throw new InvalidArgumentException("No Player_Character object of ID:".$id." exists.");
             }
-            $sql = "select character from {playercharacter} where "
+            $sql = "select character_id from {playercharacter} where "
             . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", "", [], [], null);

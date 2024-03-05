@@ -26,11 +26,14 @@ class Character_Reaction extends Reaction {
         if (!isset($id)) {
             $super = new reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
             parent::__construct($super->get_id(), "", [], [], [], []);
-            $this->id = $DB->insert_record('characterreaction', [
+            $arguments = [
                 'reaction' => $super->get_id(),
-                'character' => $character->get_id(),
-                'newlocation' => $newlocation->get_id(),
-            ]);
+                'character_id' => $character->get_id(),
+            ];
+            if (isset($newlocation)) {
+                $arguments['newlocation'] = $newlocation->get_id();
+            }
+            $this->id = $DB->insert_record('characterreaction', $arguments);
         } else {
             $exists = $DB->record_exists_sql(
                 "SELECT id FROM {characterreaction} WHERE "
@@ -58,7 +61,7 @@ class Character_Reaction extends Reaction {
 
     public function get_character() {
         global $DB;
-        $sql = "select character from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select character_id from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Character::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 

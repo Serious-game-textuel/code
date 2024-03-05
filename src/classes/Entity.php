@@ -36,7 +36,7 @@ class Entity implements Entity_Interface {
             foreach ($status as $statut) {
                 $DB->insert_record('entity_status', [
                     'entity' => $this->id,
-                    'status' => $statut->get_id(),
+                    'status' => $statut,
                 ]);
             }
             $app->add_startentity($this);

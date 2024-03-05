@@ -204,7 +204,9 @@ class App implements App_Interface {
                     $sql = "select id from {item} where "
                     . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
                     $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
-                    $item = Item::get_instance($id);
+                    if ($id > 0) {
+                        $item = Item::get_instance($id);
+                    }
                 }
                 if ($item == null || !($item instanceof Item)) {
                     throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
@@ -222,6 +224,7 @@ class App implements App_Interface {
 
     private function create_locations($row) {
         $col = 1;
+        global $DB;
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string($row, $col);
             $statuses = $this->get_cell_array_string($row + 1, $col);
@@ -229,6 +232,14 @@ class App implements App_Interface {
             $items = [];
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
+                if ($item != null) {
+                    $sql = "select id from {item} where "
+                    . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                    $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
+                    if ($id > 0) {
+                        $item = Item::get_instance($id);
+                    }
+                }
                 if ($item == null || !($item instanceof Item)) {
                     throw new Exception($itemname . "is not an item and here is the row: " . $row . " and the col: " . $col ."");
                 }
@@ -248,6 +259,14 @@ class App implements App_Interface {
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
+            if ($location != null) {
+                $sql = "select id from {location} where "
+                . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                $id = $DB->get_field_sql($sql, ['id' => $location->get_id()]);
+                if ($id > 0) {
+                    $location = Location::get_instance($id);
+                }
+            }
             if ($location == null || !($location instanceof Location)) {
                 throw new Exception($locationname . "is not a location");
             }
@@ -255,8 +274,16 @@ class App implements App_Interface {
             $characternames = $this->get_cell_array_string($row + 3, $col);
             foreach ($characternames as $name) {
                 $character = $this->get_startentity($name);
+                if ($character != null) {
+                    $sql = "select id from {character} where "
+                    . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                    $id = $DB->get_field_sql($sql, ['id' => $character->get_id()]);
+                    if ($id > 0) {
+                        $character = Character::get_instance($id);
+                    }
+                }
                 if ($character == null || !($character instanceof Character)) {
-                    throw new Exception($name . "is not a character");
+                    throw new Exception($name . " is not a character");
                 }
                 $character->set_currentlocation($location);
             }
@@ -266,9 +293,18 @@ class App implements App_Interface {
 
     private function create_all_actions($row) {
         $col = 1;
+        global $DB;
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
+            if ($location != null) {
+                $sql = "select id from {location} where "
+                . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                $id = $DB->get_field_sql($sql, ['id' => $location->get_id()]);
+                if ($id > 0) {
+                    $location = Location::get_instance($id);
+                }
+            }
             if ($location == null || !($location instanceof Location)) {
                 throw new Exception($locationname . "is not a location");
             }
@@ -284,7 +320,7 @@ class App implements App_Interface {
         $descriptions = [];
         $conditionnames = [];
         $reactions = [];
-
+        global $DB;
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
 
             $action = $this->get_cell_string($row, $col);
@@ -326,6 +362,14 @@ class App implements App_Interface {
                 $newitems = [];
                 foreach ($newitemnames as $name) {
                     $item = $this->get_startentity($name);
+                    if ($item != null) {
+                        $sql = "select id from {item} where "
+                        . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                        $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
+                        if ($id > 0) {
+                            $item = Item::get_instance($id);
+                        }
+                    }
                     if ($item == null || !($item instanceof Item_Interface)) {
                         throw new Exception($name . " is not an Item");
                     }
@@ -335,10 +379,33 @@ class App implements App_Interface {
                 $olditems = [];
                 foreach ($olditemnames as $name) {
                     $item = $this->get_startentity($name);
+                    if ($item != null) {
+                        $sql = "select id from {item} where "
+                        . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                        $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
+                        if ($id > 0) {
+                            $item = Item::get_instance($id);
+                        }
+                    }
                     if ($item == null || !($item instanceof Item_Interface)) {
                         throw new Exception($name . " is not an Item");
                     }
                     array_push($olditems, $item);
+                }
+            }
+            if ($entity != null) {
+                $sql = "select id from {location} where "
+                . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                $id = $DB->get_field_sql($sql, ['id' => $entity->get_id()]);
+                if ($id > 0) {
+                    $entity = Location::get_instance($id);
+                } else {
+                    $sql = "select id from {character} where "
+                    . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                    $id = $DB->get_field_sql($sql, ['id' => $entity->get_id()]);
+                    if ($id > 0) {
+                        $entity = Character::get_instance($id);
+                    }
                 }
             }
             if ($entity instanceof Location_Interface) {
@@ -353,6 +420,14 @@ class App implements App_Interface {
                 $location = null;
                 if ($locationname != "") {
                     $location = $this->get_startentity($locationname);
+                    if ($location != null) {
+                        $sql = "select id from {location} where "
+                        . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                        $id = $DB->get_field_sql($sql, ['id' => $location->get_id()]);
+                        if ($id > 0) {
+                            $location = Item::get_instance($id);
+                        }
+                    }
                     if ($location == null || !($location instanceof Location_Interface)) {
                         throw new Exception($locationname . " is not a location");
                     }
@@ -573,6 +648,14 @@ class App implements App_Interface {
         $DB->delete_records('game_entities', ['game' => $game->get_id()]);
 
         foreach ($game->get_entities() as $entity) {
+            if ($entity != null) {
+                $sql = "select id from {playercharacter} where "
+                . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                $id = $DB->get_field_sql($sql, ['id' => $entity->get_id()]);
+                if ($id > 0) {
+                    $entity = Player_Character::get_instance($id);
+                }
+            }
             if ($entity instanceof Player_Character) {
                 $game->set_player($entity);
             }
