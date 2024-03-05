@@ -88,4 +88,6 @@ foreach ($serioustextualgames as $serioustextualgame) {
 }
 
 echo html_writer::table($table);
+echo $OUTPUT->pix_icon('monologo', 'Logo', 'mod_serioustextualgame');
+
 echo $OUTPUT->footer();
