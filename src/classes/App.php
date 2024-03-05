@@ -152,6 +152,23 @@ class App implements App_Interface {
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         $player = $this->get_startentity($playerkeyword);
+        if ($player != null) {
+            $sql = "select id from {character} where "
+            . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+            $id = $DB->get_field_sql($sql, ['id' => $player->get_id()]);
+            if ($id > 0) {
+                $sql = "select id from {playercharacter} where "
+                . $DB->sql_compare_text('character_id') . " = ".$DB->sql_compare_text(':id');
+                $id = $DB->get_field_sql($sql, ['id' => $id]);
+                if ($id > 0) {
+                    $player = Player_Character::get_instance($id);
+                } else {
+                    throw new Exception('No player found in this game');
+                }
+            } else {
+                throw new Exception('No player found in this game');
+            }
+        }
         $arguments = [];
         if (isset($fouillerdefaut)) {
             $arguments = array_merge($arguments, ['defaultactionsearch' => $fouillerdefaut->get_id()]);
