@@ -85,7 +85,11 @@ class App implements App_Interface {
         global $USER;
         $sql = "select id from {app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid');
         $id = $DB->get_field_sql($sql, ['studentid' => $USER->id]);
-        return new App($id, null, null);
+        if ($id > 0) {
+            return new App($id, null, null);
+        } else {
+            return null;
+        }
     }
 
     public function get_game() {

@@ -46,7 +46,7 @@ interface App_Interface {
     public function add_startentity(Entity_Interface $entity);
 
     /**
-     * @return App_Interface
+     * @return App_Interface|null
      */
     public static function get_instance();
 
