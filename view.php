@@ -103,34 +103,34 @@ echo $OUTPUT->header();
     document.getElementById('helpButton').addEventListener('mouseout', function() {
         document.getElementById('helpText').style.display = 'none';
     });
-function displayDescription() {
-    var csvcontent = <?php echo json_encode($csvcontent); ?>;
+    function displayDescription() {
+        var csvcontent = <?php echo json_encode($csvcontent); ?>;
 
-    fetch(`handle_post.php`, { 
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'inputText=description' + '&csvcontent=' + encodeURIComponent(csvcontent),
-    })
-    .then(response => response.text())
-    .then(text => {
-        return typeWriter(document.getElementById("text"), text, "red");
-    })
-    .then(() => {
-        inputText.disabled = false;
-        inputText.value = '';
-    });
-}
-window.onload = displayDescription;
+        fetch(`handle_post.php`, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'inputText=description' + '&csvcontent=' + encodeURIComponent(csvcontent),
+        })
+        .then(response => response.text())
+        .then(text => {
+            return typeWriter(document.getElementById("text"), text, "red");
+        })
+        .then(() => {
+            inputText.disabled = false;
+            inputText.value = '';
+        });
+    }
 
+    window.onload = displayDescription;
 
-function typeWriter(element, txt, color) {
-    return new Promise((resolve, reject) => {
-        element.innerHTML += `<span style="color:${color};">${txt}</span>`;
-        element.innerHTML += "<br>";
-    });
-}
+    function typeWriter(element, txt, color) {
+        return new Promise((resolve, reject) => {
+            element.innerHTML += `<span style="color:${color};">${txt}</span>`;
+            element.innerHTML += "<br>";
+        });
+    }
 
     document.getElementById("inputText").addEventListener("keyup", function(event) {
         if (event.keyCode === 13) { // Vérifie si la touche est "Entrée"
@@ -141,28 +141,30 @@ function typeWriter(element, txt, color) {
     function displayInputText() {
         var inputText = document.getElementById("inputText");
         inputText.disabled = true;
-       var csvcontent = <?php echo json_encode($csvcontent); ?>;
-        typeWriter(document.getElementById("text"), inputText.value, "blue")
+        var csvcontent = <?php echo json_encode($csvcontent); ?>;
+
+        fetch(`handle_post.php`, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'inputText=' + encodeURIComponent(inputText.value) + '&csvcontent=' + encodeURIComponent(csvcontent),
+        })
+        .then((response) => {
+            typeWriter(document.getElementById("text"), inputText.value, "blue");
+            response.text()
+        })
+        .then(text => {
+            return typeWriter(document.getElementById("text"), text, "red");
+        })
         .then(() => {
-            fetch(`handle_post.php`, { 
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: 'inputText=' + encodeURIComponent(inputText.value) + '&csvcontent=' + encodeURIComponent(csvcontent),
-})
-.then(response => response.text())
-.then(text => {
-    return typeWriter(document.getElementById("text"), text, "red");
-})
-.then(() => {
-    inputText.disabled = false;
-    inputText.value = '';
-});
+            inputText.disabled = false;
+            inputText.value = '';
+        })
+        .catch(() => {
+            typeWriter(document.getElementById("text"), 'Error', "yellow");
         });
     }
-
-
 </script>
 
 <?php

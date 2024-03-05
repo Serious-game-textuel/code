@@ -28,23 +28,12 @@ $app = App::get_instance();
 if ($app == null) {
     $app = new App(null, $tempfilepath, Language::FR);
 }
-
-if (isset($_SESSION['conditionsdone'])) {
-    $conditionsdone = $_SESSION['conditionsdone'];
-    $conditionsdone = unserialize($conditionsdone);
-}
-$game = $app->get_game();
-$inputtext = $_POST['inputText'];
-$currentlocation = $game->get_current_location();
-
-$action = $currentlocation->check_actions($inputtext);
-
+$action = $app->get_game()->get_current_location()->check_actions($_POST['inputText']);
 
 if (empty($action[0])) {
     echo "donne une autre commande";
 } else {
     echo $action[0];
 }
-
 
 exit();
