@@ -25,11 +25,10 @@ $csvcontent = $_POST['csvcontent'];
 $tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
 file_put_contents($tempfilepath, $csvcontent);
 
-$app = new App($tempfilepath, Language::FR);
+$app = new App(null, $tempfilepath, Language::FR);
 if (isset($_SESSION['conditionsdone'])) {
     $conditionsdone = $_SESSION['conditionsdone'];
     $conditionsdone = unserialize($conditionsdone);
-    $app->do_actionsdone($conditionsdone);
 }
 $game = $app->get_game();
 $inputtext = $_POST['inputText'];
@@ -43,10 +42,6 @@ if (empty($action[0])) {
 } else {
     echo $action[0];
 }
-
-$conditionsdone = $app->get_actionsdone();
-$conditionsdone = serialize($conditionsdone);
-$_SESSION['conditionsdone'] = $conditionsdone;
 
 
 exit();

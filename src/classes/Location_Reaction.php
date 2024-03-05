@@ -22,8 +22,8 @@ class Location_Reaction extends Reaction {
 
     public function __construct(?int $id, string $description, array $oldstatus,
     array $newstatus, array $olditem, array $newitem, ?Location_Interface $location) {
+        global $DB;
         if (!isset($id)) {
-            global $DB;
             $super = new Reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
             parent::__construct($super->get_id(), "", [], [], [], []);
             $this->id = $DB->insert_record('locationreaction', [

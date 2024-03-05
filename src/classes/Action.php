@@ -23,9 +23,9 @@ class Action implements Action_Interface {
     private int $id;
 
     public function __construct(?int $id, string $description, array $conditions) {
+        global $DB;
         if (!isset($id)) {
             Util::check_array($conditions, Condition_Interface::class);
-            global $DB;
             $this->id = $DB->insert_record('action', [
                 'description' => $description,
             ]);

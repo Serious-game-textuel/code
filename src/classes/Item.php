@@ -22,10 +22,10 @@ class Item extends Entity implements Item_Interface {
     private int $id;
 
     public function __construct(?int $id, string $description, string $name, array $status) {
+        global $DB;
         if (!isset($id)) {
             $super = new Entity(null, $description, $name, $status);
             parent::__construct($super->get_id(), "", "", []);
-            global $DB;
             $this->id = $DB->insert_record('item', [
                 'entity' => $super->get_id(),
             ]);

@@ -24,9 +24,9 @@ class Inventory implements Inventory_Interface {
     private int $id;
 
     public function __construct(?int $id, array $items) {
+        global $DB;
         if (!isset($id)) {
             Util::check_array($items, Item_Interface::class);
-            global $DB;
             $this->id = $DB->insert_record('inventory', []);
             foreach ($items as $item) {
                 $DB->insert_record('inventory_items', [

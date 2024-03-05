@@ -24,8 +24,8 @@ class Condition implements Condition_Interface {
     private int $id;
 
     public function __construct(?int $id, array $reactions) {
+        global $DB;
         if (!isset($id)) {
-            global $DB;
             Util::check_array($reactions, Reaction_Interface::class);
             $this->id = $DB->insert_record('condition', []);
             foreach ($reactions as $reaction) {

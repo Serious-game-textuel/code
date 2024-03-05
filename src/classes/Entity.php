@@ -22,13 +22,13 @@ class Entity implements Entity_Interface {
     private int $id;
 
     public function __construct(?int $id, string $description, string $name, array $status) {
+        global $DB;
         if (!isset($id)) {
             $app = App::get_instance();
             Util::check_array($status, 'string');
             if ($app->get_startentity($name) != null) {
                 throw new InvalidArgumentException("Each entity name must be unique : ".$name);
             }
-            global $DB;
             $this->id = $DB->insert_record('app', [
                 'description' => $description,
                 'name' => $name,

@@ -40,6 +40,7 @@ class App implements App_Interface {
     private array $csvdata;
 
     public function __construct(?int $id, ?string $csvfilepath, ?string $language) {
+        global $DB;
         if (!isset($id)) {
             $file = fopen($csvfilepath, 'r');
             if ($file !== false) {
@@ -54,7 +55,6 @@ class App implements App_Interface {
                 } else {
                     $playerkeyword = "player";
                 }
-                global $DB;
                 global $USER;
                 $sql = "select id from {language} where " . $DB->sql_compare_text('name') . " = ".$DB->sql_compare_text(':name');
                 $languageid = $DB->get_field_sql($sql, ['name' => $language]);

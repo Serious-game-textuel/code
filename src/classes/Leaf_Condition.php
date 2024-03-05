@@ -22,11 +22,11 @@ class Leaf_Condition extends Condition {
 
     public function __construct(?int $id, ?Entity_Interface $entity1, ?Entity_Interface $entity2,
     string $connector, ?array $status, array $reactions) {
+        global $DB;
         if (!isset($id)) {
             Util::check_array($status, 'string');
             $super = new Condition(null, $reactions);
             parent::__construct($super->get_id(), []);
-            global $DB;
             $this->id = $DB->insert_record('leafcondition', [
                 'condition' => $super->get_id(),
                 'entity1' => $entity1->get_id(),

@@ -22,10 +22,10 @@ class Player_Character extends Character {
 
     public function __construct(?int $id, string $description, string $name,
     array $status, array $items, ?Location_Interface $currentlocation) {
+        global $DB;
         if (!isset($id)) {
             $super = new Character(null, $description, $name, $status, $items, $currentlocation);
             parent::__construct($super->get_id(), "", "", [], [], null);
-            global $DB;
             $this->id = $DB->insert_record('playercharacter', [
                 'character' => $super->get_id(),
             ]);

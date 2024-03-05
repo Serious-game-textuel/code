@@ -22,12 +22,12 @@ class Reaction implements Reaction_Interface {
 
     public function __construct(?int $id, string $description, array $oldstatus, array $newstatus,
     array $olditem, array $newitem) {
+        global $DB;
         if (!isset($id)) {
             Util::check_array($oldstatus, 'string');
             Util::check_array($newstatus, 'string');
             Util::check_array($olditem, Item_Interface::class);
             Util::check_array($newitem, Item_Interface::class);
-            global $DB;
             $this->id = $DB->insert_record('reaction', [
                 'description' => $description,
             ]);

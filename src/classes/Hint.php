@@ -20,8 +20,8 @@ class Hint implements Hint_Interface {
     private int $id;
 
     public function __construct(?int $id, string $description) {
+        global $DB;
         if (!isset($id)) {
-            global $DB;
             $this->id = $DB->insert_record('hint', [
                 'description' => $description,
             ]);

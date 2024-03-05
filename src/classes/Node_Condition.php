@@ -22,8 +22,8 @@ class Node_Condition extends Condition {
 
     public function __construct(?int $id, ?Condition_Interface $condition1, ?Condition_Interface $condition2,
     string $connector, ?array $reactions) {
+        global $DB;
         if (!isset($id)) {
-            global $DB;
             $super = new Condition(null, $reactions);
             parent::__construct($super->get_id(), []);
             $this->id = $DB->insert_record('nodecondition', [
