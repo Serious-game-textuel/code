@@ -30,7 +30,6 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_React
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');

@@ -29,7 +29,6 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
