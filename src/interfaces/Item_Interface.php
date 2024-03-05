@@ -22,4 +22,15 @@ interface Item_Interface extends Entity_Interface {
      * @return Item_Interface
      */
     public function get_inventory();
+
+    /**
+     * @param int
+     * @return Item_Interface
+     */
+    public static function get_instance(int $id);
+
+    /**
+     * @return int
+     */
+    public function get_id();
 }

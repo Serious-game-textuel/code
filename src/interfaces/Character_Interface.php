@@ -35,7 +35,8 @@ interface Character_Interface extends Entity_Interface {
     public function get_id();
 
     /**
+     * @param int
      * @return Character_Interface
      */
-    public static function get_instance();
+    public static function get_instance(int $id);
 }

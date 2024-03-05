@@ -24,7 +24,7 @@ interface Condition_Interface {
     /**
      * @return Condition_Interface
      */
-    public static function get_instance();
+    public static function get_instance(int $id);
 
     /**
      * @return Reaction_Interface[]

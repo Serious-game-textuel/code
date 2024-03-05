@@ -54,7 +54,8 @@ interface Inventory_Interface {
     public function check_item(Item_Interface $item);
 
     /**
+     * @param int
      * @return Inventory_Interface
      */
-    public static function get_instance();
+    public static function get_instance(int $id);
 }
