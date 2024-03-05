@@ -209,6 +209,9 @@ class Location extends Entity implements Location_Interface {
                         ['id' => $reaction->get_id()]
                     );
                     if ($ischaracterreaction) {
+                        $sql = "select id from {characterreaction} where ". $DB->sql_compare_text('reaction') . " = ".$DB->sql_compare_text(':id');
+                        $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
+                        $reaction = Character_Reaction::get_instance($id);
                         $isplayercharacter = $DB->record_exists_sql(
                             "SELECT id FROM {playercharacter} WHERE "
                             .$DB->sql_compare_text('character')." = ".$DB->sql_compare_text(':id'),
