@@ -45,7 +45,6 @@ class Location extends Entity implements Location_Interface {
     public function get_hints() {
         return $this->hints;
     }
-
     public function is_action_valide(string $action) {
         for ($i = 0; $i < count($this->actions); $i++) {
             if ($this->actions[$i]->get_description() == $action) {
@@ -53,7 +52,16 @@ class Location extends Entity implements Location_Interface {
             }
         }
         $actiontoken = explode(" ", $action);
-        $synonyms = Util::get_french_synonyms($actiontoken[0]);
+        $app = App::get_instance();
+        if ($app->get_language()==Language::FR){
+            $synonyms = Util::get_french_synonyms($actiontoken[0]);
+        }
+        elseif ($app->get_language()==Language::EN){
+            $synonyms = Util::get_english_synonyms($actiontoken[0]);
+        }
+        else{
+            return null;
+        }
         for ($i = 0; $i < count($this->actions); $i++) {
             $description = explode(" ", $this->actions[$i]->get_description());
             $firstword = $description[0];
