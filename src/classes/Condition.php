@@ -27,11 +27,11 @@ class Condition implements Condition_Interface {
         global $DB;
         if (!isset($id)) {
             Util::check_array($reactions, Reaction_Interface::class);
-            $this->id = $DB->insert_record('condition', []);
+            $this->id = $DB->insert_record('condition', ['test' => 'a']);
             foreach ($reactions as $reaction) {
                 $DB->insert_record('condition_reactions', [
-                    'condition' => $this->id,
-                    'reaction' => $reaction->get_id(),
+                    'condition_id' => $this->id,
+                    'reaction_id' => $reaction->get_id(),
                 ]);
             }
         } else {
@@ -59,7 +59,7 @@ class Condition implements Condition_Interface {
         $reactions = [];
         global $DB;
         $sql = "select location from {condition_reactions} where "
-        . $DB->sql_compare_text('condition') . " = ".$DB->sql_compare_text(':id');
+        . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($reactions, Reaction::get_instance($id));
@@ -70,11 +70,11 @@ class Condition implements Condition_Interface {
     public function set_reactions(array $reactions) {
         $reactions = Util::clean_array($reactions, Reaction_Interface::class);
         global $DB;
-        $DB->delete_records('condition_reactions', ['game' => $this->get_id()]);
+        $DB->delete_records('condition_reactions', ['condition_id' => $this->get_id()]);
         foreach ($reactions as $reaction) {
             $DB->insert_record('condition_reactions', [
-                'condition' => $this->id,
-                'reaction' => $reaction->get_id(),
+                'condition_id' => $this->id,
+                'reaction_id' => $reaction->get_id(),
             ]);
         }
     }
@@ -212,21 +212,21 @@ class Condition implements Condition_Interface {
         global $DB;
         $isnodecondtion = $DB->record_exists_sql(
             "SELECT id FROM {nodecondition} WHERE "
-            .$DB->sql_compare_text('condition')." = ".$DB->sql_compare_text(':id'),
+            .$DB->sql_compare_text('condition_id')." = ".$DB->sql_compare_text(':id'),
             ['id' => $this->get_id()]
         );
         $isleafcondition = $DB->record_exists_sql(
             "SELECT id FROM {leafcondition} WHERE "
-            .$DB->sql_compare_text('condition')." = ".$DB->sql_compare_text(':id'),
+            .$DB->sql_compare_text('condition_id')." = ".$DB->sql_compare_text(':id'),
             ['id' => $this->get_id()]
         );
         if ($isnodecondtion) {
-            $sql = "select id from {nodecondition} where ". $DB->sql_compare_text('condition') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select id from {nodecondition} where ". $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
             $idnodecondition = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
             $nodecondition = Node_Condition::get_instance($idnodecondition);
             return $nodecondition->is_true();
         } else if ($isleafcondition) {
-            $sql = "select id from {leafcondition} where ". $DB->sql_compare_text('condition') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select id from {leafcondition} where ". $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
             $idnodecondition = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
             $nodecondition = Leaf_Condition::get_instance($idnodecondition);
             return $nodecondition->is_true();

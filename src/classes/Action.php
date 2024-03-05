@@ -32,7 +32,7 @@ class Action implements Action_Interface {
             foreach ($conditions as $condition) {
                 $DB->insert_record('action_conditions', [
                     'action' => $this->id,
-                    'condition' => $condition->get_id(),
+                    'condition_id' => $condition->get_id(),
                 ]);
             }
         } else {
@@ -70,7 +70,7 @@ class Action implements Action_Interface {
     public function get_conditions() {
         $conditions = [];
         global $DB;
-        $sql = "select condition from {action_conditions} where "
+        $sql = "select condition_id from {action_conditions} where "
         . $DB->sql_compare_text('action') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
@@ -86,7 +86,7 @@ class Action implements Action_Interface {
         foreach ($conditions as $condition) {
             $DB->insert_record('game_visitedlocations', [
                 'action' => $this->id,
-                'condition' => $condition->get_id(),
+                'condition_id' => $condition->get_id(),
             ]);
         }
     }

@@ -27,12 +27,17 @@ class Leaf_Condition extends Condition {
             Util::check_array($status, 'string');
             $super = new Condition(null, $reactions);
             parent::__construct($super->get_id(), []);
-            $this->id = $DB->insert_record('leafcondition', [
-                'condition' => $super->get_id(),
-                'entity1' => $entity1->get_id(),
-                'entity2' => $entity2->get_id(),
+            $arguments = [
+                'condition_id' => $super->get_id(),
                 'connector' => $connector,
-            ]);
+            ];
+            if (isset($entity1)) {
+                $arguments['entity1'] = $entity1->get_id();
+            }
+            if (isset($entity2)) {
+                $arguments['entity2'] = $entity2->get_id();
+            }
+            $this->id = $DB->insert_record('leafcondition', $arguments);
             foreach ($status as $statut) {
                 $DB->insert_record('leafcondition_status', [
                     'leafcondition' => $this->id,
@@ -48,7 +53,7 @@ class Leaf_Condition extends Condition {
             if (!$exists) {
                 throw new InvalidArgumentException("No Leaf_Condition object of ID:".$id." exists.");
             }
-            $sql = "select condition from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select condition_id from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, []);
             $this->id = $id;

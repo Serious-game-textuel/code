@@ -26,7 +26,7 @@ class No_Entity_Reaction extends Reaction {
             $super = new Reaction(null, $description, [], [], [], []);
             parent::__construct($super->get_id(), "", [], [], [], []);
             $this->id = $DB->insert_record('noentityreaction', [
-                'reaction' => $super->get_id(),
+                'reaction_id' => $super->get_id(),
             ]);
         } else {
             $exists = $DB->record_exists_sql(
@@ -37,7 +37,7 @@ class No_Entity_Reaction extends Reaction {
             if (!$exists) {
                 throw new InvalidArgumentException("No No_Entity_Reaction object of ID:".$id." exists.");
             }
-            $sql = "select reaction from {noentityreaction} where "
+            $sql = "select reaction_id from {noentityreaction} where "
             . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", [], [], [], []);

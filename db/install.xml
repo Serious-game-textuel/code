@@ -171,7 +171,7 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="action" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the action."/>
-        <FIELD NAME="condition" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the condition."/>
+        <FIELD NAME="condition_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the condition."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -191,6 +191,7 @@
     <TABLE NAME="condition" COMMENT="Condition objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="test" TYPE="text" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="To avoid no field issue."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -200,8 +201,8 @@
     <TABLE NAME="condition_reactions" COMMENT="Reactions field of the condition object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="condition" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the condition."/>
-        <FIELD NAME="reaction" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
+        <FIELD NAME="condition_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the condition."/>
+        <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -211,7 +212,7 @@
     <TABLE NAME="nodecondition" COMMENT="Node_Condition objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="condition" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super condition."/>
+        <FIELD NAME="condition_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super condition."/>
         <FIELD NAME="condition1" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the condition1."/>
         <FIELD NAME="condition2" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the condition2."/>
         <FIELD NAME="connector" TYPE="text" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Connector of the condition."/>
@@ -224,9 +225,9 @@
     <TABLE NAME="leafcondition" COMMENT="Leaf_Condition objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="condition" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super condition."/>
-        <FIELD NAME="entity1" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the entity1."/>
-        <FIELD NAME="entity2" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the entity2."/>
+        <FIELD NAME="condition_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super condition."/>
+        <FIELD NAME="entity1" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the entity1."/>
+        <FIELD NAME="entity2" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the entity2."/>
         <FIELD NAME="connector" TYPE="text" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Connector of the condition."/>
       </FIELDS>
       <KEYS>
@@ -258,7 +259,7 @@
     <TABLE NAME="reaction_oldstatus" COMMENT="Oldstatus field of the Reaction object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="reaction" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
+        <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
         <FIELD NAME="status" TYPE="text" LENGTH="30" NOTNULL="true" SEQUENCE="false" COMMENT="Status of the reaction."/>
       </FIELDS>
       <KEYS>
@@ -269,7 +270,7 @@
     <TABLE NAME="reaction_newstatus" COMMENT="Newstatus field of the Reaction object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="reaction" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
+        <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
         <FIELD NAME="status" TYPE="text" LENGTH="30" NOTNULL="true" SEQUENCE="false" COMMENT="Status of the reaction."/>
       </FIELDS>
       <KEYS>
@@ -280,7 +281,7 @@
     <TABLE NAME="reaction_olditems" COMMENT="Olditems field of the Reaction object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="reaction" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
+        <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
         <FIELD NAME="item" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the item."/>
       </FIELDS>
       <KEYS>
@@ -291,7 +292,7 @@
     <TABLE NAME="reaction_newitems" COMMENT="Newitems field of the Reaction object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="reaction" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
+        <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
         <FIELD NAME="item" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the item."/>
       </FIELDS>
       <KEYS>
@@ -302,7 +303,7 @@
     <TABLE NAME="noentityreaction" COMMENT="No_Entity_Reaction objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="reaction" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
+        <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -312,7 +313,7 @@
     <TABLE NAME="locationreaction" COMMENT="Location_Reaction objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="reaction" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
+        <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
         <FIELD NAME="location" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the location."/>
       </FIELDS>
       <KEYS>
@@ -323,9 +324,9 @@
     <TABLE NAME="characterreaction" COMMENT="Character_Reaction objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="reaction" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
+        <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
         <FIELD NAME="character_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the character."/>
-        <FIELD NAME="newlocation" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the location."/>
+        <FIELD NAME="newlocation" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the location."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

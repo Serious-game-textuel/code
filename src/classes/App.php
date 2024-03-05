@@ -149,7 +149,7 @@ class App implements App_Interface {
 
         global $DB;
         $sql = "select playerkeyword from {app} where "
-        . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
+        . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         $player = $this->get_startentity($playerkeyword);
         $arguments = [];
@@ -425,7 +425,7 @@ class App implements App_Interface {
                         . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
                         $id = $DB->get_field_sql($sql, ['id' => $location->get_id()]);
                         if ($id > 0) {
-                            $location = Item::get_instance($id);
+                            $location = Location::get_instance($id);
                         }
                     }
                     if ($location == null || !($location instanceof Location_Interface)) {
