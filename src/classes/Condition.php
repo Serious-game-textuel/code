@@ -58,7 +58,7 @@ class Condition implements Condition_Interface {
     public function get_reactions() {
         $reactions = [];
         global $DB;
-        $sql = "select location from {condition_reactions} where "
+        $sql = "select reaction_id from {condition_reactions} where "
         . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
@@ -88,17 +88,17 @@ class Condition implements Condition_Interface {
         foreach ($reactions as $reaction) {
             $ischaracterreaction = $DB->record_exists_sql(
                 "SELECT id FROM {characterreaction} WHERE "
-                .$DB->sql_compare_text('reaction')." = ".$DB->sql_compare_text(':id'),
+                .$DB->sql_compare_text('reaction_id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $reaction->get_id()]
             );
             $islocationreaction = $DB->record_exists_sql(
                 "SELECT id FROM {locationreaction} WHERE "
-                .$DB->sql_compare_text('reaction')." = ".$DB->sql_compare_text(':id'),
+                .$DB->sql_compare_text('reaction_id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $reaction->get_id()]
             );
             if ($ischaracterreaction) {
                 $sql = "select id from {characterreaction} where "
-                . $DB->sql_compare_text('reaction') . " = ".$DB->sql_compare_text(':id');
+                . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
                 $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
                 $reaction = Character_Reaction::get_instance($id);
                 if ($reaction->get_character() != null) {
@@ -108,12 +108,12 @@ class Condition implements Condition_Interface {
                         $newlocation = $reaction->get_new_location();
                         $isnpccharacter = $DB->record_exists_sql(
                             "SELECT id FROM {npccharacter} WHERE "
-                            .$DB->sql_compare_text('character')." = ".$DB->sql_compare_text(':id'),
+                            .$DB->sql_compare_text('character_id')." = ".$DB->sql_compare_text(':id'),
                             ['id' => $character->get_id()]
                         );
                         $isplayercharacter = $DB->record_exists_sql(
                             "SELECT id FROM {playercharacter} WHERE "
-                            .$DB->sql_compare_text('character')." = ".$DB->sql_compare_text(':id'),
+                            .$DB->sql_compare_text('character_id')." = ".$DB->sql_compare_text(':id'),
                             ['id' => $character->get_id()]
                         );
                         if ($isnpccharacter) {
@@ -141,7 +141,7 @@ class Condition implements Condition_Interface {
                         $character->add_status($newstatus);
                         $isplayercharacter = $DB->record_exists_sql(
                             "SELECT id FROM {playercharacter} WHERE "
-                            .$DB->sql_compare_text('character')." = ".$DB->sql_compare_text(':id'),
+                            .$DB->sql_compare_text('character_id')." = ".$DB->sql_compare_text(':id'),
                             ['id' => $character->get_id()]
                         );
                         if ($isplayercharacter) {
@@ -170,7 +170,7 @@ class Condition implements Condition_Interface {
                 }
             } else if ($islocationreaction) {
                 $sql = "select id from {locationreaction} where "
-                . $DB->sql_compare_text('reaction') . " = ".$DB->sql_compare_text(':id');
+                . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
                 $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
                 $reaction = Location_Reaction::get_instance($id);
                 if ($reaction->get_location() != null) {

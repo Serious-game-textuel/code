@@ -82,7 +82,7 @@ class Location extends Entity implements Location_Interface {
         return $actions;
     }
     public function set_actions(array $actions) {
-        $actions = Util::clean_array($actions, Location_Interface::class);
+        $actions = Util::clean_array($actions, Action_Interface::class);
         global $DB;
         $DB->delete_records('location_actions', ['location' => $this->get_id()]);
         foreach ($actions as $action) {

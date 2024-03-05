@@ -29,7 +29,6 @@ if ($app == null) {
     $app = new App(null, $tempfilepath, Language::FR);
 }
 $action = $app->get_game()->get_current_location()->check_actions($_POST['inputText']);
-
 if (empty($action[0])) {
     echo "donne une autre commande";
 } else {
