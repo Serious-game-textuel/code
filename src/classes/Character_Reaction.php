@@ -22,16 +22,27 @@ class Character_Reaction extends Reaction {
 
     public function __construct(?int $id, string $description, array $oldstatus, array $newstatus,
     array $olditem, array $newitem, ?Character_Interface $character, ?Location_Interface $newlocation) {
+        global $DB;
         if (!isset($id)) {
-            global $DB;
             $super = new reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
-            parent::__construct($super->get_id(), $description, $oldstatus, $newstatus, $olditem, $newitem);
+            parent::__construct($super->get_id(), "", [], [], [], []);
             $this->id = $DB->insert_record('characterreaction', [
                 'reaction' => $super->get_id(),
                 'character' => $character->get_id(),
                 'newlocation' => $newlocation->get_id(),
             ]);
         } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {characterreaction} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Character_Reaction object of ID:".$id." exists.");
+            }
+            $sql = "select reaction from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, "", [], [], [], []);
             $this->id = $id;
         }
     }

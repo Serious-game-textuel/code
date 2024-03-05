@@ -30,6 +30,17 @@ class Npc_Character extends Character {
                 'character' => $super->get_id(),
             ]);
         } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {npccharacter} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Npc_Character object of ID:".$id." exists.");
+            }
+            $sql = "select character from {npccharacter} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, "", "", [], [], null);
             $this->id = $id;
         }
     }

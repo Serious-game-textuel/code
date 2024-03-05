@@ -36,7 +36,7 @@ class Util {
         }
     }
 
-    public static function clean_array(array $array, string $class) {
+    public static function clean_array(array $array, string $class): array {
         $values = array_values($array);
         $result = [];
         if ($class == "string") {

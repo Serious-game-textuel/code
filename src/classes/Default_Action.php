@@ -32,6 +32,17 @@ class Default_Action extends Action implements Default_Action_Interface {
                 'action' => $super->get_id(),
             ]);
         } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {defaultaction} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Default_action object of ID:".$id." exists.");
+            }
+            $sql = "select action from {defaultaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, "", []);
             $this->id = $id;
         }
     }

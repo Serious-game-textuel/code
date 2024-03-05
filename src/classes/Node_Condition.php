@@ -33,6 +33,17 @@ class Node_Condition extends Condition {
                 'connector' => $connector,
             ]);
         } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {nodecondition} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Node_Condition object of ID:".$id." exists.");
+            }
+            $sql = "select condition from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, []);
             $this->id = $id;
         }
     }

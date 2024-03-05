@@ -30,6 +30,17 @@ class Item extends Entity implements Item_Interface {
                 'entity' => $super->get_id(),
             ]);
         } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {item} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Item object of ID:".$id." exists.");
+            }
+            $sql = "select entity from {item} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, "", "", []);
             $this->id = $id;
         }
     }

@@ -34,6 +34,17 @@ class Character extends Entity implements Character_Interface {
                 'currentlocation' => $currentlocation->get_id(),
             ]);
         } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {character} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Character object of ID:".$id." exists.");
+            }
+            $sql = "select entity from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, "", "", []);
             $this->id = $id;
         }
     }

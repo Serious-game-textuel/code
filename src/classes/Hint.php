@@ -26,6 +26,14 @@ class Hint implements Hint_Interface {
                 'description' => $description,
             ]);
         } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {hint} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Hint object of ID:".$id." exists.");
+            }
             $this->id = $id;
         }
     }

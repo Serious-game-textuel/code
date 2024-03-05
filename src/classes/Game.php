@@ -51,6 +51,14 @@ class Game implements Game_Interface {
                 ]);
             }
         } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {game} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Game object of ID:".$id." exists.");
+            }
             $this->id = $id;
         }
     }
