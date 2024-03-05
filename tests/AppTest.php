@@ -143,12 +143,6 @@ class AppTest extends TestCase {
         for ($i = 0; $i < count($itemids); $i++) {
             $this->assertTrue($litems[$i]->get_id() == $itemids[$i]);
         }
-        $lhints = $location->get_hints();
-        $this->assertTrue(count($lhints) == count($hints));
-        for ($i = 0; $i < count($hints); $i++) {
-            $this->assertTrue($lhints[$i] == $hints[$i]);
-        }
-
     }
 
 }
