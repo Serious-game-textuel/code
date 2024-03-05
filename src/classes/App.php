@@ -48,6 +48,8 @@ class App implements App_Interface {
     private array $startentities;
 
     private static string $playerkeyword;
+    private static string $deadkeyword;
+    private static string $victorykeyword;
 
     private string $language;
     private $actionsdone = [];
@@ -62,8 +64,12 @@ class App implements App_Interface {
         }
         if ($this->language == Language::FR) {
             self::$playerkeyword = "joueur";
+            self::$deadkeyword = "dead";
+            self::$victorykeyword = "victory";
         } else {
             self::$playerkeyword = "player";
+            self::$deadkeyword = "mort";
+            self::$victorykeyword = "victoire";
         }
         $this->parse();
     }
@@ -389,6 +395,7 @@ class App implements App_Interface {
                     }
                     array_push($newitems, $item);
                 }
+
                 $olditemnames = $this->get_cell_array_string($row + 7, $col);
                 $olditems = [];
                 foreach ($olditemnames as $name) {
@@ -431,7 +438,7 @@ class App implements App_Interface {
                     }
                     array_push($reactions[$action][$condition], $reaction);
                 } else {
-                    throw new Cell_Exception($entityname . " must be a location or a character");
+                    throw new Cell_Exception($entityname . " must be a location or a character", $row + 3, $col);
                 }
 
             } else {
