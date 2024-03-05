@@ -40,7 +40,8 @@ class Character_Reaction extends Reaction {
             if (!$exists) {
                 throw new InvalidArgumentException("No Character_Reaction object of ID:".$id." exists.");
             }
-            $sql = "select reaction from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select reaction from {characterreaction} where "
+            . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", [], [], [], []);
             $this->id = $id;
