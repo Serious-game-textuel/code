@@ -150,14 +150,10 @@ echo $OUTPUT->header();
             },
             body: 'inputText=' + encodeURIComponent(inputText.value) + '&csvcontent=' + encodeURIComponent(csvcontent),
         })
-        .then((response) => {
+        .then((response) => response.text())
+        .then((text) => {
             typeWriter(document.getElementById("text"), inputText.value, "blue");
-            response.text()
-        })
-        .then(text => {
-            return typeWriter(document.getElementById("text"), text, "red");
-        })
-        .then(() => {
+            typeWriter(document.getElementById("text"), text, "red");
             inputText.disabled = false;
             inputText.value = '';
         })

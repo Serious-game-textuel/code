@@ -36,7 +36,7 @@ class Inventory implements Inventory_Interface {
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {Inventory} WHERE "
+                "SELECT id FROM {inventory} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );

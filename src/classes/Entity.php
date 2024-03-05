@@ -86,7 +86,7 @@ class Entity implements Entity_Interface {
     public function get_status() {
         $statusarray = [];
         global $DB;
-        $sql = "select status from {entity} where "
+        $sql = "select status from {entity_status} where "
         . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
         $status = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($status as $statut) {
