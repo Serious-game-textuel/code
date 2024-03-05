@@ -170,4 +170,11 @@ class UtilTest extends TestCase {
         sort($b);
         return $a === $b;
     }
+
+    public function test_syn() {
+        $word = "content";
+        //var_dump(Util::get_french_synonyms($word));
+        var_dump(Util::get_english_synonyms("take"));
+    }
+
 }

@@ -109,4 +109,29 @@ class Util {
         }
         return $extractedwords;
     }
+
+    public static function get_english_synonyms($word) {
+        $url = "https://dictionary.cambridge.org/thesaurus/".$word;
+        $doc = new DOMDocument();
+        $html = file_get_contents($url);
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($html);
+        $htmlstring = $doc->saveHTML();
+        $lines = explode("\n", $htmlstring); 
+        $pattern = '/<div class="tlcs lmt-10 lmb-20">/';
+        $filteredlines = [];
+        foreach ($lines as $line) {
+            if (preg_match($pattern, $line)) {
+                $filteredlines[] = $line;
+            }
+        }
+        $concatenatedline = "";
+        foreach ($filteredlines as $line) {
+            $concatenatedline .= $line;
+        }
+        $pattern = '/<span class="dx-h dthesButton synonym">([^<]+)<\/span>/';
+        preg_match_all($pattern, $concatenatedline, $matches);
+        return $matches[1];
+    }
+
 }
