@@ -50,6 +50,24 @@ class Location extends Entity implements Location_Interface {
                 return $this->actions[$i];
             }
         }
+        $actiontoken = explode(" ", $action);
+        $synonyms = Util::get_french_synonyms($actiontoken[0]);
+        for ($i = 0; $i < count($this->actions); $i++) {
+            $description = explode(" ", $this->actions[$i]->get_description());
+            $firstword = $description[0];
+            foreach ($synonyms as $synonym) {
+                if ($firstword == $synonym) {
+                    for ($j = 1; $j < count($actiontoken); $j++) {
+                        if ($description[$j] != $actiontoken[$j]) {
+                            break;
+                        }
+                        if ($j == count($actiontoken) - 1) {
+                            return $this->actions[$i];
+                        }
+                    }
+                }
+            }
+        }
         return null;
     }
 

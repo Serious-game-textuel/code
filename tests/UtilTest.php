@@ -32,6 +32,8 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+
+use core_reportbuilder\external\columns\sort\get;
 use PHPUnit\Framework\TestCase;
 
 class UtilTest extends TestCase {

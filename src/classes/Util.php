@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 class Util {
     public static function check_array(array $array, string $class) {
         if (self::has_array_duplicate($array)) {
@@ -79,5 +80,33 @@ class Util {
             }
         }
         return false;
+    }
+
+    public static function get_french_synonyms($word) {
+
+        $url = "https://cnrtl.fr/synonymie/".$word;
+        $doc = new DOMDocument();
+        $html = file_get_contents($url);
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($html);
+        $htmlstring = $doc->saveHTML();
+        $lines = explode("\n", $htmlstring);;
+        $pattern = '/<tr><td class="syno_format">.*<\/td><td>.*<\/td><\/tr>/';
+        $filteredlines = [];
+
+        foreach ($lines as $line) {
+            if (preg_match($pattern, $line)) {
+                $filteredlines[] = $line;
+            }
+        }
+        $pattern = '/<a[^>]*>([^<]*)<\/a>/';
+        $extractedwords = [];
+        foreach ($filteredlines as $line) {
+            preg_match($pattern, $line, $matches);
+            if (!empty($matches[1])) {
+                $extractedwords[] = $matches[1];
+            }
+        }
+        return $extractedwords;
     }
 }
