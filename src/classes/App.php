@@ -107,7 +107,11 @@ class App implements App_Interface {
         . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
         . $DB->sql_compare_text('{app_startentities}.app') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->get_id(), 'entityname' => $entityname]);
-        return Entity::get_instance($id);
+        if ($id > 0) {
+            return Entity::get_instance($id);
+        } else {
+            return null;
+        }
     }
 
     public function get_startentities() {
@@ -186,7 +190,7 @@ class App implements App_Interface {
         $col = 1;
         global $DB;
         $sql = "select playerkeyword from {app} where "
-        . $DB->sql_compare_text('s.app') . " = ".$DB->sql_compare_text(':id');
+        . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string($row, $col);
@@ -196,6 +200,12 @@ class App implements App_Interface {
             $items = [];
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
+                if ($item != null) {
+                    $sql = "select id from {item} where "
+                    . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                    $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
+                    $item = Item::get_instance($id);
+                }
                 if ($item == null || !($item instanceof Item)) {
                     throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
                 }

@@ -29,7 +29,7 @@ class Entity implements Entity_Interface {
             if ($app->get_startentity($name) != null) {
                 throw new InvalidArgumentException("Each entity name must be unique : ".$name);
             }
-            $this->id = $DB->insert_record('app', [
+            $this->id = $DB->insert_record('entity', [
                 'description' => $description,
                 'name' => $name,
             ]);
