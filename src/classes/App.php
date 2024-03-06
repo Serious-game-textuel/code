@@ -251,7 +251,7 @@ class App implements App_Interface {
                     if ($this->language == Language::FR) {
                         $errormessage = $itemname . " n'est pas un objet";
                     }
-                    throw new Exception($errormessage, $row + 2, $col);
+                    throw new Cell_Exception($errormessage, $row + 2, $col);
                 }
                 array_push($items, $item);
             }
