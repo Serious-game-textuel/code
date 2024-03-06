@@ -435,7 +435,10 @@ class App implements App_Interface {
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
-                array_push($reactions[$action][$condition], $reaction);
+                $sql = "select reaction_id from {locationreaction} where "
+                . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+                $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
+                array_push($reactions[$action][$condition], Reaction::get_instance($id));
             } else if ($entity instanceof Character_Interface) {
                 $locationname = $this->get_cell_string($row + 8, $col);
                 $location = null;
@@ -458,13 +461,19 @@ class App implements App_Interface {
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
-                array_push($reactions[$action][$condition], $reaction);
+                $sql = "select reaction_id from {characterreaction} where "
+                . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+                $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
+                array_push($reactions[$action][$condition], Reaction::get_instance($id));
             } else if ($entityname == "") {
                 $reaction = new No_Entity_Reaction(null, $reactiondescription);
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
-                array_push($reactions[$action][$condition], $reaction);
+                $sql = "select reaction_id from {noentityreaction} where "
+                . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+                $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
+                array_push($reactions[$action][$condition], Reaction::get_instance($id));
             } else {
                 throw new Exception("Only characters and locations can have reactions");
             }

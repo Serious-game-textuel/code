@@ -24,7 +24,7 @@ class Character_Reaction extends Reaction {
     array $olditem, array $newitem, ?Character_Interface $character, ?Location_Interface $newlocation) {
         global $DB;
         if (!isset($id)) {
-            $super = new reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
+            $super = new Reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
             parent::__construct($super->get_id(), "", [], [], [], []);
             $arguments = [
                 'reaction_id' => $super->get_id(),
