@@ -30,8 +30,8 @@ class Inventory implements Inventory_Interface {
             $this->id = $DB->insert_record('inventory', ['test' => 'n']);
             foreach ($items as $item) {
                 $DB->insert_record('inventory_items', [
-                    'inventory' => $this->id,
-                    'item' => $item->get_id(),
+                    'inventory_id' => $this->id,
+                    'item_id' => $item->get_id(),
                 ]);
             }
         } else {
@@ -70,8 +70,8 @@ class Inventory implements Inventory_Interface {
     public function get_items() {
         $items = [];
         global $DB;
-        $sql = "select item from {inventory_items} where "
-        . $DB->sql_compare_text('inventory') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select item_id from {inventory_items} where "
+        . $DB->sql_compare_text('inventory_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($items, Location::get_instance($id));
@@ -84,18 +84,18 @@ class Inventory implements Inventory_Interface {
         array_push($items, $item);
         $items = Util::clean_array($items, Location_Interface::class);
         global $DB;
-        $DB->delete_records('inventory_items', ['inventory' => $this->get_id()]);
+        $DB->delete_records('inventory_items', ['inventory_id' => $this->get_id()]);
         foreach ($items as $item) {
             $DB->insert_record('inventory_items', [
-                'inventory' => $this->id,
-                'item' => $item->get_id(),
+                'inventory_id' => $this->id,
+                'item_id' => $item->get_id(),
             ]);
         }
     }
 
     public function remove_item(Item_Interface $item) {
         global $DB;
-        $DB->delete_records('inventory_items', ['inventory' => $this->get_id(), 'item' => $item->get_id()]);
+        $DB->delete_records('inventory_items', ['inventory_id' => $this->get_id(), 'item' => $item->get_id()]);
     }
 
     public function check_item(Item_Interface $item) {

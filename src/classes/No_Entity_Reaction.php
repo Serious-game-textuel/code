@@ -23,10 +23,9 @@ class No_Entity_Reaction extends Reaction {
     public function __construct(?int $id, string $description) {
         global $DB;
         if (!isset($id)) {
-            $super = new Reaction(null, $description, [], [], [], []);
-            parent::__construct($super->get_id(), "", [], [], [], []);
+            parent::__construct(null, $description, [], [], [], []);
             $this->id = $DB->insert_record('noentityreaction', [
-                'reaction_id' => $super->get_id(),
+                'reaction_id' => parent::get_id(),
             ]);
         } else {
             $exists = $DB->record_exists_sql(
@@ -43,6 +42,22 @@ class No_Entity_Reaction extends Reaction {
             parent::__construct($super, "", [], [], [], []);
             $this->id = $id;
         }
+    }
+
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $reactionid) {
+        global $DB;
+        $sql = "select id from {noentityreaction} where "
+        . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $reactionid]);
+        return No_Entity_Reaction::get_instance($id);
+    }
+
+    public static function get_instance(int $id) {
+        return new No_Entity_Reaction($id, "");
     }
 
     public function get_id() {

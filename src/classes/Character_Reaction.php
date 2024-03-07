@@ -24,14 +24,13 @@ class Character_Reaction extends Reaction {
     array $olditem, array $newitem, ?Character_Interface $character, ?Location_Interface $newlocation) {
         global $DB;
         if (!isset($id)) {
-            $super = new Reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
-            parent::__construct($super->get_id(), "", [], [], [], []);
+            parent::__construct(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
             $arguments = [
-                'reaction_id' => $super->get_id(),
+                'reaction_id' => parent::get_id(),
                 'character_id' => $character->get_id(),
             ];
             if (isset($newlocation)) {
-                $arguments['newlocation'] = $newlocation->get_id();
+                $arguments['newlocation_id'] = $newlocation->get_id();
             }
             $this->id = $DB->insert_record('characterreaction', $arguments);
         } else {
@@ -51,7 +50,19 @@ class Character_Reaction extends Reaction {
         }
     }
 
-    public static function get_instance(int $id) {
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $reactionid): Character_Reaction {
+        global $DB;
+        $sql = "select id from {characterreaction} where "
+        . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $reactionid]);
+        return Character_Reaction::get_instance($id);
+    }
+
+    public static function get_instance(int $id): Character_Reaction {
         return new Character_Reaction($id, "", [], [], [], [], null, null);
     }
 
@@ -67,14 +78,14 @@ class Character_Reaction extends Reaction {
 
     public function get_new_location() {
         global $DB;
-        $sql = "select newlocation from {characterreaction} where ". $DB->sql_compare_text('id')
+        $sql = "select newlocation_id from {characterreaction} where ". $DB->sql_compare_text('id')
         . " = ".$DB->sql_compare_text(':id');
         return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function set_new_location(Location_Interface $newlocation) {
         global $DB;
-        $DB->set_field('characterreaction', 'newlocation', $newlocation->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('characterreaction', 'newlocation_id', $newlocation->get_id(), ['id' => $this->get_id()]);
     }
 
 }

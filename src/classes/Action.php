@@ -31,7 +31,7 @@ class Action implements Action_Interface {
             ]);
             foreach ($conditions as $condition) {
                 $DB->insert_record('action_conditions', [
-                    'action' => $this->id,
+                    'action_id' => $this->id,
                     'condition_id' => $condition->get_id(),
                 ]);
             }
@@ -64,14 +64,14 @@ class Action implements Action_Interface {
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('description', 'action', $description, ['id' => $this->get_id()]);
+        $DB->set_field('action', 'description', $description, ['id' => $this->get_id()]);
     }
 
     public function get_conditions() {
         $conditions = [];
         global $DB;
         $sql = "select condition_id from {action_conditions} where "
-        . $DB->sql_compare_text('action') . " = ".$DB->sql_compare_text(':id');
+        . $DB->sql_compare_text('action_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($conditions, Condition::get_instance($id));
@@ -82,10 +82,10 @@ class Action implements Action_Interface {
     public function set_conditions(array $conditions) {
         $conditions = Util::clean_array($conditions, Condition_Interface::class);
         global $DB;
-        $DB->delete_records('action_conditions', ['action' => $this->get_id()]);
+        $DB->delete_records('action_conditions', ['action_id' => $this->get_id()]);
         foreach ($conditions as $condition) {
             $DB->insert_record('game_visitedlocations', [
-                'action' => $this->id,
+                'action_id' => $this->id,
                 'condition_id' => $condition->get_id(),
             ]);
         }

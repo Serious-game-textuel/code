@@ -46,13 +46,13 @@ class Reaction implements Reaction_Interface {
             foreach ($olditem as $item) {
                 $DB->insert_record('reaction_olditems', [
                     'reaction_id' => $this->id,
-                    'item' => $item->get_id(),
+                    'item_id' => $item->get_id(),
                 ]);
             }
             foreach ($olditem as $item) {
                 $DB->insert_record('reaction_newitems', [
                     'reaction_id' => $this->id,
-                    'item' => $item->get_id(),
+                    'item_id' => $item->get_id(),
                 ]);
             }
         } else {
@@ -152,7 +152,7 @@ class Reaction implements Reaction_Interface {
     public function get_new_item() {
         $items = [];
         global $DB;
-        $sql = "select item from {reaction_newitems} where "
+        $sql = "select item_id from {reaction_newitems} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
@@ -168,7 +168,7 @@ class Reaction implements Reaction_Interface {
         foreach ($items as $item) {
             $DB->insert_record('reaction_newitems', [
                 'reaction_id' => $this->id,
-                'item' => $item->get_id(),
+                'item_id' => $item->get_id(),
             ]);
         }
     }

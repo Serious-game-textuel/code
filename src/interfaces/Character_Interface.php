@@ -39,4 +39,25 @@ interface Character_Interface extends Entity_Interface {
      * @return Character_Interface
      */
     public static function get_instance(int $id);
+
+    /**
+     * @return int
+     */
+    public function get_parent_id();
+
+    /**
+     * @param int
+     * @return Character_Interface
+     */
+    public static function get_instance_from_parent_id(int $entityid);
+
+    /**
+     * @return Location_Interface
+     */
+    public function get_current_location();
+
+    /**
+     * @param Location_Interface
+     */
+    public function set_currentlocation(Location_Interface $newlocation);
 }

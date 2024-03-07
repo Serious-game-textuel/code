@@ -24,10 +24,9 @@ class Item extends Entity implements Item_Interface {
     public function __construct(?int $id, string $description, string $name, array $status) {
         global $DB;
         if (!isset($id)) {
-            $super = new Entity(null, $description, $name, $status);
-            parent::__construct($super->get_id(), "", "", []);
+            parent::__construct(null, $description, $name, $status);
             $this->id = $DB->insert_record('item', [
-                'entity' => $super->get_id(),
+                'entity_id' => parent::get_id(),
             ]);
         } else {
             $exists = $DB->record_exists_sql(
@@ -38,11 +37,23 @@ class Item extends Entity implements Item_Interface {
             if (!$exists) {
                 throw new InvalidArgumentException("No Item object of ID:".$id." exists.");
             }
-            $sql = "select entity from {item} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select entity_id from {item} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", "", []);
             $this->id = $id;
         }
+    }
+
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $entityid) {
+        global $DB;
+        $sql = "select id from {item} where "
+        . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $entityid]);
+        return Item::get_instance($id);
     }
 
     public static function get_instance(int $id) {

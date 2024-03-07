@@ -33,4 +33,15 @@ interface Item_Interface extends Entity_Interface {
      * @return int
      */
     public function get_id();
+
+    /**
+     * @return int
+     */
+    public function get_parent_id();
+
+    /**
+     * @param int
+     * @return Item_Interface
+     */
+    public static function get_instance_from_parent_id(int $entityid);
 }

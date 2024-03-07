@@ -33,21 +33,21 @@ class Game implements Game_Interface {
                 'deaths' => $deaths,
                 'actions' => $actions,
                 'starttime' => $starttime->getTimestamp(),
-                'player' => $player->get_id(),
-                'defaultactionsearch' => $defaultactionsearch->get_id(),
-                'defaultactioninteract' => $defaultactioninteract->get_id(),
+                'player_id' => $player->get_id(),
+                'defaultactionsearch_id' => $defaultactionsearch->get_id(),
+                'defaultactioninteract_id' => $defaultactioninteract->get_id(),
             ]);
             $app->set_game($this);
             foreach ($visitedlocations as $location) {
                 $DB->insert_record('game_visitedlocations', [
-                    'game' => $this->id,
-                    'location' => $location->get_id(),
+                    'game_id' => $this->id,
+                    'location_id' => $location->get_id(),
                 ]);
             }
             foreach ($entities as $entity) {
                 $DB->insert_record('game_entities', [
-                    'game' => $this->id,
-                    'entity' => $entity->get_id(),
+                    'game_id' => $this->id,
+                    'entity_id' => $entity->get_id(),
                 ]);
             }
         } else {
@@ -98,21 +98,21 @@ class Game implements Game_Interface {
 
     public function get_player() {
         global $DB;
-        $sql = "select player from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select player_id from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         return Player_Character::get_instance($id);
     }
 
     public function set_player(Player_Character $player) {
         global $DB;
-        $DB->set_field('game', 'player', $player->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('game', 'player_id', $player->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_visited_locations() {
         $visitedlocations = [];
         global $DB;
-        $sql = "select location from {game_visitedlocations} where "
-        . $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select location_id from {game_visitedlocations} where "
+        . $DB->sql_compare_text('game_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($visitedlocations, Location::get_instance($id));
@@ -122,11 +122,11 @@ class Game implements Game_Interface {
     public function set_visited_locations(array $visitedlocations) {
         $visitedlocations = Util::clean_array($visitedlocations, Location_Interface::class);
         global $DB;
-        $DB->delete_records('game_visitedlocations', ['game' => $this->get_id()]);
+        $DB->delete_records('game_visitedlocations', ['game_id' => $this->get_id()]);
         foreach ($visitedlocations as $location) {
             $DB->insert_record('game_visitedlocations', [
-                'game' => $this->id,
-                'location' => $location->get_id(),
+                'game_id' => $this->id,
+                'location_id' => $location->get_id(),
             ]);
         }
     }
@@ -158,30 +158,30 @@ class Game implements Game_Interface {
 
     public function get_default_action_search() {
         global $DB;
-        $sql = "select defaultactionsearch from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select defaultactionsearch_id from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Default_Action::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function set_default_action_search(Default_Action_Interface $action) {
         global $DB;
-        $DB->set_field('game', 'defaultactionsearch', $action->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('game', 'defaultactionsearch_id', $action->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_default_action_interact() {
         global $DB;
-        $sql = "select defaultactioninteract from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select defaultactioninteract_id from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Default_Action::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function set_default_action_interact(Default_Action_Interface $action) {
         global $DB;
-        $DB->set_field('game', 'defaultactioninteract', $action->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('game', 'defaultactioninteract_id', $action->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_entities() {
         $entities = [];
         global $DB;
-        $sql = "select entity from {game_entities} where ". $DB->sql_compare_text('game') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select entity_id from {game_entities} where ". $DB->sql_compare_text('game_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($entities, Entity::get_instance($id));
@@ -192,11 +192,11 @@ class Game implements Game_Interface {
     public function set_entities(array $entities) {
         $entities = Util::clean_array($entities, Entity_Interface::class);
         global $DB;
-        $DB->delete_records('game_entities', ['game' => $this->get_id()]);
+        $DB->delete_records('game_entities', ['game_id' => $this->get_id()]);
         foreach ($entities as $entity) {
             $DB->insert_record('game_entities', [
-                'game' => $this->id,
-                'location' => $entity->get_id(),
+                'game_id' => $this->id,
+                'location_id' => $entity->get_id(),
             ]);
         }
     }
@@ -213,9 +213,9 @@ class Game implements Game_Interface {
     public function get_entity(string $name) {
         global $DB;
         $sql = "select {entity}.id from {game_entities} left join {entity} "
-        . "on {game_entities}.entity = {entity}.id where "
+        . "on {game_entities}.entity_id = {entity}.id where "
         . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
-        . $DB->sql_compare_text('{game_entities}.game') . " = ".$DB->sql_compare_text(':id');
+        . $DB->sql_compare_text('{game_entities}.game_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->get_id(), 'entityname' => $name]);
         return Entity::get_instance($id);
     }

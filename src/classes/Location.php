@@ -26,23 +26,22 @@ class Location extends Entity implements Location_Interface {
         if (!isset($id)) {
             Util::check_array($items, Item_Interface::class);
             Util::check_array($actions, Action_Interface::class);
-            $super = new Entity(null, "", $name, $status);
-            parent::__construct($super->get_id(), "", "", []);
+            parent::__construct(null, "", $name, $status);
             $inventory = new Inventory(null, $items);
             $this->id = $DB->insert_record('location', [
-                'entity' => $super->get_id(),
-                'inventory' => $inventory->get_id(),
+                'entity_id' => parent::get_id(),
+                'inventory_id' => $inventory->get_id(),
             ]);
             foreach ($hints as $hint) {
                 $DB->insert_record('location_hints', [
-                    'location' => $this->id,
+                    'location_id' => $this->id,
                     'hint' => $hint->get_id(),
                 ]);
             }
             foreach ($actions as $action) {
                 $DB->insert_record('location_actions', [
-                    'location' => $this->id,
-                    'action' => $action->get_id(),
+                    'location_id' => $this->id,
+                    'action_id' => $action->get_id(),
                 ]);
             }
         } else {
@@ -54,27 +53,39 @@ class Location extends Entity implements Location_Interface {
             if (!$exists) {
                 throw new InvalidArgumentException("No Location object of ID:".$id." exists.");
             }
-            $sql = "select entity from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select entity_id from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", "", []);
             $this->id = $id;
         }
     }
 
-    public static function get_instance(int $id) {
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $entityid): Location {
+        global $DB;
+        $sql = "select id from {location} where "
+        . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $entityid]);
+        return Location::get_instance($id);
+    }
+
+    public static function get_instance(int $id): Location {
         return new Location($id, "", [], [], [], []);
     }
 
     public function get_inventory() {
         global $DB;
-        $sql = "select inventory from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select inventory_id from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
     public function get_actions() {
         $actions = [];
         global $DB;
-        $sql = "select action from {location_actions} where "
-        . $DB->sql_compare_text('location') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select action_id from {location_actions} where "
+        . $DB->sql_compare_text('location_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($actions, Action::get_instance($id));
@@ -84,19 +95,19 @@ class Location extends Entity implements Location_Interface {
     public function set_actions(array $actions) {
         $actions = Util::clean_array($actions, Action_Interface::class);
         global $DB;
-        $DB->delete_records('location_actions', ['location' => $this->get_id()]);
+        $DB->delete_records('location_actions', ['location_id' => $this->get_id()]);
         foreach ($actions as $action) {
             $DB->insert_record('location_actions', [
-                'location' => $this->id,
-                'action' => $action->get_id(),
+                'location_id' => $this->id,
+                'action_id' => $action->get_id(),
             ]);
         }
     }
     public function get_hints() {
         $hints = [];
         global $DB;
-        $sql = "select hint from {location_hints} where "
-        . $DB->sql_compare_text('location') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select hint_id from {location_hints} where "
+        . $DB->sql_compare_text('location_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($hints, Hint::get_instance($id));
@@ -205,17 +216,17 @@ class Location extends Entity implements Location_Interface {
                 foreach ($reactions as $reaction) {
                     $ischaracterreaction = $DB->record_exists_sql(
                         "SELECT id FROM {characterreaction} WHERE "
-                        .$DB->sql_compare_text('reaction')." = ".$DB->sql_compare_text(':id'),
+                        .$DB->sql_compare_text('reaction_id')." = ".$DB->sql_compare_text(':id'),
                         ['id' => $reaction->get_id()]
                     );
                     if ($ischaracterreaction) {
                         $sql = "select id from {characterreaction} where "
-                        . $DB->sql_compare_text('reaction') . " = ".$DB->sql_compare_text(':id');
+                        . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
                         $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
                         $reaction = Character_Reaction::get_instance($id);
                         $isplayercharacter = $DB->record_exists_sql(
                             "SELECT id FROM {playercharacter} WHERE "
-                            .$DB->sql_compare_text('character')." = ".$DB->sql_compare_text(':id'),
+                            .$DB->sql_compare_text('character_id')." = ".$DB->sql_compare_text(':id'),
                             ['id' => $reaction->get_character()->get_id()]
                         );
                         if ($reaction->get_new_location() != null && $isplayercharacter) {

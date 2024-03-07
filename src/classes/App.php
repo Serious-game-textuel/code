@@ -60,7 +60,7 @@ class App implements App_Interface {
                 $languageid = $DB->get_field_sql($sql, ['name' => $language]);
                 $this->id = $DB->insert_record('app', [
                     'studentid' => $USER->id,
-                    'language' => $languageid,
+                    'language_id' => $languageid,
                     'playerkeyword' => $playerkeyword,
                 ]);
                 $this->parse();
@@ -94,22 +94,22 @@ class App implements App_Interface {
 
     public function get_game() {
         global $DB;
-        $sql = "select game from {app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select game_id from {app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $gameid = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         return Game::get_instance($gameid);
     }
 
     public function set_game(Game_Interface $game) {
         global $DB;
-        $DB->set_field('app', 'game', $game->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('app', 'game_id', $game->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_startentity($entityname) {
         global $DB;
         $sql = "select {entity}.id from {app_startentities} left join {entity} "
-        . "on {app_startentities}.entity = {entity}.id where "
+        . "on {app_startentities}.entity_id = {entity}.id where "
         . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
-        . $DB->sql_compare_text('{app_startentities}.app') . " = ".$DB->sql_compare_text(':id');
+        . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->get_id(), 'entityname' => $entityname]);
         if ($id > 0) {
             return Entity::get_instance($id);
@@ -121,8 +121,8 @@ class App implements App_Interface {
     public function get_startentities() {
         $startentities = [];
         global $DB;
-        $sql = "select {entity}.id from {app_startentities} left join {entity} on {app_startentities}.entity = {entity}.id where "
-        . $DB->sql_compare_text('{app_startentities}.app') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select {entity}.id from {app_startentities} left join {entity} on {app_startentities}.entity_id = {entity}.id where "
+        . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($startentities, Entity::get_instance($id));
@@ -133,8 +133,16 @@ class App implements App_Interface {
     public function add_startentity(Entity_Interface $entity) {
         global $DB;
         $DB->insert_record('app_startentities', [
-            'app' => $this->get_id(),
-            'entity' => $entity->get_id(),
+            'app_id' => $this->get_id(),
+            'entity_id' => $entity->get_id(),
+        ]);
+    }
+
+    public function add_startentity_from_id(int $entityid) {
+        global $DB;
+        $DB->insert_record('app_startentities', [
+            'app_id' => $this->get_id(),
+            'entity_id' => $entityid,
         ]);
     }
 
@@ -157,19 +165,14 @@ class App implements App_Interface {
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         $player = $this->get_startentity($playerkeyword);
         if ($player != null) {
-            $sql = "select id from {character} where "
-            . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-            $id = $DB->get_field_sql($sql, ['id' => $player->get_id()]);
-            if ($id > 0) {
-                $sql = "select id from {playercharacter} where "
-                . $DB->sql_compare_text('character_id') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $id]);
-                if ($id > 0) {
-                    $player = Player_Character::get_instance($id);
-                } else {
+            try {
+                $character = Character::get_instance_from_parent_id($player->get_id());
+                try {
+                    $player = Player_Character::get_instance_from_parent_id($character->get_id());
+                } catch (Exception $e) {
                     throw new Exception('No player found in this game');
                 }
-            } else {
+            } catch (Exception $e) {
                 throw new Exception('No player found in this game');
             }
         }
@@ -222,14 +225,12 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item != null) {
-                    $sql = "select id from {item} where "
-                    . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                    $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
-                    if ($id > 0) {
-                        $item = Item::get_instance($id);
+                    try {
+                        $item = Item::get_instance_from_parent_id($item->get_id());
+                    } catch (Exception $e) {
+                        throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
                     }
-                }
-                if ($item == null || !($item instanceof Item)) {
+                } else {
                     throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
                 }
                 array_push($items, $item);
@@ -254,14 +255,12 @@ class App implements App_Interface {
             foreach ($itemnames as $itemname) {
                 $item = $this->get_startentity($itemname);
                 if ($item != null) {
-                    $sql = "select id from {item} where "
-                    . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                    $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
-                    if ($id > 0) {
-                        $item = Item::get_instance($id);
+                    try {
+                        $item = Item::get_instance_from_parent_id($item->get_id());
+                    } catch (Exception $e) {
+                        throw new Exception($itemname . "is not an item and here is the row: " . $row . " and the col: " . $col ."");
                     }
-                }
-                if ($item == null || !($item instanceof Item)) {
+                } else {
                     throw new Exception($itemname . "is not an item and here is the row: " . $row . " and the col: " . $col ."");
                 }
                 array_push($items, $item);
@@ -281,14 +280,12 @@ class App implements App_Interface {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location != null) {
-                $sql = "select id from {location} where "
-                . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $location->get_id()]);
-                if ($id > 0) {
-                    $location = Location::get_instance($id);
+                try {
+                    $location = Location::get_instance_from_parent_id($location->get_id());
+                } catch (Exception $e) {
+                    throw new Exception($locationname . "is not a location");
                 }
-            }
-            if ($location == null || !($location instanceof Location)) {
+            } else {
                 throw new Exception($locationname . "is not a location");
             }
             $character = $this->get_startentity($name);
@@ -296,14 +293,12 @@ class App implements App_Interface {
             foreach ($characternames as $name) {
                 $character = $this->get_startentity($name);
                 if ($character != null) {
-                    $sql = "select id from {character} where "
-                    . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                    $id = $DB->get_field_sql($sql, ['id' => $character->get_id()]);
-                    if ($id > 0) {
-                        $character = Character::get_instance($id);
+                    try {
+                        $character = Character::get_instance_from_parent_id($character->get_id());
+                    } catch (Exception $e) {
+                        throw new Exception($name . " is not a character");
                     }
-                }
-                if ($character == null || !($character instanceof Character)) {
+                } else {
                     throw new Exception($name . " is not a character");
                 }
                 $character->set_currentlocation($location);
@@ -319,14 +314,12 @@ class App implements App_Interface {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
             if ($location != null) {
-                $sql = "select id from {location} where "
-                . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $location->get_id()]);
-                if ($id > 0) {
-                    $location = Location::get_instance($id);
+                try {
+                    $location = Location::get_instance_from_parent_id($location->get_id());
+                } catch (Exception $e) {
+                    throw new Exception($locationname . "is not a location");
                 }
-            }
-            if ($location == null || !($location instanceof Location)) {
+            } else {
                 throw new Exception($locationname . "is not a location");
             }
             $actions = $this->create_column_actions($location, $col, $row + 6);
@@ -384,14 +377,12 @@ class App implements App_Interface {
                 foreach ($newitemnames as $name) {
                     $item = $this->get_startentity($name);
                     if ($item != null) {
-                        $sql = "select id from {item} where "
-                        . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                        $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
-                        if ($id > 0) {
-                            $item = Item::get_instance($id);
+                        try {
+                            $item = Item::get_instance_from_parent_id($item->get_id());
+                        } catch (Exception $e) {
+                            throw new Exception($name . " is not an Item");
                         }
-                    }
-                    if ($item == null || !($item instanceof Item_Interface)) {
+                    } else {
                         throw new Exception($name . " is not an Item");
                     }
                     array_push($newitems, $item);
@@ -401,32 +392,25 @@ class App implements App_Interface {
                 foreach ($olditemnames as $name) {
                     $item = $this->get_startentity($name);
                     if ($item != null) {
-                        $sql = "select id from {item} where "
-                        . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                        $id = $DB->get_field_sql($sql, ['id' => $item->get_id()]);
-                        if ($id > 0) {
-                            $item = Item::get_instance($id);
+                        try {
+                            $item = Item::get_instance_from_parent_id($item->get_id());
+                        } catch (Exception $e) {
+                            throw new Exception($name . " is not an Item");
                         }
-                    }
-                    if ($item == null || !($item instanceof Item_Interface)) {
+                    } else {
                         throw new Exception($name . " is not an Item");
                     }
                     array_push($olditems, $item);
                 }
             }
             if ($entity != null) {
-                $sql = "select id from {location} where "
-                . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $entity->get_id()]);
-                if ($id > 0) {
-                    $entity = Location::get_instance($id);
-                } else {
-                    $sql = "select id from {character} where "
-                    . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                    $id = $DB->get_field_sql($sql, ['id' => $entity->get_id()]);
-                    if ($id > 0) {
-                        $entity = Character::get_instance($id);
-                    }
+                $parententity = $entity;
+                try  {
+                    $entity = Location::get_instance_from_parent_id($parententity->get_id());
+                } catch (Exception $e) {
+                    try {
+                        $entity = Character::get_instance_from_parent_id($parententity->get_id());
+                    } catch (Exception $e) {}
                 }
             }
             if ($entity instanceof Location_Interface) {
@@ -435,24 +419,19 @@ class App implements App_Interface {
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
-                $sql = "select reaction_id from {locationreaction} where "
-                . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
-                array_push($reactions[$action][$condition], Reaction::get_instance($id));
+                array_push($reactions[$action][$condition], Reaction::get_instance($reaction->get_parent_id()));
             } else if ($entity instanceof Character_Interface) {
                 $locationname = $this->get_cell_string($row + 8, $col);
                 $location = null;
                 if ($locationname != "") {
                     $location = $this->get_startentity($locationname);
                     if ($location != null) {
-                        $sql = "select id from {location} where "
-                        . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                        $id = $DB->get_field_sql($sql, ['id' => $location->get_id()]);
-                        if ($id > 0) {
-                            $location = Location::get_instance($id);
+                        try {
+                            $location = Location::get_instance_from_parent_id($location->get_id());
+                        } catch (Exception $e) {
+                            throw new Exception($locationname . " is not a location");
                         }
-                    }
-                    if ($location == null || !($location instanceof Location_Interface)) {
+                    } else {
                         throw new Exception($locationname . " is not a location");
                     }
                 }
@@ -461,35 +440,27 @@ class App implements App_Interface {
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
-                $sql = "select reaction_id from {characterreaction} where "
-                . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
-                array_push($reactions[$action][$condition], Reaction::get_instance($id));
+                array_push($reactions[$action][$condition], Reaction::get_instance($reaction->get_parent_id()));
             } else if ($entityname == "") {
                 $reaction = new No_Entity_Reaction(null, $reactiondescription);
                 if (!isset($reactions[$action][$condition])) {
                     $reactions[$action][$condition] = [];
                 }
-                $sql = "select reaction_id from {noentityreaction} where "
-                . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
-                array_push($reactions[$action][$condition], Reaction::get_instance($id));
+                array_push($reactions[$action][$condition], Reaction::get_instance($reaction->get_parent_id()));
             } else {
                 throw new Exception("Only characters and locations can have reactions");
             }
-
             $row = $row + $rowstep;
         }
 
         foreach ($descriptions as $action) {
             $conditions = [];
             foreach ($conditionnames[$action] as $condition) {
-                array_push($conditions,
-                    $this->parse_condition(
-                        $condition,
-                        $reactions[$action][$condition]
-                    )
+                $cond = $this->parse_condition(
+                    $condition,
+                    $reactions[$action][$condition]
                 );
+                array_push($conditions, Condition::get_instance($cond->get_parent_id()));
             }
             array_push($actions, new Action(null, $action, $conditions));
         }
@@ -679,15 +650,12 @@ class App implements App_Interface {
 
         foreach ($game->get_entities() as $entity) {
             if ($entity != null) {
-                $sql = "select id from {playercharacter} where "
-                . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $entity->get_id()]);
-                if ($id > 0) {
-                    $entity = Player_Character::get_instance($id);
-                }
-            }
-            if ($entity instanceof Player_Character) {
-                $game->set_player($entity);
+                try {
+                    $entity = Player_Character::get_instance_from_parent_id($entity->get_id());
+                    if ($entity instanceof Player_Character) {
+                        $game->set_player($entity);
+                    }
+                } catch (Exception $e) {}
             }
         }
     }

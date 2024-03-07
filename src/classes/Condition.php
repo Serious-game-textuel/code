@@ -86,21 +86,8 @@ class Condition implements Condition_Interface {
         $descriptions = [];
         global $DB;
         foreach ($reactions as $reaction) {
-            $ischaracterreaction = $DB->record_exists_sql(
-                "SELECT id FROM {characterreaction} WHERE "
-                .$DB->sql_compare_text('reaction_id')." = ".$DB->sql_compare_text(':id'),
-                ['id' => $reaction->get_id()]
-            );
-            $islocationreaction = $DB->record_exists_sql(
-                "SELECT id FROM {locationreaction} WHERE "
-                .$DB->sql_compare_text('reaction_id')." = ".$DB->sql_compare_text(':id'),
-                ['id' => $reaction->get_id()]
-            );
-            if ($ischaracterreaction) {
-                $sql = "select id from {characterreaction} where "
-                . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
-                $reaction = Character_Reaction::get_instance($id);
+            try {
+                $reaction = Character_Reaction::get_instance_from_parent_id($reaction->get_id());
                 if ($reaction->get_character() != null) {
                     $character = $reaction->get_character();
 
@@ -117,6 +104,7 @@ class Condition implements Condition_Interface {
                             ['id' => $character->get_id()]
                         );
                         if ($isnpccharacter) {
+                            $character = Npc_Character::get_instance_from_parent_id($character->get_id());
                             $character->set_currentlocation($newlocation);
                         } else if ($isplayercharacter) {
                             $game->set_current_location($newlocation);
@@ -168,34 +156,33 @@ class Condition implements Condition_Interface {
                         $character->remove_status($oldstatus);
                     }
                 }
-            } else if ($islocationreaction) {
-                $sql = "select id from {locationreaction} where "
-                . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
-                $reaction = Location_Reaction::get_instance($id);
-                if ($reaction->get_location() != null) {
+            } catch (Exception $e) {
+                try {
+                    $reaction = Location_Reaction::get_instance_from_parent_id($reaction->get_id());
                     $location = $reaction->get_location();
-                    if ($reaction->get_new_status() != null) {
+                    if ($location != null) {
                         $newstatus = $reaction->get_new_status();
-                        $location->add_status($newstatus);
-                    }
-                    if ($reaction->get_old_status() != null) {
+                        if ($newstatus != null) {
+                            $location->add_status($newstatus);
+                        }
                         $oldstatus = $reaction->get_old_status();
-                        $location->remove_status($oldstatus);
-                    }
-                    if ($reaction->get_new_item() != null) {
+                        if ($oldstatus != null) {
+                            $location->remove_status($oldstatus);
+                        }
                         $newitems = $reaction->get_new_item();
-                        foreach ($newitems as $item) {
-                            $location->get_inventory()->add_item($item);
+                        if ($newitems != null) {
+                            foreach ($newitems as $item) {
+                                $location->get_inventory()->add_item($item);
+                            }
                         }
-                    }
-                    if ($reaction->get_old_item() != null) {
                         $olditem = $reaction->get_old_item();
-                        foreach ($olditem as $item) {
-                            $location->get_inventory()->remove_item($item);
+                        if ($olditem != null) {
+                            foreach ($olditem as $item) {
+                                $location->get_inventory()->remove_item($item);
+                            }
                         }
                     }
-                }
+                } catch (Exception $e) {}
             }
             array_push($descriptions, $reaction->get_description());
         }

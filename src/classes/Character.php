@@ -29,11 +29,11 @@ class Character extends Entity implements Character_Interface {
             parent::__construct($super->get_id(), "", "", []);
             $inventory = new Inventory(null, $items);
             $arguments = [
-                'entity' => $super->get_id(),
-                'inventory' => $inventory->get_id(),
+                'entity_id' => $super->get_id(),
+                'inventory_id' => $inventory->get_id(),
             ];
             if ($currentlocation != null) {
-                $arguments['currentlocation'] = $currentlocation->get_id();
+                $arguments['currentlocation_id'] = $currentlocation->get_id();
             }
             $this->id = $DB->insert_record('character', $arguments);
         } else {
@@ -45,11 +45,23 @@ class Character extends Entity implements Character_Interface {
             if (!$exists) {
                 throw new InvalidArgumentException("No Character object of ID:".$id." exists.");
             }
-            $sql = "select entity from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select entity_id from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", "", []);
             $this->id = $id;
         }
+    }
+
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $entityid) {
+        global $DB;
+        $sql = "select id from {character} where "
+        . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $entityid]);
+        return Character::get_instance($id);
     }
 
     public static function get_instance(int $id) {
@@ -62,7 +74,7 @@ class Character extends Entity implements Character_Interface {
 
     public function get_inventory() {
         global $DB;
-        $sql = "select inventory from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select inventory_id from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
@@ -76,13 +88,13 @@ class Character extends Entity implements Character_Interface {
 
     public function get_current_location() {
         global $DB;
-        $sql = "select currentlocation from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select currentlocation_id from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
     public function set_currentlocation(Location_Interface $newlocation) {
         global $DB;
-        $DB->set_field('character', 'currentlocation', $newlocation->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('character', 'currentlocation_id', $newlocation->get_id(), ['id' => $this->get_id()]);
     }
 
 }

@@ -24,11 +24,10 @@ class Location_Reaction extends Reaction {
     array $newstatus, array $olditem, array $newitem, ?Location_Interface $location) {
         global $DB;
         if (!isset($id)) {
-            $super = new Reaction(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
-            parent::__construct($super->get_id(), "", [], [], [], []);
+            parent::__construct(null, $description, $oldstatus, $newstatus, $olditem, $newitem);
             $this->id = $DB->insert_record('locationreaction', [
-                'reaction_id' => $super->get_id(),
-                'location' => $location->get_id(),
+                'reaction_id' => parent::get_id(),
+                'location_id' => $location->get_id(),
             ]);
         } else {
             $exists = $DB->record_exists_sql(
@@ -47,13 +46,25 @@ class Location_Reaction extends Reaction {
         }
     }
 
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
     public function get_location(): Location_Interface {
         global $DB;
-        $sql = "select actions from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select location_id from {locationreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Location_Interface::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
-    public static function get_instance(int $id) {
+    public static function get_instance_from_parent_id(int $reactionid): Location_Reaction {
+        global $DB;
+        $sql = "select id from {locationreaction} where "
+        . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $reactionid]);
+        return Location_Reaction::get_instance($id);
+    }
+
+    public static function get_instance(int $id): Location_Reaction {
         return new Location_Reaction($id, "", [], [], [], [], null);
     }
 

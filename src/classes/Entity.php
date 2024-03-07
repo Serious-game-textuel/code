@@ -35,11 +35,11 @@ class Entity implements Entity_Interface {
             ]);
             foreach ($status as $statut) {
                 $DB->insert_record('entity_status', [
-                    'entity' => $this->id,
+                    'entity_id' => $this->id,
                     'status' => $statut,
                 ]);
             }
-            $app->add_startentity($this);
+            $app->add_startentity_from_id($this->id);
         } else {
             $exists = $DB->record_exists_sql(
                 "SELECT id FROM {entity} WHERE "
@@ -87,7 +87,7 @@ class Entity implements Entity_Interface {
         $statusarray = [];
         global $DB;
         $sql = "select status from {entity_status} where "
-        . $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+        . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
         $status = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($status as $statut) {
             array_push($statusarray, $statut);
@@ -98,10 +98,10 @@ class Entity implements Entity_Interface {
     public function set_status(array $status) {
         $status = Util::clean_array($status, Location_Interface::class);
         global $DB;
-        $DB->delete_records('entity_status', ['entity' => $this->get_id()]);
+        $DB->delete_records('entity_status', ['entity_id' => $this->get_id()]);
         foreach ($status as $statut) {
             $DB->insert_record('entity_status', [
-                'entity' => $this->id,
+                'entity_id' => $this->id,
                 'status' => $statut,
             ]);
         }

@@ -26,10 +26,9 @@ class Default_Action extends Action implements Default_Action_Interface {
     public function __construct(?int $id, string $description, array $conditions) {
         global $DB;
         if (!isset($id)) {
-            $super = new Action(null, $description, $conditions);
-            parent::__construct($super->get_id(), "", []);
+            parent::__construct(null, $description, $conditions);
             $this->id = $DB->insert_record('defaultaction', [
-                'action' => $super->get_id(),
+                'action_id' => parent::get_id(),
             ]);
         } else {
             $exists = $DB->record_exists_sql(
@@ -40,11 +39,23 @@ class Default_Action extends Action implements Default_Action_Interface {
             if (!$exists) {
                 throw new InvalidArgumentException("No Default_action object of ID:".$id." exists.");
             }
-            $sql = "select action from {defaultaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select action_id from {defaultaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", []);
             $this->id = $id;
         }
+    }
+
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $actionid) {
+        global $DB;
+        $sql = "select id from {defaultaction} where "
+        . $DB->sql_compare_text('action_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $actionid]);
+        return Default_Action::get_instance($id);
     }
 
     public static function get_instance(int $id) {

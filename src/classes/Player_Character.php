@@ -24,10 +24,9 @@ class Player_Character extends Character {
     array $status, array $items, ?Location_Interface $currentlocation) {
         global $DB;
         if (!isset($id)) {
-            $super = new Character(null, $description, $name, $status, $items, $currentlocation);
-            parent::__construct($super->get_id(), "", "", [], [], null);
+            parent::__construct(null, $description, $name, $status, $items, $currentlocation);
             $this->id = $DB->insert_record('playercharacter', [
-                'character_id' => $super->get_id(),
+                'character_id' => parent::get_id(),
             ]);
         } else {
             $exists = $DB->record_exists_sql(
@@ -44,6 +43,18 @@ class Player_Character extends Character {
             parent::__construct($super, "", "", [], [], null);
             $this->id = $id;
         }
+    }
+
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $characterid): Player_Character {
+        global $DB;
+        $sql = "select id from {playercharacter} where "
+        . $DB->sql_compare_text('character_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $characterid]);
+        return Player_Character::get_instance($id);
     }
 
     public static function get_instance(int $id): Player_Character {

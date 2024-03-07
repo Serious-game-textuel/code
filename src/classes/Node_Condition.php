@@ -24,12 +24,11 @@ class Node_Condition extends Condition {
     string $connector, ?array $reactions) {
         global $DB;
         if (!isset($id)) {
-            $super = new Condition(null, $reactions);
-            parent::__construct($super->get_id(), []);
+            parent::__construct(null, $reactions);
             $this->id = $DB->insert_record('nodecondition', [
-                'condition_id' => $super->get_id(),
-                'condition1' => $condition1->get_id(),
-                'condition2' => $condition2->get_id(),
+                'condition_id' => parent::get_id(),
+                'condition1_id' => $condition1->get_id(),
+                'condition2_id' => $condition2->get_id(),
                 'connector' => $connector,
             ]);
         } else {
@@ -48,18 +47,30 @@ class Node_Condition extends Condition {
         }
     }
 
-    public static function get_instance(int $id) {
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $conditionid): Node_Condition {
+        global $DB;
+        $sql = "select id from {nodecondition} where "
+        . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $conditionid]);
+        return Node_Condition::get_instance($id);
+    }
+
+    public static function get_instance(int $id): Node_Condition {
         return new Node_Condition($id, null, null, "", null);
     }
 
     public function get_condition1() {
         global $DB;
-        $sql = "select condition1 from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select condition1_id from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Condition::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
     public function get_condition2() {
         global $DB;
-        $sql = "select condition2 from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select condition2_id from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Condition::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
     public function get_connector() {
@@ -69,11 +80,11 @@ class Node_Condition extends Condition {
     }
     public function set_condition(Condition_Interface $condition1) {
         global $DB;
-        $DB->set_field('nodecondition', 'condition1', $condition1->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('nodecondition', 'condition1_id', $condition1->get_id(), ['id' => $this->get_id()]);
     }
     public function set_condition2(Condition_Interface $condition2) {
         global $DB;
-        $DB->set_field('nodecondition', 'condition2', $condition2->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('nodecondition', 'condition2_id', $condition2->get_id(), ['id' => $this->get_id()]);
     }
     public function set_connector(string $connector) {
         global $DB;

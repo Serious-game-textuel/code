@@ -25,22 +25,21 @@ class Leaf_Condition extends Condition {
         global $DB;
         if (!isset($id)) {
             Util::check_array($status, 'string');
-            $super = new Condition(null, $reactions);
-            parent::__construct($super->get_id(), []);
+            parent::__construct(null, $reactions);
             $arguments = [
-                'condition_id' => $super->get_id(),
+                'condition_id' => parent::get_id(),
                 'connector' => $connector,
             ];
             if (isset($entity1)) {
-                $arguments['entity1'] = $entity1->get_id();
+                $arguments['entity1_id'] = $entity1->get_id();
             }
             if (isset($entity2)) {
-                $arguments['entity2'] = $entity2->get_id();
+                $arguments['entity2_id'] = $entity2->get_id();
             }
             $this->id = $DB->insert_record('leafcondition', $arguments);
             foreach ($status as $statut) {
                 $DB->insert_record('leafcondition_status', [
-                    'leafcondition' => $this->id,
+                    'leafcondition_id' => $this->id,
                     'status' => $statut,
                 ]);
             }
@@ -60,13 +59,25 @@ class Leaf_Condition extends Condition {
         }
     }
 
-    public static function get_instance(int $id) {
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $conditionid): Leaf_Condition {
+        global $DB;
+        $sql = "select id from {leafcondition} where "
+        . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $conditionid]);
+        return Leaf_Condition::get_instance($id);
+    }
+
+    public static function get_instance(int $id): Leaf_Condition {
         return new Leaf_Condition($id, null, null, "", null, []);
     }
 
     public function get_entity1() {
         global $DB;
-        $sql = "select entity1 from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select entity1_id from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         if ($id > 0) {
             return Entity::get_instance($id);
@@ -77,12 +88,12 @@ class Leaf_Condition extends Condition {
 
     public function set_entity1(Entity_Interface $entity1) {
         global $DB;
-        $DB->set_field('leafcondition', 'entity1', $entity1->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('leafcondition', 'entity1_id', $entity1->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_entity2() {
         global $DB;
-        $sql = "select entity2 from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select entity2_id from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
         if ($id > 0) {
             return Entity::get_instance($id);
@@ -93,7 +104,7 @@ class Leaf_Condition extends Condition {
 
     public function set_entity2(Entity_Interface $entity2) {
         global $DB;
-        $DB->set_field('leafcondition', 'entity2', $entity2->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('leafcondition', 'entity2_id', $entity2->get_id(), ['id' => $this->get_id()]);
     }
 
     public function get_connector() {
@@ -110,18 +121,18 @@ class Leaf_Condition extends Condition {
     public function get_status() {
         global $DB;
         $sql = "select status from {leafcondition_status} where "
-        . $DB->sql_compare_text('leafcondition') . " = ".$DB->sql_compare_text(':id');
+        . $DB->sql_compare_text('leafcondition_id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
     }
 
     public function set_status(array $status) {
         $status = Util::clean_array($status, 'string');
         global $DB;
-        $DB->delete_records('leafcondition_status', ['leafcondition' => $this->get_id()]);
+        $DB->delete_records('leafcondition_status', ['leafcondition_id' => $this->get_id()]);
         foreach ($status as $statut) {
             $DB->insert_record('leafcondition_status', [
-                'leafcondition' => $this->id,
-                'location' => $statut,
+                'leafcondition_id' => $this->id,
+                'location_id' => $statut,
             ]);
         }
     }
@@ -136,31 +147,31 @@ class Leaf_Condition extends Condition {
             $entity1status = $entity1->get_status();
             $ischaracter = $DB->record_exists_sql(
                 "SELECT id FROM {character} WHERE "
-                .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+                .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $entity1->get_id()]
             );
             $isitem = $DB->record_exists_sql(
                 "SELECT id FROM {item} WHERE "
-                .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+                .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $entity1->get_id()]
             );
             $islocation = $DB->record_exists_sql(
                 "SELECT id FROM {location} WHERE "
-                .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+                .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $entity1->get_id()]
             );
             if ($ischaracter) {
-                $sql = "select id from {character} where ". $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                $sql = "select id from {character} where ". $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
                 $id = $DB->get_field_sql($sql, ['id' => $entity1->get_id()]);
                 $entity1 = Character::get_instance($id);
                 if ($entity2 != null) {
                     $isitem = $DB->record_exists_sql(
                         "SELECT id FROM {item} WHERE "
-                        .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+                        .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
                         ['id' => $entity2->get_id()]
                     );
                     if ($isitem) {
-                        $sql = "select id from {item} where ". $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                        $sql = "select id from {item} where ". $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
                         $id = $DB->get_field_sql($sql, ['id' => $entity2->get_id()]);
                         $entity2 = Item::get_instance($id);
                         if ($connector == "possède" || $connector == "a") {
@@ -185,7 +196,7 @@ class Leaf_Condition extends Condition {
                     }
                 }
             } else if ($islocation) {
-                $sql = "select id from {location} where ". $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                $sql = "select id from {location} where ". $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
                 $id = $DB->get_field_sql($sql, ['id' => $entity1->get_id()]);
                 $entity1 = Location::get_instance($id);
                 if ($entity2 == null) {
@@ -197,11 +208,11 @@ class Leaf_Condition extends Condition {
                 } else {
                     $isitem = $DB->record_exists_sql(
                         "SELECT id FROM {item} WHERE "
-                        .$DB->sql_compare_text('entity')." = ".$DB->sql_compare_text(':id'),
+                        .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
                         ['id' => $entity2->get_id()]
                     );
                     if ($isitem) {
-                        $sql = "select id from {item} where ". $DB->sql_compare_text('entity') . " = ".$DB->sql_compare_text(':id');
+                        $sql = "select id from {item} where ". $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
                         $id = $DB->get_field_sql($sql, ['id' => $entity2->get_id()]);
                         $entity2 = Item::get_instance($id);
                         if ($connector == "possède" || $connector == "a") {
