@@ -134,6 +134,7 @@ class Location extends Entity implements Location_Interface {
         $actionname = App::tokenize($actionname);
         $actionsvalide = $this->get_actions_valide($actionname);
         if (count($actionsvalide) > 0) {
+            array_push($debug, count($actionsvalide).' action(s) trouvée(s)');
             foreach ($actionsvalide as $actionvalide) {
                 $result = $actionvalide->do_conditions();
                 foreach ($result[0] as $res) {
@@ -142,12 +143,14 @@ class Location extends Entity implements Location_Interface {
                 array_push($debug, implode(', ', $result[1]));
             }
         } else {
+            array_push($debug, '0 action trouvée');
             $defaultactionname = "fouiller";
             if (strpos($actionname, $defaultactionname) === 0) {
                 $entityname = substr($actionname, strlen($defaultactionname) + 1);
                 if ($game->get_entity($entityname) !== null) {
                     $defaultactionsearch = $game->get_default_action_search();
                     if ($defaultactionsearch !== null) {
+                        array_push($debug, "utilisation de l'action fouiller par défaut");
                         $result = $defaultactionsearch->do_conditions_verb($defaultactionname);
                         $return = array_merge($result[0], $return);
                         array_push($debug, implode(', ', $result[1]));
@@ -157,6 +160,7 @@ class Location extends Entity implements Location_Interface {
                 } else {
                     $defaultactioninteract = $game->get_default_action_interact();
                     if ($defaultactioninteract !== null) {
+                        array_push($debug, "utilisation de l'action intéragir par défaut");
                         $result = $defaultactioninteract->do_conditions_verb($defaultactionname);
                         $return = array_merge($result[0], $return);
                         array_push($debug, implode(', ', $result[1]));
@@ -165,6 +169,7 @@ class Location extends Entity implements Location_Interface {
                     }
                 }
             } else if ($actionname == "indices" || $actionname == "indice") {
+                array_push($debug, "utilisation de l'action prédéfinie indice");
                 $hints = $this->get_hints();
                 $hintcount = $this->get_hintscount();
                 if ($hintcount < count($hints)) {
@@ -175,10 +180,13 @@ class Location extends Entity implements Location_Interface {
                     array_push($return, "Aucun autre indice disponible.");
                 }
             } else if ($actionname == "sortie") {
+                array_push($debug, "utilisation de l'action prédéfinie sorties");
                 array_push($return, $this->get_exit());
             } else if ($actionname == "inventaire") {
+                array_push($debug, "utilisation de l'action prédéfinie inventaire");
                 array_push($return, $this->get_inventory_description());
             } else {
+                array_push($debug, "utilisation de l'action intéragir par défaut");
                 $firstword = explode(' ', $actionname)[0];
                 $defaultactioninteract = $game->get_default_action_interact();
                 if ($defaultactioninteract !== null) {

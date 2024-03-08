@@ -29,8 +29,8 @@ if ($app == null) {
     $app = new App(null, $tempfilepath, Language::FR);
 }
 $action = $app->get_game()->do_action($_POST['inputText']);
-if (empty($action[0])) {
-    echo '["donne une autre commande", []]';
+if (count($action[0]) == 0) {
+    echo '["donne une autre commande", ["'.implode('", "', $action[1]).'"]]';
 } else {
     echo '["'.implode(' / ', $action[0]).'", ["'.implode('", "', $action[1]).'"]]';
 }
