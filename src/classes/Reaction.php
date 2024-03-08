@@ -173,5 +173,21 @@ class Reaction implements Reaction_Interface {
         }
     }
 
-
+    public function do_reactions() {
+        try {
+            $characterreaction = Character_Reaction::get_instance_from_parent_id($this->get_id());
+            return $characterreaction->do_reactions();
+        } catch (Exception $e) {
+            try {
+                $locationreaction = Location_Reaction::get_instance_from_parent_id($this->get_id());
+                return $locationreaction->do_reactions();
+            } catch (Exception $e) {
+                try {
+                    $noentityreaction = No_Entity_Reaction::get_instance_from_parent_id($this->get_id());
+                    return $noentityreaction->do_reactions();
+                } catch (Exception $e) {}
+            }
+        }
+        return [];
+    }
 }

@@ -63,5 +63,9 @@ class No_Entity_Reaction extends Reaction {
     public function get_id() {
         return $this->id;
     }
+
+    public function do_reactions(): array {
+        return [];
+    }
 }
 

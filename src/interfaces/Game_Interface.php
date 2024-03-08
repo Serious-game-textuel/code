@@ -138,4 +138,10 @@ interface Game_Interface {
      */
     public static function get_instance(int $id);
 
+    /**
+     * @param string $actionname
+     * @return string[]
+     */
+    public function do_action(string $actionname);
+
 }

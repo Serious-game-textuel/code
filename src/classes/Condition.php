@@ -83,15 +83,7 @@ class Condition implements Condition_Interface {
         $reactions = $this->get_reactions();
         $descriptions = [];
         foreach ($reactions as $reaction) {
-            try {
-                $characterreaction = Character_Reaction::get_instance_from_parent_id($reaction->get_id());
-                array_merge($descriptions, $characterreaction->do_reactions());
-            } catch (Exception $e) {
-                try {
-                    $locationreaction = Location_Reaction::get_instance_from_parent_id($reaction->get_id());
-                    array_merge($descriptions, $locationreaction->do_reactions());
-                } catch (Exception $e) {}
-            }
+            array_merge($descriptions, $reaction->do_reactions());
             array_push($descriptions, $reaction->get_description());
         }
         if (empty($descriptions)) {

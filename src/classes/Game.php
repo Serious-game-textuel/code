@@ -220,4 +220,8 @@ class Game implements Game_Interface {
         return Entity::get_instance($id);
     }
 
+    public function do_action(string $actionname) {
+        return $this->get_current_location()->check_actions($actionname);
+    }
+
 }

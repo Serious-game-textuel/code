@@ -82,4 +82,9 @@ interface Reaction_Interface {
      */
     public static function get_instance(int $id);
 
+    /**
+     * @return string[]
+     */
+    public function do_reactions();
+
 }
