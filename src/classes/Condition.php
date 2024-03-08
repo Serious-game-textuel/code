@@ -102,7 +102,7 @@ class Condition implements Condition_Interface {
                 return $leafcondition->is_true();
             } catch (Exception $e) {}
         }
-        return false;
+        return [false, 'error : pas de condition noeud ni feuille'];
     }
 
     public function __toString() {

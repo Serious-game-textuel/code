@@ -184,7 +184,7 @@ class Location extends Entity implements Location_Interface {
                 array_push($return, $this->get_exit());
             } else if ($actionname == "inventaire") {
                 array_push($debug, "utilisation de l'action prédéfinie inventaire");
-                array_push($return, $this->get_inventory_description());
+                array_push($return, $game->get_player()->get_inventory()->__toString());
             } else {
                 array_push($debug, "utilisation de l'action intéragir par défaut");
                 $firstword = explode(' ', $actionname)[0];
@@ -234,22 +234,6 @@ class Location extends Entity implements Location_Interface {
             }
         }
         return rtrim($sortie, " ,");
-    }
-
-    public function get_inventory_description() {
-        $game = App::get_instance()->get_game();
-        $player = $game->get_player();
-        $inventory = $player->get_inventory();
-        $items = $inventory->get_items();
-        $description = "Inventaire : ";
-        if (count($items) == 0) {
-            $description .= "vide";
-        } else {
-            foreach ($items as $item) {
-                $description .= $item->get_name().", ";
-            }
-        }
-        return rtrim($description, " ,");
     }
 
     public function get_id() {

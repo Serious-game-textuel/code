@@ -137,13 +137,13 @@ class Leaf_Condition extends Condition {
         }
     }
 
-    public function is_true() {
+    public function is_true(): array {
         $entity1 = $this->get_entity1();
         $entity2 = $this->get_entity2();
         $connector = $this->get_connector();
         $status = $this->get_status();
         if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
-            return true;
+            return [true, ""];
         }
         global $DB;
         if ($entity1 != null) {
@@ -154,28 +154,36 @@ class Leaf_Condition extends Condition {
                     try {
                         $item2 = Item::get_instance_from_parent_id($entity2->get_id());
                         if ($connector == "possède" || $connector == "a") {
-                            return $character1->has_item_character($item2);
+                            $return = $character1->has_item_character($item2);
+                            if ($return) {
+                                return [$return, ""];
+                            } else {
+                                return [$return, $character1->get_name().' a pas '.$item2->get_name()];
+                            }
                         } else if ($connector == "possède pas" || $connector == "a pas") {
-                            return !$character1->has_item_character($item2);
+                            $return = !$character1->has_item_character($item2);
+                            if ($return) {
+                                return [$return, ""];
+                            } else {
+                                return [$return, $character1->get_name().' a '.$item2->get_name()];
+                            }
                         }
                     } catch (Exception $e) {}
                 } else {
                     if ($connector == "est") {
-                        $equal = true;
                         foreach ($status as $s) {
                             if (!in_array($s, $entity1status)) {
-                                $equal = false;
+                                return [false, $character1->get_name().' est pas '.$s];
                             }
                         }
-                        return $equal;
+                        return [true, ""];
                     } else if ($connector == "est pas") {
-                        $equal = true;
                         foreach ($status as $s) {
                             if (in_array($s, $entity1status)) {
-                                $equal = false;
+                                return [false, $character1->get_name().' est '.$s];
                             }
                         }
-                        return $equal;
+                        return [true, ""];
                     }
                 }
             } catch (Exception $e) {
@@ -183,21 +191,19 @@ class Leaf_Condition extends Condition {
                     $item1 = Item::get_instance_from_parent_id($entity1->get_id());
                     if ($entity2 == null) {
                         if ($connector == "est") {
-                            $equal = true;
                             foreach ($status as $s) {
                                 if (!in_array($s, $entity1status)) {
-                                    $equal = false;
+                                    return [false, $entity1->get_name().' est pas '.$s];
                                 }
                             }
-                            return $equal;
+                            return [true, ""];
                         } else if ($connector == "est pas") {
-                            $equal = true;
                             foreach ($status as $s) {
                                 if (in_array($s, $entity1status)) {
-                                    $equal = false;
+                                    return [false, $entity1->get_name().' est '.$s];
                                 }
                             }
-                            return $equal;
+                            return [true, ""];
                         }
                     }
                 } catch (Exception $e) {
@@ -208,26 +214,36 @@ class Leaf_Condition extends Condition {
                                 $equal = true;
                                 foreach ($status as $s) {
                                     if (!in_array($s, $entity1status)) {
-                                        $equal = false;
+                                        return [false, $location1->get_name().' est pas '.$s];
                                     }
                                 }
-                                return $equal;
+                                return [true, ""];
                             } else if ($connector == "est pas") {
                                 $equal = true;
                                 foreach ($status as $s) {
                                     if (in_array($s, $entity1status)) {
-                                        $equal = false;
+                                        return [false, $location1->get_name().' est '.$s];
                                     }
                                 }
-                                return $equal;
+                                return [true, ""];
                             }
                         } else {
                             try {
                                 $item2 = item::get_instance_from_parent_id($entity2->get_id());
                                 if ($connector == "possède" || $connector == "a") {
-                                    return $location1->has_item_location($item2);
+                                    $return = $location1->has_item_location($item2);
+                                    if ($return) {
+                                        return [true, ""];
+                                    } else {
+                                        return [false, $location1->get_name().' a pas '.$item2->get_name()];
+                                    }
                                 } else if ($connector == "possède pas" || $connector == "a pas") {
-                                    return !$location1->has_item_location($item2);
+                                    $return = !$location1->has_item_location($item2);
+                                    if ($return) {
+                                        return [true, ""];
+                                    } else {
+                                        return [false, $location1->get_name().' a '.$item2->get_name()];
+                                    }
                                 }
                             } catch (Exception $e) {}
                         }
@@ -249,9 +265,9 @@ class Leaf_Condition extends Condition {
         $status = $this->get_status();
         $return = '(';
         if (isset($entity1)) {
-            $return = $return.$entity1->get_name().' '.$connector.' ';
+            $return = $return."'".$entity1->get_name()."' ".$connector.' ';
             if(isset($entity2)) {
-                $return = $return.$entity2->get_name();
+                $return = $return."'".$entity2->get_name()."'";
             } else {
                 $return = $return.'['.implode(', ', $status).']';
             }

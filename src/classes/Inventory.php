@@ -74,7 +74,7 @@ class Inventory implements Inventory_Interface {
         . $DB->sql_compare_text('inventory_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
-            array_push($items, Location::get_instance($id));
+            array_push($items, Item::get_instance($id));
         }
         return $items;
     }
@@ -82,7 +82,7 @@ class Inventory implements Inventory_Interface {
     public function add_item(Item_Interface $item) {
         $items = $this->get_items();
         array_push($items, $item);
-        $items = Util::clean_array($items, Location_Interface::class);
+        $items = Util::clean_array($items, Item_Interface::class);
         global $DB;
         $DB->delete_records('inventory_items', ['inventory_id' => $this->get_id()]);
         foreach ($items as $item) {
@@ -103,6 +103,19 @@ class Inventory implements Inventory_Interface {
             return true;
         }
         return false;
+    }
+
+    public function __toString() {
+        $items = $this->get_items();
+        $description = "Inventaire : ";
+        if (count($items) == 0) {
+            $description .= "vide";
+        } else {
+            foreach ($items as $item) {
+                $description .= $item->get_name().", ";
+            }
+        }
+        return rtrim($description, " ,");
     }
 
 }

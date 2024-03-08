@@ -98,11 +98,12 @@ class Action implements Action_Interface {
         $conditionstrue = [];
         $debug = [];
         foreach ($conditions as $condition) {
-            if ($condition->is_true()) {
+            $res = $condition->is_true();
+            if ($res[0]) {
                 array_push($conditionstrue, $condition);
                 array_push($debug, $condition->__toString().' -> true');
             } else {
-                array_push($debug, $condition->__toString().' -> false');
+                array_push($debug, $condition->__toString().' -> false ('.$res[1].')');
             }
         }
         $return = [];

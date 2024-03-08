@@ -91,16 +91,20 @@ class Node_Condition extends Condition {
         $DB->set_field('nodecondition', 'connector', $connector, ['id' => $this->get_id()]);
     }
 
-    public function is_true() {
+    public function is_true(): array {
         $condition1 = $this->get_condition1();
         $condition2 = $this->get_condition2();
         $connector = $this->get_connector();
         if ($connector == "&") {
-            return $condition1->is_true() && $condition2->is_true();
+            $res1 = $condition1->is_true();
+            $res2 = $condition2->is_true();
+            return [$res1[0] && $res2[0], $res1[1].' '.$res2[1]];
         } else if ($connector == "|") {
-            return $condition1->is_true() || $condition2->is_true();
+            $res1 = $condition1->is_true();
+            $res2 = $condition2->is_true();
+            return [$res1[0] || $res2[0], $res1[1].' '.$res2[1]];
         }
-        return false;
+        return [false, 'condition error : wrong connector'];
     }
 
     public function get_id() {

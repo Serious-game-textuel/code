@@ -148,7 +148,6 @@ echo $OUTPUT->header();
         inputText.disabled = true;
         var csvcontent = <?php echo json_encode($csvcontent); ?>;
         var debug = document.getElementById('debug').checked;
-        console.log(debug);
         fetch(`handle_post.php`, { 
             method: 'POST',
             headers: {

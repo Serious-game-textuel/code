@@ -58,4 +58,9 @@ interface Inventory_Interface {
      * @return Inventory_Interface
      */
     public static function get_instance(int $id);
+
+    /**
+     * @return string
+     */
+    public function __toString();
 }

@@ -43,7 +43,7 @@ interface Condition_Interface {
     public function do_reactions();
 
     /**
-     * @return boolean
+     * @return array
      */
     public function is_true();
 
