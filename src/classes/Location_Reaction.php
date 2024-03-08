@@ -72,5 +72,33 @@ class Location_Reaction extends Reaction {
         return $this->id;
     }
 
+    public function do_reactions(): array {
+        $return = [];
+        $location = $this->get_location();
+        if ($location != null) {
+            $newstatus = $this->get_new_status();
+            if ($newstatus != null) {
+                $location->add_status($newstatus);
+            }
+            $oldstatus = $this->get_old_status();
+            if ($oldstatus != null) {
+                $location->remove_status($oldstatus);
+            }
+            $newitems = $this->get_new_item();
+            if ($newitems != null) {
+                foreach ($newitems as $item) {
+                    $location->get_inventory()->add_item($item);
+                }
+            }
+            $olditem = $this->get_old_item();
+            if ($olditem != null) {
+                foreach ($olditem as $item) {
+                    $location->get_inventory()->remove_item($item);
+                }
+            }
+        }
+        return $return;
+    }
+
 }
 

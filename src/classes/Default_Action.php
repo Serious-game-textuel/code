@@ -77,7 +77,7 @@ class Default_Action extends Action implements Default_Action_Interface {
                 array_push($result, $token);
             }
         }
-        return implode("", $result);
+        return [implode("", $result)];
     }
 
     public function do_conditions() {

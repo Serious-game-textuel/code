@@ -51,9 +51,9 @@ interface Location_Interface extends Entity_Interface {
 
     /**
      * @param string $action
-     * @return ?Action_Interface
+     * @return Action_Interface[]
      */
-    public function is_action_valide(string $action);
+    public function get_actions_valide(string $action);
 
     /**
      * @param Item_Interface $item

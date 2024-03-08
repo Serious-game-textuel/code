@@ -88,4 +88,68 @@ class Character_Reaction extends Reaction {
         $DB->set_field('characterreaction', 'newlocation_id', $newlocation->get_id(), ['id' => $this->get_id()]);
     }
 
+    public function do_reactions(): array {
+        global $DB;
+        $app = App::get_instance();
+        $game = $app->get_game();
+        $character = $this->get_character();
+        $return = [];
+        if ($character != null) {
+            $newlocation = $this->get_new_location();
+            if ($newlocation != null) {
+                try {
+                    $npccharacter = Npc_Character::get_instance_from_parent_id($character->get_id());
+                    $npccharacter->set_currentlocation($newlocation);
+                } catch (Exception $e) {
+                    try {
+                        $playercharacter = Player_Character::get_instance_from_parent_id($character->get_id());
+                        $game->set_current_location($newlocation);
+                        $game->add_visited_location($newlocation);
+                        array_merge($return, $newlocation->check_actions("description"));
+                    } catch (Exception $e) {}
+                }
+            }
+            $newitems = $this->get_new_item();
+            if ($newitems != null) {
+                foreach ($newitems as $item) {
+                    $character->get_inventory()->add_item($item);
+                }
+            }
+            $olditem = $this->get_old_item();
+            if ($olditem != null) {
+                foreach ($olditem as $item) {
+                    $character->get_inventory()->remove_item($item);
+                }
+            }
+            $newstatus = $this->get_new_status();
+            if ($newstatus != null) {
+                $character->add_status($newstatus);
+                try {
+                    $playerCharacter = Player_Character::get_instance_from_parent_id($character->get_id());
+                    foreach ($newstatus as $status) {
+                        if ($status == "mort") {
+                            $game->add_deaths();
+                            $app->restart_game_from_start();
+                            array_push($return, "Vous avez échoué. Vous recommencez.");
+                        }
+                        if ($status == "victoire") {
+                            $deaths = $game->get_deaths();
+                            $starttime = $game->get_start_time();
+                            $endtime = new DateTime();
+                            $interval = $starttime->diff($endtime);
+                            $time = $interval->format('%H:%I:%S');
+                            $lieux = $game->get_visited_locations();
+                            array_push($return, "Vous avez gagné en " . $time . " avec " . $deaths
+                            . " morts et " . count($lieux) . " lieux visités.");
+                        }
+                    }
+                } catch (Exception $e) {}
+            }
+            $oldstatus = $this->get_old_status();
+            if ($oldstatus != null) {
+                $character->remove_status($oldstatus);
+            }
+        }
+        return $return;
+    }
 }

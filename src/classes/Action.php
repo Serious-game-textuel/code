@@ -92,8 +92,7 @@ class Action implements Action_Interface {
     }
 
     public function do_conditions() {
-        $app = App::get_instance();
-        $game = $app->get_game();
+        $game = App::get_instance()->get_game();
         $game->add_action();
         $conditions = $this->get_conditions();
         $conditionstrue = [];
@@ -103,11 +102,8 @@ class Action implements Action_Interface {
             }
         }
         $return = [];
-        if (count($conditionstrue) > 0) {
-            foreach ($conditionstrue as $condition) {
-                $result = $condition->do_reactions();
-                array_push($return, $result);
-            }
+        foreach ($conditionstrue as $condition) {
+            array_push($return, $condition->do_reactions());
         }
         return $return;
     }

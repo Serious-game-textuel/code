@@ -132,7 +132,7 @@ class Leaf_Condition extends Condition {
         foreach ($status as $statut) {
             $DB->insert_record('leafcondition_status', [
                 'leafcondition_id' => $this->id,
-                'location_id' => $statut,
+                'status' => $statut,
             ]);
         }
     }
@@ -142,90 +142,98 @@ class Leaf_Condition extends Condition {
         $entity2 = $this->get_entity2();
         $connector = $this->get_connector();
         $status = $this->get_status();
+        if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
+            return true;
+        }
         global $DB;
         if ($entity1 != null) {
             $entity1status = $entity1->get_status();
-            $ischaracter = $DB->record_exists_sql(
-                "SELECT id FROM {character} WHERE "
-                .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
-                ['id' => $entity1->get_id()]
-            );
-            $isitem = $DB->record_exists_sql(
-                "SELECT id FROM {item} WHERE "
-                .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
-                ['id' => $entity1->get_id()]
-            );
-            $islocation = $DB->record_exists_sql(
-                "SELECT id FROM {location} WHERE "
-                .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
-                ['id' => $entity1->get_id()]
-            );
-            if ($ischaracter) {
-                $sql = "select id from {character} where ". $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $entity1->get_id()]);
-                $entity1 = Character::get_instance($id);
+            try {
+                $character1 = Character::get_instance_from_parent_id($entity1->get_id());
                 if ($entity2 != null) {
-                    $isitem = $DB->record_exists_sql(
-                        "SELECT id FROM {item} WHERE "
-                        .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
-                        ['id' => $entity2->get_id()]
-                    );
-                    if ($isitem) {
-                        $sql = "select id from {item} where ". $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
-                        $id = $DB->get_field_sql($sql, ['id' => $entity2->get_id()]);
-                        $entity2 = Item::get_instance($id);
+                    try {
+                        $item2 = Item::get_instance_from_parent_id($entity2->get_id());
                         if ($connector == "possède" || $connector == "a") {
-                            return $entity1->has_item_character($entity2);
+                            return $character1->has_item_character($item2);
                         } else if ($connector == "possède pas" || $connector == "a pas") {
-                            return !$entity1->has_item_character($entity2);
+                            return !$character1->has_item_character($item2);
                         }
-                    }
+                    } catch (Exception $e) {}
                 } else {
                     if ($connector == "est") {
-                        return $entity1status == $status;
+                        $equal = true;
+                        foreach ($status as $s) {
+                            if (!in_array($s, $entity1status)) {
+                                $equal = false;
+                            }
+                        }
+                        return $equal;
                     } else if ($connector == "est pas") {
-                        return $entity1status != $status;
+                        $equal = true;
+                        foreach ($status as $s) {
+                            if (in_array($s, $entity1status)) {
+                                $equal = false;
+                            }
+                        }
+                        return $equal;
                     }
                 }
-            } else if ($isitem) {
-                if ($entity2 == null) {
-                    if ($connector == "est") {
-                        return $entity1status == $status;
-                    } else if ($connector == "est pas") {
-                        return $entity1status != $status;
-                    }
-                }
-            } else if ($islocation) {
-                $sql = "select id from {location} where ". $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
-                $id = $DB->get_field_sql($sql, ['id' => $entity1->get_id()]);
-                $entity1 = Location::get_instance($id);
-                if ($entity2 == null) {
-                    if ($connector == "est") {
-                        return $entity1status == $status;
-                    } else if ($connector == "est pas") {
-                        return $entity1status != $status;
-                    }
-                } else {
-                    $isitem = $DB->record_exists_sql(
-                        "SELECT id FROM {item} WHERE "
-                        .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id'),
-                        ['id' => $entity2->get_id()]
-                    );
-                    if ($isitem) {
-                        $sql = "select id from {item} where ". $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
-                        $id = $DB->get_field_sql($sql, ['id' => $entity2->get_id()]);
-                        $entity2 = Item::get_instance($id);
-                        if ($connector == "possède" || $connector == "a") {
-                            return $entity1->has_item_location($entity2);
-                        } else if ($connector == "possède pas" || $connector == "a pas") {
-                            return !$entity1->has_item_location($entity2);
+            } catch (Exception $e) {
+                try {
+                    $item1 = Item::get_instance_from_parent_id($entity1->get_id());
+                    if ($entity2 == null) {
+                        if ($connector == "est") {
+                            $equal = true;
+                            foreach ($status as $s) {
+                                if (!in_array($s, $entity1status)) {
+                                    $equal = false;
+                                }
+                            }
+                            return $equal;
+                        } else if ($connector == "est pas") {
+                            $equal = true;
+                            foreach ($status as $s) {
+                                if (in_array($s, $entity1status)) {
+                                    $equal = false;
+                                }
+                            }
+                            return $equal;
                         }
                     }
+                } catch (Exception $e) {
+                    try {
+                        $location1 = Location::get_instance_from_parent_id($entity1->get_id());
+                        if ($entity2 == null) {
+                            if ($connector == "est") {
+                                $equal = true;
+                                foreach ($status as $s) {
+                                    if (!in_array($s, $entity1status)) {
+                                        $equal = false;
+                                    }
+                                }
+                                return $equal;
+                            } else if ($connector == "est pas") {
+                                $equal = true;
+                                foreach ($status as $s) {
+                                    if (in_array($s, $entity1status)) {
+                                        $equal = false;
+                                    }
+                                }
+                                return $equal;
+                            }
+                        } else {
+                            try {
+                                $item2 = item::get_instance_from_parent_id($entity2->get_id());
+                                if ($connector == "possède" || $connector == "a") {
+                                    return $location1->has_item_location($item2);
+                                } else if ($connector == "possède pas" || $connector == "a pas") {
+                                    return !$location1->has_item_location($item2);
+                                }
+                            } catch (Exception $e) {}
+                        }
+                    } catch (Exception $e) {}
                 }
-    
             }
-        } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
-            return true;
         }
         return false;
     }

@@ -115,56 +115,52 @@ class Location extends Entity implements Location_Interface {
         return $hints;
     }
 
-    public function is_action_valide(string $action) {
+    public function get_actions_valide(string $action) {
         $actions = $this->get_actions();
+        $valid = [];
         for ($i = 0; $i < count($actions); $i++) {
             if ($actions[$i]->get_description() == $action) {
-                return $actions[$i];
+                array_push($valid, $actions[$i]);
             }
         }
-        return null;
+        return $valid;
     }
 
-    public function check_actions(string $action) {
+    public function check_actions(string $actionname) {
         $return = [];
         $app = App::get_instance();
         $game = $app->get_game();
-        $action = App::tokenize($action);
-        $actionvalide = $this->is_action_valide($action);
-        if ($actionvalide != null) {
-            $result = $actionvalide->do_conditions();
-            foreach ($result as $res) {
-                array_push($return, $res);
+        $actionname = App::tokenize($actionname);
+        $actionsvalide = $this->get_actions_valide($actionname);
+        if (count($actionsvalide) > 0) {
+            foreach ($actionsvalide as $actionvalide) {
+                $result = $actionvalide->do_conditions();
+                foreach ($result as $res) {
+                    array_push($return, $res);
+                }
             }
         } else {
-            $defaultaction = "fouiller";
-            if (strpos($action, $defaultaction) === 0) {
-                $entity = substr($action, strlen($defaultaction) + 1);
-                if ($game->get_entity($entity) !== null) {
-                    if ($game->get_default_action_interact() !== null) {
-                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
-                        foreach ($result as $res) {
-                            array_push($return, $res);
-                        }
+            $defaultactionname = "fouiller";
+            if (strpos($actionname, $defaultactionname) === 0) {
+                $entityname = substr($actionname, strlen($defaultactionname) + 1);
+                if ($game->get_entity($entityname) !== null) {
+                    $defaultactionsearch = $game->get_default_action_search();
+                    if ($defaultactionsearch !== null) {
+                        $result = $defaultactionsearch->do_conditions_verb($defaultactionname);
+                        $return = array_merge($result, $return);
                     } else {
-                        if ($game->get_default_action_search() !== null) {
-                            $result = $game->get_default_action_search()->do_conditions_verb($defaultaction);
-                            foreach ($result as $res) {
-                                array_push($return, $res);
-                            }
-                        }
+                        array_push($return, "je n'ai pas compris ce que tu voulais ".$defaultactionname);
                     }
                 } else {
-                    if ($game->get_default_action_interact() !== null) {
-                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
-                        foreach ($result as $res) {
-                            array_push($return, $res);
-                        }
+                    $defaultactioninteract = $game->get_default_action_interact();
+                    if ($defaultactioninteract !== null) {
+                        $result = $defaultactioninteract->do_conditions_verb($defaultactionname);
+                        $return = array_merge($result, $return);
                     } else {
-                        array_push($return, "je n'ai pas compris ce que tu voulais ".$defaultaction);
+                        array_push($return, "je n'ai pas compris ce que tu voulais ".$defaultactionname);
                     }
                 }
-            } else if ($action == "indices") {
+            } else if ($actionname == "indices" || $actionname == "indice") {
                 $hints = $this->get_hints();
                 $hintcount = $this->get_hintscount();
                 if ($hintcount < count($hints)) {
@@ -174,19 +170,18 @@ class Location extends Entity implements Location_Interface {
                 } else {
                     array_push($return, "Aucun autre indice disponible.");
                 }
-            } else if ($action == "sortie") {
+            } else if ($actionname == "sortie") {
                 array_push($return, $this->get_exit());
-            } else if ($action == "inventaire") {
+            } else if ($actionname == "inventaire") {
                 array_push($return, $this->get_inventory_description());
             } else {
-                $firstword = explode(' ', $action)[0];
-                if ($game->get_default_action_interact() !== null) {
-                    $result = $game->get_default_action_interact()->do_conditions_verb($firstword);
-                    foreach ($result as $res) {
-                        array_push($return, $res);
-                    }
+                $firstword = explode(' ', $actionname)[0];
+                $defaultactioninteract = $game->get_default_action_interact();
+                if ($defaultactioninteract !== null) {
+                    $result = $defaultactioninteract->do_conditions_verb($firstword);
+                    $return = array_merge($result, $return);
                 } else {
-                    array_push($return, $action.'? Tu ne peux pas faire ca.');
+                    array_push($return, $actionname.'? Tu ne peux pas faire ca.');
                 }
             }
         }
@@ -214,26 +209,14 @@ class Location extends Entity implements Location_Interface {
             foreach ($conditions as $condition) {
                 $reactions = $condition->get_reactions();
                 foreach ($reactions as $reaction) {
-                    $ischaracterreaction = $DB->record_exists_sql(
-                        "SELECT id FROM {characterreaction} WHERE "
-                        .$DB->sql_compare_text('reaction_id')." = ".$DB->sql_compare_text(':id'),
-                        ['id' => $reaction->get_id()]
-                    );
-                    if ($ischaracterreaction) {
-                        $sql = "select id from {characterreaction} where "
-                        . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
-                        $id = $DB->get_field_sql($sql, ['id' => $reaction->get_id()]);
-                        $reaction = Character_Reaction::get_instance($id);
-                        $isplayercharacter = $DB->record_exists_sql(
-                            "SELECT id FROM {playercharacter} WHERE "
-                            .$DB->sql_compare_text('character_id')." = ".$DB->sql_compare_text(':id'),
-                            ['id' => $reaction->get_character()->get_id()]
-                        );
-                        if ($reaction->get_new_location() != null && $isplayercharacter) {
+                    try {
+                        $characterreaction = Character_Reaction::get_instance_from_parent_id($reaction->get_id());
+                        $playercharacter = Player_Character::get_instance_from_parent_id($characterreaction->get_character()->get_id());
+                        if ($characterreaction->get_new_location() != null) {
                             $description = explode(" ", $action->get_description());
                             $sortie .= implode(' ', array_slice($description, 1)).", ";
                         }
-                    }
+                    } catch (Exception $e) {}
                 }
             }
         }
