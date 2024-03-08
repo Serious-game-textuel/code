@@ -140,7 +140,7 @@ interface Game_Interface {
 
     /**
      * @param string $actionname
-     * @return string[]
+     * @return array
      */
     public function do_action(string $actionname);
 

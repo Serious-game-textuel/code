@@ -95,6 +95,10 @@ echo $OUTPUT->header();
 </div>
 <input type="text" id="inputText" placeholder="Écrivez quelque chose ici..." style="width: 100%;">
 <button onclick="displayInputText()">Valider</button>
+<div>
+    <input type="checkbox" id="debug" name="debug" />
+    <label for="debug">Debug : </label>
+</div>
 
 <script type = "text/javascript">
     document.getElementById('helpButton').addEventListener('mouseover', function() {
@@ -111,11 +115,12 @@ echo $OUTPUT->header();
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'inputText=description' + '&csvcontent=' + encodeURIComponent(csvcontent),
+            body: 'inputText=description&debug=false&csvcontent=' + encodeURIComponent(csvcontent),
         })
         .then(response => response.text())
         .then(text => {
-            return typeWriter(document.getElementById("text"), text, "red");
+            jsontext = JSON.parse(text);
+            typeWriter(document.getElementById("text"), jsontext[0], "red");
         })
         .then(() => {
             inputText.disabled = false;
@@ -142,7 +147,8 @@ echo $OUTPUT->header();
         var inputText = document.getElementById("inputText");
         inputText.disabled = true;
         var csvcontent = <?php echo json_encode($csvcontent); ?>;
-
+        var debug = document.getElementById('debug').checked;
+        console.log(debug);
         fetch(`handle_post.php`, { 
             method: 'POST',
             headers: {
@@ -152,8 +158,17 @@ echo $OUTPUT->header();
         })
         .then((response) => response.text())
         .then((text) => {
+            jsontext = JSON.parse(text);
             typeWriter(document.getElementById("text"), inputText.value, "blue");
-            typeWriter(document.getElementById("text"), text, "red");
+            var debug = document.getElementById('debug').checked;
+            if (debug) {
+                jsontext[1].forEach((element) => {
+                    if(element.length > 0) {
+                        typeWriter(document.getElementById("text"), "debug : "+element, "yellow");
+                    }
+                })
+            }
+            typeWriter(document.getElementById("text"), jsontext[0], "red");
             inputText.disabled = false;
             inputText.value = '';
         })

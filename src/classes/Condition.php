@@ -105,4 +105,17 @@ class Condition implements Condition_Interface {
         return false;
     }
 
+    public function __toString() {
+        try {
+            $nodecondition = Node_Condition::get_instance_from_parent_id($this->get_id());
+            return $nodecondition->__toString();
+        } catch (Exception $e) {
+            try {
+                $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->get_id());
+                return $leafcondition->__toString();
+            } catch (Exception $e) {}
+        }
+        return '(no condition)';
+    }
+
 }

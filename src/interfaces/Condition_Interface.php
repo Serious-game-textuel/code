@@ -47,4 +47,9 @@ interface Condition_Interface {
      */
     public function is_true();
 
+    /**
+     * @return string
+     */
+    public function __toString();
+
 }

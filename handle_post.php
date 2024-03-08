@@ -30,9 +30,9 @@ if ($app == null) {
 }
 $action = $app->get_game()->do_action($_POST['inputText']);
 if (empty($action[0])) {
-    echo "donne une autre commande";
+    echo '["donne une autre commande", []]';
 } else {
-    echo $action[0];
+    echo '["'.implode(' / ', $action[0]).'", ["'.implode('", "', $action[1]).'"]]';
 }
 
 exit();

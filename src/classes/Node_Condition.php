@@ -106,5 +106,10 @@ class Node_Condition extends Condition {
     public function get_id() {
         return $this->id;
     }
+
+    public function __toString() {
+        return '('.$this->get_condition1()->__toString().' '
+        .$this->get_connector().' '.$this->get_condition1()->__toString().')';
+    }
 }
 

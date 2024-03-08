@@ -241,5 +241,22 @@ class Leaf_Condition extends Condition {
     public function get_id() {
         return $this->id;
     }
+
+    public function __toString() {
+        $entity1 = $this->get_entity1();
+        $entity2 = $this->get_entity2();
+        $connector = $this->get_connector();
+        $status = $this->get_status();
+        $return = '(';
+        if (isset($entity1)) {
+            $return = $return.$entity1->get_name().' '.$connector.' ';
+            if(isset($entity2)) {
+                $return = $return.$entity2->get_name();
+            } else {
+                $return = $return.'['.implode(', ', $status).']';
+            }
+        }
+        return $return.')';
+    }
 }
 

@@ -96,15 +96,19 @@ class Action implements Action_Interface {
         $game->add_action();
         $conditions = $this->get_conditions();
         $conditionstrue = [];
+        $debug = [];
         foreach ($conditions as $condition) {
             if ($condition->is_true()) {
                 array_push($conditionstrue, $condition);
+                array_push($debug, $condition->__toString().' -> true');
+            } else {
+                array_push($debug, $condition->__toString().' -> false');
             }
         }
         $return = [];
         foreach ($conditionstrue as $condition) {
             array_push($return, $condition->do_reactions());
         }
-        return $return;
+        return [$return, $debug];
     }
 }

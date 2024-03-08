@@ -128,6 +128,7 @@ class Location extends Entity implements Location_Interface {
 
     public function check_actions(string $actionname) {
         $return = [];
+        $debug = [];
         $app = App::get_instance();
         $game = $app->get_game();
         $actionname = App::tokenize($actionname);
@@ -135,9 +136,10 @@ class Location extends Entity implements Location_Interface {
         if (count($actionsvalide) > 0) {
             foreach ($actionsvalide as $actionvalide) {
                 $result = $actionvalide->do_conditions();
-                foreach ($result as $res) {
+                foreach ($result[0] as $res) {
                     array_push($return, $res);
                 }
+                array_push($debug, implode(', ', $result[1]));
             }
         } else {
             $defaultactionname = "fouiller";
@@ -147,7 +149,8 @@ class Location extends Entity implements Location_Interface {
                     $defaultactionsearch = $game->get_default_action_search();
                     if ($defaultactionsearch !== null) {
                         $result = $defaultactionsearch->do_conditions_verb($defaultactionname);
-                        $return = array_merge($result, $return);
+                        $return = array_merge($result[0], $return);
+                        array_push($debug, implode(', ', $result[1]));
                     } else {
                         array_push($return, "je n'ai pas compris ce que tu voulais ".$defaultactionname);
                     }
@@ -155,7 +158,8 @@ class Location extends Entity implements Location_Interface {
                     $defaultactioninteract = $game->get_default_action_interact();
                     if ($defaultactioninteract !== null) {
                         $result = $defaultactioninteract->do_conditions_verb($defaultactionname);
-                        $return = array_merge($result, $return);
+                        $return = array_merge($result[0], $return);
+                        array_push($debug, implode(', ', $result[1]));
                     } else {
                         array_push($return, "je n'ai pas compris ce que tu voulais ".$defaultactionname);
                     }
@@ -179,13 +183,14 @@ class Location extends Entity implements Location_Interface {
                 $defaultactioninteract = $game->get_default_action_interact();
                 if ($defaultactioninteract !== null) {
                     $result = $defaultactioninteract->do_conditions_verb($firstword);
-                    $return = array_merge($result, $return);
+                    $return = array_merge($result[0], $return);
+                    array_push($debug, implode(', ', $result[1]));
                 } else {
                     array_push($return, $actionname.'? Tu ne peux pas faire ca.');
                 }
             }
         }
-        return $return;
+        return [$return, $debug];
     }
 
     public function get_hintscount() {
