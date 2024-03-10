@@ -95,7 +95,7 @@ class Inventory implements Inventory_Interface {
 
     public function remove_item(Item_Interface $item) {
         global $DB;
-        $DB->delete_records('inventory_items', ['inventory_id' => $this->get_id(), 'item' => $item->get_id()]);
+        $DB->delete_records('inventory_items', ['inventory_id' => $this->get_id(), 'item_id' => $item->get_id()]);
     }
 
     public function check_item(Item_Interface $item) {

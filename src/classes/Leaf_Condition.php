@@ -193,14 +193,14 @@ class Leaf_Condition extends Condition {
                         if ($connector == "est") {
                             foreach ($status as $s) {
                                 if (!in_array($s, $entity1status)) {
-                                    return [false, $entity1->get_name().' est pas '.$s];
+                                    return [false, $item1->get_name().' est pas '.$s];
                                 }
                             }
                             return [true, ""];
                         } else if ($connector == "est pas") {
                             foreach ($status as $s) {
                                 if (in_array($s, $entity1status)) {
-                                    return [false, $entity1->get_name().' est '.$s];
+                                    return [false, $item1->get_name().' est '.$s];
                                 }
                             }
                             return [true, ""];
@@ -211,7 +211,6 @@ class Leaf_Condition extends Condition {
                         $location1 = Location::get_instance_from_parent_id($entity1->get_id());
                         if ($entity2 == null) {
                             if ($connector == "est") {
-                                $equal = true;
                                 foreach ($status as $s) {
                                     if (!in_array($s, $entity1status)) {
                                         return [false, $location1->get_name().' est pas '.$s];

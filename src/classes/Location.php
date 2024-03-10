@@ -19,6 +19,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_In
 class Location extends Entity implements Location_Interface {
 
     private int $id;
+    private Entity $parent;
 
     public function __construct(?int $id, string $name, array $status, array $items,
     array $hints, array $actions, int $hintscount=0) {
@@ -26,7 +27,8 @@ class Location extends Entity implements Location_Interface {
         if (!isset($id)) {
             Util::check_array($items, Item_Interface::class);
             Util::check_array($actions, Action_Interface::class);
-            parent::__construct(null, "", $name, $status);
+            $this->parent = new Entity(null, "", $name, $status);
+            parent::__construct($this->parent->get_id(), "", "", []);
             $inventory = new Inventory(null, $items);
             $this->id = $DB->insert_record('location', [
                 'entity_id' => parent::get_id(),
@@ -55,6 +57,7 @@ class Location extends Entity implements Location_Interface {
             }
             $sql = "select entity_id from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
+            $this->parent = Entity::get_instance($super);
             parent::__construct($super, "", "", []);
             $this->id = $id;
         }
@@ -238,5 +241,9 @@ class Location extends Entity implements Location_Interface {
 
     public function get_id() {
         return $this->id;
+    }
+
+    public function get_name() {
+        return $this->parent->get_name();
     }
 }

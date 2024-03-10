@@ -70,7 +70,7 @@ class Character_Reaction extends Reaction {
         return $this->id;
     }
 
-    public function get_character() {
+    public function get_character(): Character {
         global $DB;
         $sql = "select character_id from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Character::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
@@ -98,8 +98,9 @@ class Character_Reaction extends Reaction {
         $app = App::get_instance();
         $game = $app->get_game();
         $character = $this->get_character();
+        $parentreaction = Reaction::get_instance($this->get_parent_id());
         $return = [];
-        if ($character != null) {
+        if (isset($character)) {
             $newlocation = $this->get_new_location();
             if ($newlocation != null) {
                 try {
@@ -110,23 +111,23 @@ class Character_Reaction extends Reaction {
                         $playercharacter = Player_Character::get_instance_from_parent_id($character->get_id());
                         $game->set_current_location($newlocation);
                         $game->add_visited_location($newlocation);
-                        array_merge($return, $newlocation->check_actions("description"));
+                        array_push($return, $game->do_action("description")[0]);
                     } catch (Exception $e) {}
                 }
             }
-            $newitems = $this->get_new_item();
+            $newitems = $parentreaction->get_new_item();
             if ($newitems != null) {
                 foreach ($newitems as $item) {
                     $character->get_inventory()->add_item($item);
                 }
             }
-            $olditem = $this->get_old_item();
+            $olditem = $parentreaction->get_old_item();
             if ($olditem != null) {
                 foreach ($olditem as $item) {
                     $character->get_inventory()->remove_item($item);
                 }
             }
-            $newstatus = $this->get_new_status();
+            $newstatus = $parentreaction->get_new_status();
             if ($newstatus != null) {
                 $character->add_status($newstatus);
                 try {
@@ -150,7 +151,7 @@ class Character_Reaction extends Reaction {
                     }
                 } catch (Exception $e) {}
             }
-            $oldstatus = $this->get_old_status();
+            $oldstatus = $parentreaction->get_old_status();
             if ($oldstatus != null) {
                 $character->remove_status($oldstatus);
             }

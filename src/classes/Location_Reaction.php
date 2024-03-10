@@ -76,21 +76,22 @@ class Location_Reaction extends Reaction {
         $return = [];
         $location = $this->get_location();
         if ($location != null) {
-            $newstatus = $this->get_new_status();
+            $reactionparent = Reaction::get_instance($this->get_parent_id());
+            $newstatus = $reactionparent->get_new_status();
             if ($newstatus != null) {
                 $location->add_status($newstatus);
             }
-            $oldstatus = $this->get_old_status();
+            $oldstatus = $reactionparent->get_old_status();
             if ($oldstatus != null) {
                 $location->remove_status($oldstatus);
             }
-            $newitems = $this->get_new_item();
+            $newitems = $reactionparent->get_new_item();
             if ($newitems != null) {
                 foreach ($newitems as $item) {
                     $location->get_inventory()->add_item($item);
                 }
             }
-            $olditem = $this->get_old_item();
+            $olditem = $reactionparent->get_old_item();
             if ($olditem != null) {
                 foreach ($olditem as $item) {
                     $location->get_inventory()->remove_item($item);
