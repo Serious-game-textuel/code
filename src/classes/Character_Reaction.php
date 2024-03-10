@@ -111,7 +111,7 @@ class Character_Reaction extends Reaction {
                         $playercharacter = Player_Character::get_instance_from_parent_id($character->get_id());
                         $game->set_current_location($newlocation);
                         $game->add_visited_location($newlocation);
-                        array_push($return, $game->do_action("description")[0]);
+                        array_push($return, $game->do_action("description", false)[0]);
                     } catch (Exception $e) {}
                 }
             }

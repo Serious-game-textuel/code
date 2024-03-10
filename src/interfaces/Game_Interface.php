@@ -140,8 +140,9 @@ interface Game_Interface {
 
     /**
      * @param string $actionname
+     * @param bool $debug
      * @return array
      */
-    public function do_action(string $actionname);
+    public function do_action(string $actionname, bool $debug);
 
 }
