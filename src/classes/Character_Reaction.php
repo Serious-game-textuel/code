@@ -80,7 +80,12 @@ class Character_Reaction extends Reaction {
         global $DB;
         $sql = "select newlocation_id from {characterreaction} where ". $DB->sql_compare_text('id')
         . " = ".$DB->sql_compare_text(':id');
-        return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        $newlocationid = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        if ($newlocationid > 0) {
+            return Location::get_instance($newlocationid);
+        } else {
+            return null;
+        }
     }
 
     public function set_new_location(Location_Interface $newlocation) {

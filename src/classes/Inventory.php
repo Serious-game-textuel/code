@@ -99,8 +99,10 @@ class Inventory implements Inventory_Interface {
     }
 
     public function check_item(Item_Interface $item) {
-        if (in_array($item, $this->get_items() , true)) {
-            return true;
+        foreach ($this->get_items() as $i) {
+            if ($i->get_id() == $item->get_id()) {
+                return true;
+            }
         }
         return false;
     }

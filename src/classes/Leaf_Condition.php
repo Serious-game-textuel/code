@@ -219,7 +219,6 @@ class Leaf_Condition extends Condition {
                                 }
                                 return [true, ""];
                             } else if ($connector == "est pas") {
-                                $equal = true;
                                 foreach ($status as $s) {
                                     if (in_array($s, $entity1status)) {
                                         return [false, $location1->get_name().' est '.$s];
@@ -251,7 +250,7 @@ class Leaf_Condition extends Condition {
                 }
             }
         }
-        return false;
+        return [false, "Error in condition"];
     }
 
     public function get_id() {

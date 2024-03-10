@@ -148,6 +148,7 @@ echo $OUTPUT->header();
         inputText.disabled = true;
         var csvcontent = <?php echo json_encode($csvcontent); ?>;
         var debug = document.getElementById('debug').checked;
+        var returnedtext = '';
         fetch(`handle_post.php`, { 
             method: 'POST',
             headers: {
@@ -157,6 +158,7 @@ echo $OUTPUT->header();
         })
         .then((response) => response.text())
         .then((text) => {
+            returnedtext = text;
             jsontext = JSON.parse(text);
             typeWriter(document.getElementById("text"), inputText.value, "blue");
             var debug = document.getElementById('debug').checked;
@@ -171,8 +173,9 @@ echo $OUTPUT->header();
             inputText.disabled = false;
             inputText.value = '';
         })
-        .catch(() => {
-            typeWriter(document.getElementById("text"), 'Error', "yellow");
+        .catch((error) => {
+            typeWriter(document.getElementById("text"), returnedtext, "white");
+            typeWriter(document.getElementById("text"), 'Error : '+error, "yellow");
         });
     }
 </script>
