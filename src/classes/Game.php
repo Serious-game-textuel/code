@@ -169,7 +169,8 @@ class Game implements Game_Interface {
 
     public function get_default_action_interact() {
         global $DB;
-        $sql = "select defaultactioninteract_id from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select defaultactioninteract_id from {game} where "
+        . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Default_Action::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
@@ -181,7 +182,8 @@ class Game implements Game_Interface {
     public function get_entities() {
         $entities = [];
         global $DB;
-        $sql = "select entity_id from {game_entities} where ". $DB->sql_compare_text('game_id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select entity_id from {game_entities} where "
+        . $DB->sql_compare_text('game_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
             array_push($entities, Entity::get_instance($id));
@@ -217,7 +219,11 @@ class Game implements Game_Interface {
         . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
         . $DB->sql_compare_text('{game_entities}.game_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->get_id(), 'entityname' => $name]);
-        return Entity::get_instance($id);
+        if ($id > 0) {
+            return Entity::get_instance($id);
+        } else {
+            return null;
+        }
     }
 
     public function do_action(string $actionname, bool $debug) {

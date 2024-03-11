@@ -96,39 +96,20 @@ echo $OUTPUT->header();
 <input type="text" id="inputText" placeholder="Écrivez quelque chose ici..." style="width: 100%;">
 <button onclick="displayInputText()">Valider</button>
 <?php
-    global $COURSE, $USER;
-    global $USER;
-    $context =context_course::instance($COURSE->id);
+global $COURSE, $USER;
+global $USER;
+$context = context_course::instance($COURSE->id);
 
-    $roles = get_user_roles($context, $USER->id, true);
-    $role = key($roles);
-    $rolename = $roles[$role]->shortname;
+$roles = get_user_roles($context, $USER->id, true);
+$role = key($roles);
+$rolename = $roles[$role]->shortname;
 
-    if ($rolename !== "student") {
-        echo '<div>'.
-            '<input type="checkbox" id="debug" name="debug" />'.
-            '<label for="debug">Debug : </label>'.
-            '</div>';
-    }
-    /*var_dump($USER);
-    function is_user_with_role($courseid, $rolename, $userid = 0) {
-        $result = false;
-        $roles = get_user_roles(context_course::instance($COURSE->id), $USER->id, false);
-        foreach ($roles as $role) {
-            if ($role->shortname == $rolename) {
-                $result = true;
-                break;
-            }
-        }
-        return $result;
-    }
-    
-    // Than later in code:
-    if (is_user_with_role($courseid, 'student')) {
-      echo 'student';
-    } else {
-        echo 'not student';
-    }*/
+if ($rolename !== "student") {
+    echo '<div>'.
+        '<input type="checkbox" id="debug" name="debug" />'.
+        '<label for="debug">Debug : </label>'.
+        '</div>';
+}
 ?>
 
 
@@ -186,7 +167,8 @@ echo $OUTPUT->header();
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'inputText=' + encodeURIComponent(inputText.value) + '&debug=' + debug + '&csvcontent=' + encodeURIComponent(csvcontent),
+            body: 'inputText=' + encodeURIComponent(inputText.value)
+            + '&debug=' + debug + '&csvcontent=' + encodeURIComponent(csvcontent),
         })
         .then((response) => response.text())
         .then((text) => {

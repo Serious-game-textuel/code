@@ -40,7 +40,8 @@ class Node_Condition extends Condition {
             if (!$exists) {
                 throw new InvalidArgumentException("No Node_Condition object of ID:".$id." exists.");
             }
-            $sql = "select condition_id from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select condition_id from {nodecondition} where "
+            . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, []);
             $this->id = $id;
@@ -56,7 +57,7 @@ class Node_Condition extends Condition {
         $sql = "select id from {nodecondition} where "
         . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $conditionid]);
-        return Node_Condition::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id): Node_Condition {

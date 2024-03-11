@@ -121,7 +121,8 @@ class App implements App_Interface {
     public function get_startentities() {
         $startentities = [];
         global $DB;
-        $sql = "select {entity}.id from {app_startentities} left join {entity} on {app_startentities}.entity_id = {entity}.id where "
+        $sql = "select {entity}.id from {app_startentities} ".
+        "left join {entity} on {app_startentities}.entity_id = {entity}.id where "
         . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
         foreach ($ids as $id) {
@@ -258,10 +259,12 @@ class App implements App_Interface {
                     try {
                         $item = Item::get_instance_from_parent_id($item->get_id());
                     } catch (Exception $e) {
-                        throw new Exception($itemname . "is not an item and here is the row: " . $row . " and the col: " . $col ."");
+                        throw new Exception($itemname . "is not an item and here is the row: "
+                        . $row . " and the col: " . $col ."");
                     }
                 } else {
-                    throw new Exception($itemname . "is not an item and here is the row: " . $row . " and the col: " . $col ."");
+                    throw new Exception($itemname . "is not an item and here is the row: "
+                    . $row . " and the col: " . $col ."");
                 }
                 array_push($items, $item);
             }
@@ -405,12 +408,14 @@ class App implements App_Interface {
             }
             if ($entity != null) {
                 $parententity = $entity;
-                try  {
+                try {
                     $entity = Location::get_instance_from_parent_id($parententity->get_id());
                 } catch (Exception $e) {
                     try {
                         $entity = Character::get_instance_from_parent_id($parententity->get_id());
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                        $e;
+                    }
                 }
             }
             if ($entity instanceof Location_Interface) {
@@ -655,7 +660,9 @@ class App implements App_Interface {
                     if ($entity instanceof Player_Character) {
                         $game->set_player($entity);
                     }
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                    $e
+                }
             }
         }
     }

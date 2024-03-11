@@ -53,7 +53,7 @@ class No_Entity_Reaction extends Reaction {
         $sql = "select id from {noentityreaction} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $reactionid]);
-        return No_Entity_Reaction::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id) {

@@ -54,7 +54,7 @@ class Player_Character extends Character {
         $sql = "select id from {playercharacter} where "
         . $DB->sql_compare_text('character_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $characterid]);
-        return Player_Character::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id): Player_Character {

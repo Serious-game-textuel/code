@@ -53,7 +53,7 @@ class Item extends Entity implements Item_Interface {
         $sql = "select id from {item} where "
         . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $entityid]);
-        return Item::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id) {

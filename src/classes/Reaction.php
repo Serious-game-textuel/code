@@ -185,7 +185,9 @@ class Reaction implements Reaction_Interface {
                 try {
                     $noentityreaction = No_Entity_Reaction::get_instance_from_parent_id($this->get_id());
                     return $noentityreaction->do_reactions();
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                    $e;
+                }
             }
         }
         return [];

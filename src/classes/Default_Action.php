@@ -55,7 +55,7 @@ class Default_Action extends Action implements Default_Action_Interface {
         $sql = "select id from {defaultaction} where "
         . $DB->sql_compare_text('action_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $actionid]);
-        return Default_Action::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id) {
@@ -86,5 +86,10 @@ class Default_Action extends Action implements Default_Action_Interface {
 
     public function get_id() {
         return $this->id;
+    }
+
+    public function get_description() {
+        $parent = Action::get_instance(parent::get_id());
+        return $parent->get_description();
     }
 }

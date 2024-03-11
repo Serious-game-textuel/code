@@ -100,7 +100,9 @@ class Condition implements Condition_Interface {
             try {
                 $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->get_id());
                 return $leafcondition->is_true();
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+                $e;
+            }
         }
         return [false, 'error : pas de condition noeud ni feuille'];
     }
@@ -113,7 +115,9 @@ class Condition implements Condition_Interface {
             try {
                 $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->get_id());
                 return $leafcondition->__toString();
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+                $e;
+            }
         }
         return '(no condition)';
     }

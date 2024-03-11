@@ -61,7 +61,7 @@ class Character extends Entity implements Character_Interface {
         $sql = "select id from {character} where "
         . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $entityid]);
-        return Character::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id) {
@@ -88,7 +88,8 @@ class Character extends Entity implements Character_Interface {
 
     public function get_current_location() {
         global $DB;
-        $sql = "select currentlocation_id from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select currentlocation_id from {character} where "
+        . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 

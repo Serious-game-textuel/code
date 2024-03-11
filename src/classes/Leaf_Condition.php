@@ -52,7 +52,8 @@ class Leaf_Condition extends Condition {
             if (!$exists) {
                 throw new InvalidArgumentException("No Leaf_Condition object of ID:".$id." exists.");
             }
-            $sql = "select condition_id from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select condition_id from {leafcondition} where "
+            . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, []);
             $this->id = $id;
@@ -68,7 +69,7 @@ class Leaf_Condition extends Condition {
         $sql = "select id from {leafcondition} where "
         . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $conditionid]);
-        return Leaf_Condition::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id): Leaf_Condition {
@@ -168,7 +169,9 @@ class Leaf_Condition extends Condition {
                                 return [$return, $character1->get_name().' a '.$item2->get_name()];
                             }
                         }
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                        $e;
+                    }
                 } else {
                     if ($connector == "est") {
                         foreach ($status as $s) {
@@ -243,9 +246,13 @@ class Leaf_Condition extends Condition {
                                         return [false, $location1->get_name().' a '.$item2->get_name()];
                                     }
                                 }
-                            } catch (Exception $e) {}
+                            } catch (Exception $e) {
+                                $e;
+                            }
                         }
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                        $e;
+                    }
                 }
             }
         }
@@ -264,7 +271,7 @@ class Leaf_Condition extends Condition {
         $return = '(';
         if (isset($entity1)) {
             $return = $return."'".$entity1->get_name()."' ".$connector.' ';
-            if(isset($entity2)) {
+            if (isset($entity2)) {
                 $return = $return."'".$entity2->get_name()."'";
             } else {
                 $return = $return.'['.implode(', ', $status).']';

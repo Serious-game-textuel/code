@@ -59,7 +59,7 @@ class Character_Reaction extends Reaction {
         $sql = "select id from {characterreaction} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $reactionid]);
-        return Character_Reaction::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id): Character_Reaction {
@@ -72,7 +72,8 @@ class Character_Reaction extends Reaction {
 
     public function get_character(): Character {
         global $DB;
-        $sql = "select character_id from {characterreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select character_id from {characterreaction} where "
+        . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Character::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
@@ -112,7 +113,9 @@ class Character_Reaction extends Reaction {
                         $game->set_current_location($newlocation);
                         $game->add_visited_location($newlocation);
                         array_push($return, $game->do_action("description", false)[0]);
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                        $e;
+                    }
                 }
             }
             $newitems = $parentreaction->get_new_item();
@@ -131,7 +134,7 @@ class Character_Reaction extends Reaction {
             if ($newstatus != null) {
                 $character->add_status($newstatus);
                 try {
-                    $playerCharacter = Player_Character::get_instance_from_parent_id($character->get_id());
+                    $playercharacter = Player_Character::get_instance_from_parent_id($character->get_id());
                     foreach ($newstatus as $status) {
                         if ($status == "mort") {
                             $game->add_deaths();
@@ -149,7 +152,9 @@ class Character_Reaction extends Reaction {
                             . " morts et " . count($lieux) . " lieux visités.");
                         }
                     }
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                    $e;
+                }
             }
             $oldstatus = $parentreaction->get_old_status();
             if ($oldstatus != null) {

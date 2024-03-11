@@ -52,7 +52,8 @@ class Location_Reaction extends Reaction {
 
     public function get_location(): Location_Interface {
         global $DB;
-        $sql = "select location_id from {locationreaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select location_id from {locationreaction} where "
+        . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
     }
 
@@ -61,7 +62,7 @@ class Location_Reaction extends Reaction {
         $sql = "select id from {locationreaction} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $reactionid]);
-        return Location_Reaction::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id): Location_Reaction {

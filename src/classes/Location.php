@@ -72,7 +72,7 @@ class Location extends Entity implements Location_Interface {
         $sql = "select id from {location} where "
         . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $entityid]);
-        return Location::get_instance($id);
+        return self::get_instance($id);
     }
 
     public static function get_instance(int $id): Location {
@@ -227,12 +227,15 @@ class Location extends Entity implements Location_Interface {
                 foreach ($reactions as $reaction) {
                     try {
                         $characterreaction = Character_Reaction::get_instance_from_parent_id($reaction->get_id());
-                        $playercharacter = Player_Character::get_instance_from_parent_id($characterreaction->get_character()->get_id());
+                        $playercharacter = Player_Character::get_instance_from_parent_id(
+                            $characterreaction->get_character()->get_id());
                         if ($characterreaction->get_new_location() != null) {
                             $description = explode(" ", $action->get_description());
                             $sortie .= implode(' ', array_slice($description, 1)).", ";
                         }
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                        $e;
+                    }
                 }
             }
         }
