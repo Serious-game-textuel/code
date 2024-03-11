@@ -114,6 +114,19 @@ if ($rolename !== "student") {
 
 
 <script type = "text/javascript">
+    const container = document.getElementById('container');
+
+// Function to scroll to bottom
+function scrollToBottom() {
+  container.scrollTop = container.scrollHeight;
+}
+
+// Call scrollToBottom initially
+scrollToBottom();
+
+// Add event listener to detect content changes (replace with your logic)
+document.getElementById('text').addEventListener('DOMSubtreeModified', scrollToBottom);
+
     document.getElementById('helpButton').addEventListener('mouseover', function() {
         document.getElementById('helpText').style.display = 'block';
     });
