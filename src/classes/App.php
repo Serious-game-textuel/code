@@ -42,6 +42,7 @@ class App implements App_Interface {
     private DateTime $starttime;
     private Default_Action_Interface $defaultactionsearch;
     private Default_Action_Interface $defaultactioninteract;
+    private array $visitedlocations;
 
     private Game_Interface $game;
 
@@ -63,6 +64,7 @@ class App implements App_Interface {
     public function __construct($csvcontent) {
         $this->deaths = 0;
         $this->actions = 0;
+        $this->visitedlocations = [];
         $this->csvdata = array_map('str_getcsv', explode("\n", $csvcontent));
         self::$instance = $this;
         $this->startentities = [];
@@ -110,6 +112,15 @@ class App implements App_Interface {
 
     public function get_defaultactioninteract() {
         return $this->defaultactioninteract;
+    }
+
+    public function get_visited_locations() {
+        return $this->visitedlocations;
+    }
+
+    public function add_visited_location(Location_Interface $location) {
+        array_push($this->visitedlocations, $location);
+        $this->visitedlocations = Util::clean_array($this->visitedlocations, Location_Interface::class);
     }
 
     public function get_language() {
@@ -203,9 +214,7 @@ class App implements App_Interface {
 
         $this->starttime = new DateTime();
 
-        $this->game = new Game(
-            [$player->get_current_location()],
-            array_values($this->startentities));
+        $this->restart_game_from_start();
     }
 
     private function create_action_defaut($row) {
@@ -699,10 +708,7 @@ class App implements App_Interface {
     }
 
     public function restart_game_from_start() {
-        $this->set_game(new Game(
-            $this->get_game()->get_visited_locations(),
-            array_values($this->get_startentities())
-        ));
+        $this->game = new Game($this->startentities);
     }
 
     public function restart_game_from_save() {

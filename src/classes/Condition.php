@@ -58,7 +58,7 @@ class Condition implements Condition_Interface {
                             $character->set_currentlocation($newlocation);
                         } else if ($character instanceof Player_Character) {
                             $game->set_current_location($newlocation);
-                            $game->add_visited_location($newlocation);
+                            $app->add_visited_location($newlocation);
                             $descriptionreturn = $newlocation->check_actions("description");
 
                         }
@@ -99,7 +99,7 @@ class Condition implements Condition_Interface {
                                     $endtime = new DateTime();
                                     $interval = $starttime->diff($endtime);
                                     $time = $interval->format('%H:%I:%S');
-                                    $lieux = $game->get_visited_locations();
+                                    $lieux = $app->get_visited_locations();
                                     return "Vous avez gagné en " . $time . " avec " . $deaths
                                     . " morts et " . count($lieux) . " lieux visités.";
                                 }
@@ -110,7 +110,7 @@ class Condition implements Condition_Interface {
                                     $endtime = new DateTime();
                                     $interval = $starttime->diff($endtime);
                                     $time = $interval->format('%H:%I:%S');
-                                    $lieux = $game->get_visited_locations();
+                                    $lieux = $app->get_visited_locations();
                                     return "You won in " . $time . " with " . $deaths
                                     . " deaths and " . count($lieux) . " visited locations.";
                                 }

@@ -27,18 +27,6 @@ interface Game_Interface {
     public function get_player();
 
     /**
-     * Returns the list of all the visited locations
-     * @return Location_Interface[]
-     */
-    public function get_visited_locations();
-
-    /**
-     * @param Location_Interface $location
-     * @return void
-     */
-    public function add_visited_location(Location_Interface $location);
-
-    /**
      * @return Location_Interface
      */
     public function get_current_location();

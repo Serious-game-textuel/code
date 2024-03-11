@@ -20,14 +20,11 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interf
 class Game implements Game_Interface {
 
     private int $id;
-    private array $visitedlocations;
     private Player_Character $player;
     private array $entities = [];
 
-    public function __construct(array $visitedlocations, array $entities) {
+    public function __construct(array $entities) {
         $this->id = Id_Class::generate_id(self::class);
-        Util::check_array($visitedlocations, Location_Interface::class);
-        $this->visitedlocations = $visitedlocations;
         $this->entities = $entities;
         foreach ($this->entities as $e) {
             if ($e instanceof Player_Character) {
@@ -42,18 +39,6 @@ class Game implements Game_Interface {
 
     public function get_player() {
         return $this->player;
-    }
-
-    public function get_visited_locations() {
-        return $this->visitedlocations;
-    }
-    public function set_visited_locations(array $visitedlocations) {
-        $this->visitedlocations = Util::clean_array($visitedlocations, Location_Interface::class);
-    }
-
-    public function add_visited_location(Location_Interface $location) {
-        array_push($this->visitedlocations, $location);
-        $this->visitedlocations = Util::clean_array($this->visitedlocations, Location_Interface::class);
     }
 
     public function get_current_location() {
