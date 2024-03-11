@@ -96,7 +96,7 @@ class Entity implements Entity_Interface {
     }
 
     public function set_status(array $status) {
-        $status = Util::clean_array($status, Location_Interface::class);
+        $status = Util::clean_array($status, 'string');
         global $DB;
         $DB->delete_records('entity_status', ['entity_id' => $this->id]);
         foreach ($status as $statut) {
@@ -108,13 +108,27 @@ class Entity implements Entity_Interface {
     }
 
     public function add_status(array $status) {
-        $statut = $this->get_status();
-        array_push($statut, $status);
-        $this->set_status($statut);
+        global $DB;
+        foreach ($status as $s) {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {entity_status} WHERE "
+                .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id')." and "
+                .$DB->sql_compare_text('status')." = ".$DB->sql_compare_text(':status'),
+                ['id' => $this->id, 'status' => $s]
+            );
+            if (!$exists) {
+                $DB->insert_record('entity_status', [
+                    'entity_id' => $this->id,
+                    'status' => $s,
+                ]);
+            }
+        }
     }
 
     public function remove_status(array $status) {
         global $DB;
-        $DB->delete_records('entity_status', ['entity' => $this->id, 'status' => $status]);
+        foreach ($status as $statut) {
+            $DB->delete_records('entity_status', ['entity_id' => $this->id, 'status' => $statut]);
+        }
     }
 }
