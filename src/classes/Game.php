@@ -25,7 +25,6 @@ class Game implements Game_Interface {
     private ?Default_Action_Interface $defaultactionsearch;
     private ?Default_Action_Interface $defaultactioninteract;
     private array $entities = [];
-    private static array $instances = [];
 
     public function __construct(array $visitedlocations, ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
         $this->id = Id_Class::generate_id(self::class);
@@ -39,11 +38,6 @@ class Game implements Game_Interface {
                 $this->player = $e;
             }
         }
-        self::$instances[$this->id] = $this;
-    }
-
-    public static function get_instance_by_id(int $id): ?self {
-        return self::$instances[$id] ?? null;
     }
 
     public function get_id() {
