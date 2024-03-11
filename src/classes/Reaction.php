@@ -79,25 +79,25 @@ class Reaction implements Reaction_Interface {
     public function get_description() {
         global $DB;
         $sql = "select description from {reaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('reaction', 'description', $description, ['id' => $this->get_id()]);
+        $DB->set_field('reaction', 'description', $description, ['id' => $this->id]);
     }
 
     public function get_old_status() {
         global $DB;
         $sql = "select status from {reaction_oldstatus} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_fieldset_sql($sql, ['id' => $this->id]);
     }
 
     public function set_old_status(array $status) {
         $oldstatus = Util::clean_array($status, 'string');
         global $DB;
-        $DB->delete_records('reaction_oldstatus', ['reaction_id' => $this->get_id()]);
+        $DB->delete_records('reaction_oldstatus', ['reaction_id' => $this->id]);
         foreach ($oldstatus as $status) {
             $DB->insert_record('reaction_oldstatus', [
                 'reaction_id' => $this->id,
@@ -110,13 +110,13 @@ class Reaction implements Reaction_Interface {
         global $DB;
         $sql = "select status from {reaction_newstatus} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_fieldset_sql($sql, ['id' => $this->id]);
     }
 
     public function set_new_status(array $status) {
         $oldstatus = Util::clean_array($status, 'string');
         global $DB;
-        $DB->delete_records('reaction_newstatus', ['reaction_id' => $this->get_id()]);
+        $DB->delete_records('reaction_newstatus', ['reaction_id' => $this->id]);
         foreach ($oldstatus as $status) {
             $DB->insert_record('reaction_newstatus', [
                 'reaction_id' => $this->id,
@@ -130,7 +130,7 @@ class Reaction implements Reaction_Interface {
         global $DB;
         $sql = "select item_id from {reaction_olditems} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($items, Item::get_instance($id));
         }
@@ -140,7 +140,7 @@ class Reaction implements Reaction_Interface {
     public function set_old_item(array $item) {
         $items = Util::clean_array($item, Item_Interface::class);
         global $DB;
-        $DB->delete_records('reaction_olditems', ['reaction_id' => $this->get_id()]);
+        $DB->delete_records('reaction_olditems', ['reaction_id' => $this->id]);
         foreach ($items as $item) {
             $DB->insert_record('reaction_olditems', [
                 'reaction_id' => $this->id,
@@ -154,7 +154,7 @@ class Reaction implements Reaction_Interface {
         global $DB;
         $sql = "select item_id from {reaction_newitems} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($items, Item::get_instance($id));
         }
@@ -164,7 +164,7 @@ class Reaction implements Reaction_Interface {
     public function set_new_item(array $item) {
         $items = Util::clean_array($item, Item_Interface::class);
         global $DB;
-        $DB->delete_records('reaction_newitems', ['reaction_id' => $this->get_id()]);
+        $DB->delete_records('reaction_newitems', ['reaction_id' => $this->id]);
         foreach ($items as $item) {
             $DB->insert_record('reaction_newitems', [
                 'reaction_id' => $this->id,
@@ -175,15 +175,15 @@ class Reaction implements Reaction_Interface {
 
     public function do_reactions() {
         try {
-            $characterreaction = Character_Reaction::get_instance_from_parent_id($this->get_id());
+            $characterreaction = Character_Reaction::get_instance_from_parent_id($this->id);
             return $characterreaction->do_reactions();
         } catch (Exception $e) {
             try {
-                $locationreaction = Location_Reaction::get_instance_from_parent_id($this->get_id());
+                $locationreaction = Location_Reaction::get_instance_from_parent_id($this->id);
                 return $locationreaction->do_reactions();
             } catch (Exception $e) {
                 try {
-                    $noentityreaction = No_Entity_Reaction::get_instance_from_parent_id($this->get_id());
+                    $noentityreaction = No_Entity_Reaction::get_instance_from_parent_id($this->id);
                     return $noentityreaction->do_reactions();
                 } catch (Exception $e) {
                     $e;

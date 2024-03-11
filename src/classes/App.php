@@ -95,13 +95,13 @@ class App implements App_Interface {
     public function get_game() {
         global $DB;
         $sql = "select game_id from {app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        $gameid = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        $gameid = $DB->get_field_sql($sql, ['id' => $this->id]);
         return Game::get_instance($gameid);
     }
 
     public function set_game(Game_Interface $game) {
         global $DB;
-        $DB->set_field('app', 'game_id', $game->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('app', 'game_id', $game->get_id(), ['id' => $this->id]);
     }
 
     public function get_startentity($entityname) {
@@ -110,7 +110,7 @@ class App implements App_Interface {
         . "on {app_startentities}.entity_id = {entity}.id where "
         . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
         . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
-        $id = $DB->get_field_sql($sql, ['id' => $this->get_id(), 'entityname' => $entityname]);
+        $id = $DB->get_field_sql($sql, ['id' => $this->id, 'entityname' => $entityname]);
         if ($id > 0) {
             return Entity::get_instance($id);
         } else {
@@ -124,7 +124,7 @@ class App implements App_Interface {
         $sql = "select {entity}.id from {app_startentities} ".
         "left join {entity} on {app_startentities}.entity_id = {entity}.id where "
         . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($startentities, Entity::get_instance($id));
         }
@@ -134,7 +134,7 @@ class App implements App_Interface {
     public function add_startentity(Entity_Interface $entity) {
         global $DB;
         $DB->insert_record('app_startentities', [
-            'app_id' => $this->get_id(),
+            'app_id' => $this->id,
             'entity_id' => $entity->get_id(),
         ]);
     }
@@ -142,7 +142,7 @@ class App implements App_Interface {
     public function add_startentity_from_id(int $entityid) {
         global $DB;
         $DB->insert_record('app_startentities', [
-            'app_id' => $this->get_id(),
+            'app_id' => $this->id,
             'entity_id' => $entityid,
         ]);
     }
@@ -163,7 +163,7 @@ class App implements App_Interface {
         global $DB;
         $sql = "select playerkeyword from {app} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->id]);
         $player = $this->get_startentity($playerkeyword);
         if ($player != null) {
             try {
@@ -216,7 +216,7 @@ class App implements App_Interface {
         global $DB;
         $sql = "select playerkeyword from {app} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->id]);
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string($row, $col);
             $description = $this->get_cell_string($row + 1, $col);

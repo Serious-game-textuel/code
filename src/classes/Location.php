@@ -82,14 +82,14 @@ class Location extends Entity implements Location_Interface {
     public function get_inventory() {
         global $DB;
         $sql = "select inventory_id from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
     public function get_actions() {
         $actions = [];
         global $DB;
         $sql = "select action_id from {location_actions} where "
         . $DB->sql_compare_text('location_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($actions, Action::get_instance($id));
         }
@@ -98,7 +98,7 @@ class Location extends Entity implements Location_Interface {
     public function set_actions(array $actions) {
         $actions = Util::clean_array($actions, Action_Interface::class);
         global $DB;
-        $DB->delete_records('location_actions', ['location_id' => $this->get_id()]);
+        $DB->delete_records('location_actions', ['location_id' => $this->id]);
         foreach ($actions as $action) {
             $DB->insert_record('location_actions', [
                 'location_id' => $this->id,
@@ -111,7 +111,7 @@ class Location extends Entity implements Location_Interface {
         global $DB;
         $sql = "select hint_id from {location_hints} where "
         . $DB->sql_compare_text('location_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($hints, Hint::get_instance($id));
         }
@@ -207,11 +207,11 @@ class Location extends Entity implements Location_Interface {
     public function get_hintscount() {
         global $DB;
         $sql = "select hintscount from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
     public function increments_hintscount() {
         global $DB;
-        $DB->set_field('location', 'hintscount', $this->get_hintscount() + 1, ['id' => $this->get_id()]);
+        $DB->set_field('location', 'hintscount', $this->get_hintscount() + 1, ['id' => $this->id]);
     }
     public function has_item_location(Item_Interface $item) {
         return $this->get_inventory()->check_item($item);
@@ -244,9 +244,5 @@ class Location extends Entity implements Location_Interface {
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function get_name() {
-        return $this->parent->get_name();
     }
 }

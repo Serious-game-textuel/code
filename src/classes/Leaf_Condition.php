@@ -79,7 +79,7 @@ class Leaf_Condition extends Condition {
     public function get_entity1() {
         global $DB;
         $sql = "select entity1_id from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        $id = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        $id = $DB->get_field_sql($sql, ['id' => $this->id]);
         if ($id > 0) {
             return Entity::get_instance($id);
         } else {
@@ -89,13 +89,13 @@ class Leaf_Condition extends Condition {
 
     public function set_entity1(Entity_Interface $entity1) {
         global $DB;
-        $DB->set_field('leafcondition', 'entity1_id', $entity1->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('leafcondition', 'entity1_id', $entity1->get_id(), ['id' => $this->id]);
     }
 
     public function get_entity2() {
         global $DB;
         $sql = "select entity2_id from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        $id = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        $id = $DB->get_field_sql($sql, ['id' => $this->id]);
         if ($id > 0) {
             return Entity::get_instance($id);
         } else {
@@ -105,31 +105,31 @@ class Leaf_Condition extends Condition {
 
     public function set_entity2(Entity_Interface $entity2) {
         global $DB;
-        $DB->set_field('leafcondition', 'entity2_id', $entity2->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('leafcondition', 'entity2_id', $entity2->get_id(), ['id' => $this->id]);
     }
 
     public function get_connector() {
         global $DB;
         $sql = "select connector from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_connector(string $connector) {
         global $DB;
-        $DB->set_field('leafcondition', 'connector', $connector, ['id' => $this->get_id()]);
+        $DB->set_field('leafcondition', 'connector', $connector, ['id' => $this->id]);
     }
 
     public function get_status() {
         global $DB;
         $sql = "select status from {leafcondition_status} where "
         . $DB->sql_compare_text('leafcondition_id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_fieldset_sql($sql, ['id' => $this->id]);
     }
 
     public function set_status(array $status) {
         $status = Util::clean_array($status, 'string');
         global $DB;
-        $DB->delete_records('leafcondition_status', ['leafcondition_id' => $this->get_id()]);
+        $DB->delete_records('leafcondition_status', ['leafcondition_id' => $this->id]);
         foreach ($status as $statut) {
             $DB->insert_record('leafcondition_status', [
                 'leafcondition_id' => $this->id,

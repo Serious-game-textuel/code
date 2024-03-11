@@ -74,14 +74,14 @@ class Character_Reaction extends Reaction {
         global $DB;
         $sql = "select character_id from {characterreaction} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return Character::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        return Character::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public function get_new_location() {
         global $DB;
         $sql = "select newlocation_id from {characterreaction} where ". $DB->sql_compare_text('id')
         . " = ".$DB->sql_compare_text(':id');
-        $newlocationid = $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        $newlocationid = $DB->get_field_sql($sql, ['id' => $this->id]);
         if ($newlocationid > 0) {
             return Location::get_instance($newlocationid);
         } else {
@@ -91,7 +91,7 @@ class Character_Reaction extends Reaction {
 
     public function set_new_location(Location_Interface $newlocation) {
         global $DB;
-        $DB->set_field('characterreaction', 'newlocation_id', $newlocation->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('characterreaction', 'newlocation_id', $newlocation->get_id(), ['id' => $this->id]);
     }
 
     public function do_reactions(): array {

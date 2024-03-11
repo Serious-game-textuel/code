@@ -67,29 +67,29 @@ class Node_Condition extends Condition {
     public function get_condition1() {
         global $DB;
         $sql = "select condition1_id from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return Condition::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        return Condition::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
     public function get_condition2() {
         global $DB;
         $sql = "select condition2_id from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return Condition::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        return Condition::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
     public function get_connector() {
         global $DB;
         $sql = "select connector from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
     public function set_condition(Condition_Interface $condition1) {
         global $DB;
-        $DB->set_field('nodecondition', 'condition1_id', $condition1->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('nodecondition', 'condition1_id', $condition1->get_id(), ['id' => $this->id]);
     }
     public function set_condition2(Condition_Interface $condition2) {
         global $DB;
-        $DB->set_field('nodecondition', 'condition2_id', $condition2->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('nodecondition', 'condition2_id', $condition2->get_id(), ['id' => $this->id]);
     }
     public function set_connector(string $connector) {
         global $DB;
-        $DB->set_field('nodecondition', 'connector', $connector, ['id' => $this->get_id()]);
+        $DB->set_field('nodecondition', 'connector', $connector, ['id' => $this->id]);
     }
 
     public function is_true(): array {

@@ -59,12 +59,12 @@ class Action implements Action_Interface {
     public function get_description() {
         global $DB;
         $sql = "select description from {action} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('action', 'description', $description, ['id' => $this->get_id()]);
+        $DB->set_field('action', 'description', $description, ['id' => $this->id]);
     }
 
     public function get_conditions() {
@@ -72,7 +72,7 @@ class Action implements Action_Interface {
         global $DB;
         $sql = "select condition_id from {action_conditions} where "
         . $DB->sql_compare_text('action_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($conditions, Condition::get_instance($id));
         }
@@ -82,7 +82,7 @@ class Action implements Action_Interface {
     public function set_conditions(array $conditions) {
         $conditions = Util::clean_array($conditions, Condition_Interface::class);
         global $DB;
-        $DB->delete_records('action_conditions', ['action_id' => $this->get_id()]);
+        $DB->delete_records('action_conditions', ['action_id' => $this->id]);
         foreach ($conditions as $condition) {
             $DB->insert_record('game_visitedlocations', [
                 'action_id' => $this->id,

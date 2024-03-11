@@ -60,7 +60,7 @@ class Condition implements Condition_Interface {
         global $DB;
         $sql = "select reaction_id from {condition_reactions} where "
         . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($reactions, Reaction::get_instance($id));
         }
@@ -70,7 +70,7 @@ class Condition implements Condition_Interface {
     public function set_reactions(array $reactions) {
         $reactions = Util::clean_array($reactions, Reaction_Interface::class);
         global $DB;
-        $DB->delete_records('condition_reactions', ['condition_id' => $this->get_id()]);
+        $DB->delete_records('condition_reactions', ['condition_id' => $this->id]);
         foreach ($reactions as $reaction) {
             $DB->insert_record('condition_reactions', [
                 'condition_id' => $this->id,
@@ -94,11 +94,11 @@ class Condition implements Condition_Interface {
 
     public function is_true() {
         try {
-            $nodecondition = Node_Condition::get_instance_from_parent_id($this->get_id());
+            $nodecondition = Node_Condition::get_instance_from_parent_id($this->id);
             return $nodecondition->is_true();
         } catch (Exception $e) {
             try {
-                $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->get_id());
+                $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->id);
                 return $leafcondition->is_true();
             } catch (Exception $e) {
                 $e;
@@ -109,11 +109,11 @@ class Condition implements Condition_Interface {
 
     public function __toString() {
         try {
-            $nodecondition = Node_Condition::get_instance_from_parent_id($this->get_id());
+            $nodecondition = Node_Condition::get_instance_from_parent_id($this->id);
             return $nodecondition->__toString();
         } catch (Exception $e) {
             try {
-                $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->get_id());
+                $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->id);
                 return $leafcondition->__toString();
             } catch (Exception $e) {
                 $e;

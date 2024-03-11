@@ -64,23 +64,23 @@ class Entity implements Entity_Interface {
     public function get_description() {
         global $DB;
         $sql = "select description from {entity} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('entity', 'description', $description, ['id' => $this->get_id()]);
+        $DB->set_field('entity', 'description', $description, ['id' => $this->id]);
     }
 
     public function get_name() {
         global $DB;
         $sql = "select name from {entity} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_name(string $name) {
         global $DB;
-        $DB->set_field('entity', 'name', $name, ['id' => $this->get_id()]);
+        $DB->set_field('entity', 'name', $name, ['id' => $this->id]);
     }
 
     public function get_status() {
@@ -88,7 +88,7 @@ class Entity implements Entity_Interface {
         global $DB;
         $sql = "select status from {entity_status} where "
         . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
-        $status = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $status = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($status as $statut) {
             array_push($statusarray, $statut);
         }
@@ -98,7 +98,7 @@ class Entity implements Entity_Interface {
     public function set_status(array $status) {
         $status = Util::clean_array($status, Location_Interface::class);
         global $DB;
-        $DB->delete_records('entity_status', ['entity_id' => $this->get_id()]);
+        $DB->delete_records('entity_status', ['entity_id' => $this->id]);
         foreach ($status as $statut) {
             $DB->insert_record('entity_status', [
                 'entity_id' => $this->id,
@@ -115,6 +115,6 @@ class Entity implements Entity_Interface {
 
     public function remove_status(array $status) {
         global $DB;
-        $DB->delete_records('entity_status', ['entity' => $this->get_id(), 'status' => $status]);
+        $DB->delete_records('entity_status', ['entity' => $this->id, 'status' => $status]);
     }
 }

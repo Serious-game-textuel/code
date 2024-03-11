@@ -49,12 +49,12 @@ class Hint implements Hint_Interface {
     public function get_description() {
         global $DB;
         $sql = "select description from {hint} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return $DB->get_field_sql($sql, ['id' => $this->get_id()]);
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('hint', 'description', $description, ['id' => $this->get_id()]);
+        $DB->set_field('hint', 'description', $description, ['id' => $this->id]);
     }
 
 }

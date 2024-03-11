@@ -54,7 +54,7 @@ class Location_Reaction extends Reaction {
         global $DB;
         $sql = "select location_id from {locationreaction} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public static function get_instance_from_parent_id(int $reactionid): Location_Reaction {

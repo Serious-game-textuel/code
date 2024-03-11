@@ -75,7 +75,7 @@ class Character extends Entity implements Character_Interface {
     public function get_inventory() {
         global $DB;
         $sql = "select inventory_id from {character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public function has_item_character(Item_Interface $item) {
@@ -90,12 +90,12 @@ class Character extends Entity implements Character_Interface {
         global $DB;
         $sql = "select currentlocation_id from {character} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->get_id()]));
+        return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public function set_currentlocation(Location_Interface $newlocation) {
         global $DB;
-        $DB->set_field('character', 'currentlocation_id', $newlocation->get_id(), ['id' => $this->get_id()]);
+        $DB->set_field('character', 'currentlocation_id', $newlocation->get_id(), ['id' => $this->id]);
     }
 
 }

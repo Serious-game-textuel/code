@@ -72,7 +72,7 @@ class Inventory implements Inventory_Interface {
         global $DB;
         $sql = "select item_id from {inventory_items} where "
         . $DB->sql_compare_text('inventory_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_id()]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($items, Item::get_instance($id));
         }
@@ -84,7 +84,7 @@ class Inventory implements Inventory_Interface {
         array_push($items, $item);
         $items = Util::clean_array($items, Item_Interface::class);
         global $DB;
-        $DB->delete_records('inventory_items', ['inventory_id' => $this->get_id()]);
+        $DB->delete_records('inventory_items', ['inventory_id' => $this->id]);
         foreach ($items as $item) {
             $DB->insert_record('inventory_items', [
                 'inventory_id' => $this->id,
@@ -95,7 +95,7 @@ class Inventory implements Inventory_Interface {
 
     public function remove_item(Item_Interface $item) {
         global $DB;
-        $DB->delete_records('inventory_items', ['inventory_id' => $this->get_id(), 'item_id' => $item->get_id()]);
+        $DB->delete_records('inventory_items', ['inventory_id' => $this->id, 'item_id' => $item->get_id()]);
     }
 
     public function check_item(Item_Interface $item) {
