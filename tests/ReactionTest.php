@@ -28,6 +28,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ReactionTest
+ * @package mod_serioustextualgame
+ */
 class ReactionTest extends TestCase {
     /**
      * vérifie le comportement de la classe Character_Reaction

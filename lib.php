@@ -52,13 +52,13 @@ function serioustextualgame_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
     $moduleinstance->timecreated = time();
-    $context = context_module::instance($moduleinstance->coursemodule);
     $filecontent = $mform->get_file_content('userfile');
     if ($filecontent) {
         $moduleinstance->filecontent = $filecontent;
     }
     $draftitemid = file_get_submitted_draft_itemid('imagefile');
 
+    $context = context_module::instance($moduleinstance->coursemodule);
     file_save_draft_area_files($draftitemid, $context->id, 'mod_serioustextualgame', 'imagefile', 0);
 
     $fs = get_file_storage();
@@ -92,6 +92,18 @@ function serioustextualgame_update_instance($moduleinstance, $mform = null) {
     );
     if ($filecontent) {
         $moduleinstance->filecontent = $filecontent;
+    }
+
+    $draftitemid = file_get_submitted_draft_itemid('imagefile');
+
+    $context = context_module::instance($moduleinstance->coursemodule);
+    file_save_draft_area_files($draftitemid, $context->id, 'mod_serioustextualgame', 'imagefile', 0);
+
+    $fs = get_file_storage();
+    $files = $fs->get_area_files($context->id, 'mod_serioustextualgame', 'imagefile', 0, 'itemid, filepath, filename', false);
+    if (count($files) > 0) {
+        $file = reset($files);
+        $moduleinstance->fileid = $file->get_id();
     }
 
     return $DB->update_record('serioustextualgame', $moduleinstance);

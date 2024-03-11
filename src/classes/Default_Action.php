@@ -19,6 +19,10 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 
+/**
+ * Class Default_Action
+ * @package mod_serioustextualgame
+ */
 class Default_Action extends Action implements Default_Action_Interface {
     public function do_conditions_verb(string $verb) {
         $app = App::get_instance();

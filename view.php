@@ -66,7 +66,9 @@ $columns = str_getcsv($rows[2], ",");
 $element = $columns[1];
 
 echo $OUTPUT->header();
-
+if (isset($_SESSION['conditionsdone'])) {
+    unset($_SESSION['conditionsdone']);
+}
 $fs = get_file_storage();
 $file = $fs->get_file_by_id($moduleinstance->fileid);
 if ($file) {

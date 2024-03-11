@@ -34,7 +34,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Cell_Exception.php');
 
-
+/**
+ * Class App
+ * @package mod_serioustextualgame
+ */
 class App implements App_Interface {
 
     private int $deaths;
@@ -421,7 +424,7 @@ class App implements App_Interface {
                     if ($this->language == Language::FR) {
                         $errormessage = $entityname . " n'est pas une entité";
                     }
-                    throw new Exception($errormessage, $row + 3, $col);
+                    throw new Cell_Exception($errormessage, $row + 3, $col);
                 }
 
                 $newstatuses = $this->get_cell_array_string($row + 4, $col);

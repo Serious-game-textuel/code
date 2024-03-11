@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
+
+/**
+ * Class Player_Character
+ * @package mod_serioustextualgame
+ */
 class Player_Character extends Character {
 
 

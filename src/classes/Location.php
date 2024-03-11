@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
+
+/**
+ * Class Location
+ * @package mod_serioustextualgame
+ */
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;
@@ -45,11 +50,35 @@ class Location extends Entity implements Location_Interface {
     public function get_hints() {
         return $this->hints;
     }
-
     public function is_action_valide(string $action) {
         for ($i = 0; $i < count($this->actions); $i++) {
             if ($this->actions[$i]->get_description() == $action) {
                 return $this->actions[$i];
+            }
+        }
+        $actiontoken = explode(" ", $action);
+        $app = App::get_instance();
+        if ($app->get_language() == Language::FR) {
+            $synonyms = Util::get_french_synonyms($actiontoken[0]);
+        } else if ($app->get_language() == Language::EN) {
+            $synonyms = Util::get_english_synonyms($actiontoken[0]);
+        } else {
+            return null;
+        }
+        for ($i = 0; $i < count($this->actions); $i++) {
+            $description = explode(" ", $this->actions[$i]->get_description());
+            $firstword = $description[0];
+            foreach ($synonyms as $synonym) {
+                if ($firstword == $synonym) {
+                    for ($j = 1; $j < count($actiontoken); $j++) {
+                        if ($description[$j] != $actiontoken[$j]) {
+                            break;
+                        }
+                        if ($j == count($actiontoken) - 1) {
+                            return $this->actions[$i];
+                        }
+                    }
+                }
             }
         }
         return null;
