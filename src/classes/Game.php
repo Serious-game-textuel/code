@@ -21,19 +21,17 @@ class Game implements Game_Interface {
 
     private int $id;
     private array $visitedlocations;
-    private ?DateTime $starttime;
     private ?Player_Character $player;
     private ?Default_Action_Interface $defaultactionsearch;
     private ?Default_Action_Interface $defaultactioninteract;
     private array $entities = [];
     private static array $instances = [];
 
-    public function __construct(array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
+    public function __construct(array $visitedlocations, ?Player_Character $player,
     ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
         $this->id = Id_Class::generate_id(self::class);
         Util::check_array($visitedlocations, Location_Interface::class);
         $this->visitedlocations = $visitedlocations;
-        $this->starttime = $starttime;
         $this->player = $player;
         $this->defaultactionsearch = $defaultactionsearch;
         $this->defaultactioninteract = $defaultactioninteract;
@@ -67,13 +65,6 @@ class Game implements Game_Interface {
     public function add_visited_location(Location_Interface $location) {
         array_push($this->visitedlocations, $location);
         $this->visitedlocations = Util::clean_array($this->visitedlocations, Location_Interface::class);
-    }
-
-    public function get_start_time() {
-        return $this->starttime;
-    }
-    public function set_start_time(DateTime $starttime) {
-        $this->starttime = $starttime;
     }
 
     public function get_current_location() {

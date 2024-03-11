@@ -39,6 +39,7 @@ class App implements App_Interface {
 
     private int $deaths;
     private int $actions;
+    private DateTime $starttime;
 
     private Game_Interface $game;
 
@@ -92,6 +93,13 @@ class App implements App_Interface {
 
     public function add_action() {
         $this->actions ++;
+    }
+
+    public function get_starttime() {
+        return $this->starttime;
+    }
+    public function set_starttime(DateTime $starttime) {
+        $this->starttime = $starttime;
     }
 
     public function get_language() {
@@ -182,9 +190,11 @@ class App implements App_Interface {
         if ($player->get_current_location() == null) {
             throw new Exception("One location must have '" . self::$playerkeyword . "' in their list of characters.");
         }
+
+        $this->starttime = new DateTime();
+
         $this->game = new Game(
             [$player->get_current_location()],
-            new DateTime(),
             $player,
             null,
             null,
@@ -684,7 +694,6 @@ class App implements App_Interface {
     public function restart_game_from_start() {
         $this->set_game(new Game(
             $this->get_game()->get_visited_locations(),
-            $this->get_game()->get_start_time(),
             null,
             $this->get_game()->get_default_action_search(),
             $this->get_game()->get_default_action_interact(),

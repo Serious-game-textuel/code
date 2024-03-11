@@ -40,6 +40,17 @@ interface App_Interface {
     public function add_action();
 
     /**
+     * @return DateTime
+     */
+    public function get_starttime();
+
+    /**
+     * @param DateTime $time
+     * @return void
+     */
+    public function set_starttime(DateTime $time);
+
+    /**
      * @return string
      */
     public function get_language();

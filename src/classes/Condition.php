@@ -95,7 +95,7 @@ class Condition implements Condition_Interface {
                             if ($language == "fr") {
                                 if ($newstatus == "victoire") {
                                     $deaths = $app->get_deaths();
-                                    $starttime = $game->get_start_time();
+                                    $starttime = $app->get_starttime();
                                     $endtime = new DateTime();
                                     $interval = $starttime->diff($endtime);
                                     $time = $interval->format('%H:%I:%S');
@@ -106,7 +106,7 @@ class Condition implements Condition_Interface {
                             } else {
                                 if ($newstatus == "victory") {
                                     $deaths = $app->get_deaths();
-                                    $starttime = $game->get_start_time();
+                                    $starttime = $app->get_starttime();
                                     $endtime = new DateTime();
                                     $interval = $starttime->diff($endtime);
                                     $time = $interval->format('%H:%I:%S');

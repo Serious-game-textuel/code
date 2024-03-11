@@ -45,17 +45,6 @@ interface Game_Interface {
     public function add_visited_location(Location_Interface $location);
 
     /**
-     * @return DateTime
-     */
-    public function get_start_time();
-
-    /**
-     * @param DateTime $time
-     * @return void
-     */
-    public function set_start_time(DateTime $time);
-
-    /**
      * @return Location_Interface
      */
     public function get_current_location();
