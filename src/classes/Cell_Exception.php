@@ -27,7 +27,7 @@ class Cell_Exception extends Exception {
         } else {
             parent::__construct($message . " (row: " . ($row + 1) . ", column: " . ($col + 1) . ")", 0, null);
         }
-        
+
     }
 
 }
