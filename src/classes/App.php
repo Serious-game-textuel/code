@@ -40,6 +40,8 @@ class App implements App_Interface {
     private int $deaths;
     private int $actions;
     private DateTime $starttime;
+    private Default_Action_Interface $defaultactionsearch;
+    private Default_Action_Interface $defaultactioninteract;
 
     private Game_Interface $game;
 
@@ -100,6 +102,14 @@ class App implements App_Interface {
     }
     public function set_starttime(DateTime $starttime) {
         $this->starttime = $starttime;
+    }
+
+    public function get_defaultactionsearch() {
+        return $this->defaultactionsearch;
+    }
+
+    public function get_defaultactioninteract() {
+        return $this->defaultactioninteract;
     }
 
     public function get_language() {
@@ -169,22 +179,22 @@ class App implements App_Interface {
             $itemsrow = $this->get_row("OBJETS");
             $charactersrow = $this->get_row("PERSONNAGES");
             $locationsrow = $this->get_row("LIEUX");
-            $interactiondefautrow = $this->get_row("Interaction avec objet n'existant pas");
-            $fouillerdefautrow = $this->get_row("Fouiller par défaut");
+            $defaultactioninteractrow = $this->get_row("Interaction avec objet n'existant pas");
+            $defaultactionsearchrow = $this->get_row("Fouiller par défaut");
         } else {
             $itemsrow = $this->get_row("ITEMS");
             $charactersrow = $this->get_row("CHARACTERS");
             $locationsrow = $this->get_row("LOCATIONS");
-            $interactiondefautrow = $this->get_row("Interaction with non-existent object");
-            $fouillerdefautrow = $this->get_row("Search by default");
+            $defaultactioninteractrow = $this->get_row("Interaction with non-existent object");
+            $defaultactionsearchrow = $this->get_row("Search by default");
         }
         $this->create_items($itemsrow);
         $this->create_characters($charactersrow);
         $this->create_locations($locationsrow);
         $this->check_items_duplicates();
         $this->create_all_actions($locationsrow);
-        $interactiondefaut = $this->create_action_defaut($interactiondefautrow);
-        $fouillerdefaut = $this->create_action_defaut($fouillerdefautrow);
+        $this->defaultactioninteract = $this->create_action_defaut($defaultactioninteractrow);
+        $this->defaultactionsearch = $this->create_action_defaut($defaultactionsearchrow);
 
         $player = $this->get_startentity(self::$playerkeyword);
         if ($player->get_current_location() == null) {
@@ -195,8 +205,6 @@ class App implements App_Interface {
 
         $this->game = new Game(
             [$player->get_current_location()],
-            null,
-            null,
             array_values($this->startentities));
     }
 
@@ -693,8 +701,6 @@ class App implements App_Interface {
     public function restart_game_from_start() {
         $this->set_game(new Game(
             $this->get_game()->get_visited_locations(),
-            $this->get_game()->get_default_action_search(),
-            $this->get_game()->get_default_action_interact(),
             array_values($this->get_startentities())
         ));
     }

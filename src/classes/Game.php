@@ -22,16 +22,12 @@ class Game implements Game_Interface {
     private int $id;
     private array $visitedlocations;
     private Player_Character $player;
-    private ?Default_Action_Interface $defaultactionsearch;
-    private ?Default_Action_Interface $defaultactioninteract;
     private array $entities = [];
 
-    public function __construct(array $visitedlocations, ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
+    public function __construct(array $visitedlocations, array $entities) {
         $this->id = Id_Class::generate_id(self::class);
         Util::check_array($visitedlocations, Location_Interface::class);
         $this->visitedlocations = $visitedlocations;
-        $this->defaultactionsearch = $defaultactionsearch;
-        $this->defaultactioninteract = $defaultactioninteract;
         $this->entities = $entities;
         foreach ($this->entities as $e) {
             if ($e instanceof Player_Character) {
@@ -65,22 +61,6 @@ class Game implements Game_Interface {
     }
     public function set_current_location(Location_Interface $currentlocation) {
         $this->player->set_currentlocation($currentlocation);
-    }
-
-    public function get_default_action_search() {
-        return $this->defaultactionsearch;
-    }
-
-    public function set_default_action_search(Default_Action_Interface $action) {
-        $this->defaultactionsearch = $action;
-    }
-
-    public function get_default_action_interact() {
-        return $this->defaultactioninteract;
-    }
-
-    public function set_default_action_interact(Default_Action_Interface $action) {
-        $this->defaultactioninteract = $action;
     }
 
     public function get_entities() {

@@ -73,22 +73,22 @@ class Location extends Entity implements Location_Interface {
             if (strpos($action, $defaultaction) === 0) {
                 $entity = substr($action, strlen($defaultaction) + 1);
                 if ($game->get_entity($entity) !== null) {
-                    if ($game->get_default_action_interact() !== null) {
-                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
+                    if ($app->get_defaultactioninteract() !== null) {
+                        $result = $app->get_defaultactioninteract()->do_conditions_verb($defaultaction);
                         foreach ($result as $res) {
                             array_push($return, $res);
                         }
                     } else {
-                        if ($game->get_default_action_search() !== null) {
-                            $result = $game->get_default_action_search()->do_conditions_verb($defaultaction);
+                        if ($app->get_defaultactionsearch() !== null) {
+                            $result = $app->get_defaultactionsearch()->do_conditions_verb($defaultaction);
                             foreach ($result as $res) {
                                 array_push($return, $res);
                             }
                         }
                     }
                 } else {
-                    if ($game->get_default_action_interact() !== null) {
-                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
+                    if ($app->get_defaultactioninteract() !== null) {
+                        $result = $app->get_defaultactioninteract()->do_conditions_verb($defaultaction);
                         foreach ($result as $res) {
                             array_push($return, $res);
                         }
@@ -115,8 +115,8 @@ class Location extends Entity implements Location_Interface {
                 array_push($return, $this->get_inventory_description());
             } else {
                 $firstword = explode(' ', $action)[0];
-                if ($game->get_default_action_interact() !== null) {
-                    $result = $game->get_default_action_interact()->do_conditions_verb($firstword);
+                if ($app->get_defaultactioninteract() !== null) {
+                    $result = $app->get_defaultactioninteract()->do_conditions_verb($firstword);
                     foreach ($result as $res) {
                         array_push($return, $res);
                     }
@@ -129,22 +129,22 @@ class Location extends Entity implements Location_Interface {
             if (strpos($action, $defaultaction) === 0) {
                 $entity = substr($action, strlen($defaultaction) + 1);
                 if ($game->get_entity($entity) !== null) {
-                    if ($game->get_default_action_interact() !== null) {
-                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
+                    if ($app->get_defaultactioninteract() !== null) {
+                        $result = $app->get_defaultactioninteract()->do_conditions_verb($defaultaction);
                         foreach ($result as $res) {
                             array_push($return, $res);
                         }
                     } else {
-                        if ($game->get_default_action_search() !== null) {
-                            $result = $game->get_default_action_search()->do_conditions_verb($defaultaction);
+                        if ($app->get_defaultactionsearch() !== null) {
+                            $result = $app->get_defaultactionsearch()->do_conditions_verb($defaultaction);
                             foreach ($result as $res) {
                                 array_push($return, $res);
                             }
                         }
                     }
                 } else {
-                    if ($game->get_default_action_interact() !== null) {
-                        $result = $game->get_default_action_interact()->do_conditions_verb($defaultaction);
+                    if ($app->get_defaultactioninteract() !== null) {
+                        $result = $app->get_defaultactioninteract()->do_conditions_verb($defaultaction);
                         foreach ($result as $res) {
                             array_push($return, $res);
                         }
@@ -171,8 +171,8 @@ class Location extends Entity implements Location_Interface {
                 array_push($return, $this->get_inventory_description());
             } else {
                 $firstword = explode(' ', $action)[0];
-                if ($game->get_default_action_interact() !== null) {
-                    $result = $game->get_default_action_interact()->do_conditions_verb($firstword);
+                if ($app->get_defaultactioninteract() !== null) {
+                    $result = $app->get_defaultactioninteract()->do_conditions_verb($firstword);
                     foreach ($result as $res) {
                         array_push($return, $res);
                     }

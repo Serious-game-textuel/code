@@ -51,6 +51,16 @@ interface App_Interface {
     public function set_starttime(DateTime $time);
 
     /**
+     * @return Default_Action_Interface
+     */
+    public function get_defaultactionsearch();
+
+    /**
+     * @return Default_Action_Interface
+     */
+    public function get_defaultactioninteract();
+
+    /**
      * @return string
      */
     public function get_language();

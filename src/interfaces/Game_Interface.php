@@ -50,28 +50,6 @@ interface Game_Interface {
     public function set_current_location(Location_Interface $location);
 
     /**
-     * @return Default_Action_Interface
-     */
-    public function get_default_action_search();
-
-    /**
-     * @param Default_Action_Interface
-     * @return void
-     */
-    public function set_default_action_search(Default_Action_Interface $action);
-
-    /**
-     * @return Default_Action_Interface
-     */
-    public function get_default_action_interact();
-
-    /**
-     * @param Default_Action_Interface
-     * @return void
-     */
-    public function set_default_action_interact(Default_Action_Interface $action);
-
-    /**
      * @return array
      */
     public function get_entities();
