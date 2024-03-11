@@ -33,29 +33,6 @@ interface Game_Interface {
     public function set_player(Player_Character $player);
 
     /**
-     * Returns the number of deaths.
-     * @return int
-     */
-    public function get_deaths();
-
-    /**
-     * @return void
-     */
-    public function add_deaths();
-
-    /**
-     * Returns the number of actions performed.
-     * @return int
-     */
-    public function get_actions();
-
-    /**
-     * Increases the number of actions performed.
-     * @return void
-     */
-    public function add_action();
-
-    /**
      * Returns the list of all the visited locations
      * @return Location_Interface[]
      */

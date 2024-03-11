@@ -15,6 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 interface App_Interface {
+
+    /**
+     * Returns the number of deaths.
+     * @return int
+     */
+    public function get_deaths();
+
+    /**
+     * @return void
+     */
+    public function add_death();
+
+    /**
+     * Returns the number of actions performed.
+     * @return int
+     */
+    public function get_actions();
+
+    /**
+     * Increases the number of actions performed.
+     * @return void
+     */
+    public function add_action();
+
     /**
      * @return string
      */

@@ -37,6 +37,9 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Cell_Exception
 
 class App implements App_Interface {
 
+    private int $deaths;
+    private int $actions;
+
     private Game_Interface $game;
 
     private Game_Interface $save;
@@ -55,6 +58,8 @@ class App implements App_Interface {
     private $actionsdone = [];
 
     public function __construct($csvcontent) {
+        $this->deaths = 0;
+        $this->actions = 0;
         $this->csvdata = array_map('str_getcsv', explode("\n", $csvcontent));
         self::$instance = $this;
         $this->startentities = [];
@@ -72,6 +77,21 @@ class App implements App_Interface {
             self::$victorykeyword = "victoire";
         }
         $this->parse();
+    }
+
+    public function get_deaths() {
+        return $this->deaths;
+    }
+    public function add_death() {
+        $this->deaths ++;
+    }
+
+    public function get_actions() {
+        return $this->actions;
+    }
+
+    public function add_action() {
+        $this->actions ++;
     }
 
     public function get_language() {
@@ -163,8 +183,6 @@ class App implements App_Interface {
             throw new Exception("One location must have '" . self::$playerkeyword . "' in their list of characters.");
         }
         $this->game = new Game(
-            0,
-            0,
             [$player->get_current_location()],
             new DateTime(),
             $player,
@@ -665,8 +683,6 @@ class App implements App_Interface {
 
     public function restart_game_from_start() {
         $this->set_game(new Game(
-            $this->get_game()->get_deaths(),
-            $this->get_game()->get_actions(),
             $this->get_game()->get_visited_locations(),
             $this->get_game()->get_start_time(),
             null,

@@ -20,8 +20,6 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interf
 class Game implements Game_Interface {
 
     private int $id;
-    private int $deaths;
-    private int $actions;
     private array $visitedlocations;
     private ?DateTime $starttime;
     private ?Player_Character $player;
@@ -30,11 +28,9 @@ class Game implements Game_Interface {
     private array $entities = [];
     private static array $instances = [];
 
-    public function __construct(int $deaths, int $actions, array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
+    public function __construct(array $visitedlocations, ?DateTime $starttime, ?Player_Character $player,
     ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
         $this->id = Id_Class::generate_id(self::class);
-        $this->deaths = $deaths;
-        $this->actions = $actions;
         Util::check_array($visitedlocations, Location_Interface::class);
         $this->visitedlocations = $visitedlocations;
         $this->starttime = $starttime;
@@ -51,24 +47,6 @@ class Game implements Game_Interface {
 
     public function get_id() {
         return $this->id;
-    }
-
-    public function get_deaths() {
-        return $this->deaths;
-    }
-    public function add_deaths() {
-        $this->deaths ++;
-    }
-
-    public function get_actions() {
-        return $this->actions;
-    }
-    public function set_actions(int $actions) {
-        $this->actions = $actions;
-    }
-
-    public function add_action() {
-        $this->actions ++;
     }
 
     public function get_player() {

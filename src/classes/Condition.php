@@ -82,19 +82,19 @@ class Condition implements Condition_Interface {
                             foreach ($newstatus as $status) {
                                 if ($language == "fr") {
                                     if ($status == "mort") {
-                                        $game->add_deaths();
+                                        $app->add_death();
                                         echo App::$playerkeyword . " est mort, recommmencer au début(pas implémenté)\n";
                                     }
                                 } else {
                                     if ($status == "dead") {
-                                        $game->add_deaths();
+                                        $app->add_death();
                                         echo App::$playerkeyword . " is dead, you can restart (not implemented)\n";
                                     }
                                 }
                             }
                             if ($language == "fr") {
                                 if ($newstatus == "victoire") {
-                                    $deaths = $game->get_deaths();
+                                    $deaths = $app->get_deaths();
                                     $starttime = $game->get_start_time();
                                     $endtime = new DateTime();
                                     $interval = $starttime->diff($endtime);
@@ -105,7 +105,7 @@ class Condition implements Condition_Interface {
                                 }
                             } else {
                                 if ($newstatus == "victory") {
-                                    $deaths = $game->get_deaths();
+                                    $deaths = $app->get_deaths();
                                     $starttime = $game->get_start_time();
                                     $endtime = new DateTime();
                                     $interval = $starttime->diff($endtime);

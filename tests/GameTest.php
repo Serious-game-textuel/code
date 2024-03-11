@@ -39,7 +39,7 @@ class GameTest extends TestCase {
     public function testadddeaths() {
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
 
-        $game->add_deaths();
+        $game->add_death();
         $this->assertEquals(1, $game->get_deaths());
     }
     /**

@@ -22,9 +22,8 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
 class Default_Action extends Action implements Default_Action_Interface {
     public function do_conditions_verb(string $verb) {
         $app = App::get_instance();
-        $game = $app->get_game();
         $language = $app->get_language();
-        $game->add_action();
+        $app->add_action();
         $tokendescription = explode('"', $this->get_description());
         $result = [];
         if ($language == 'fr') {

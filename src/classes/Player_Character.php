@@ -39,15 +39,15 @@ class Player_Character extends Character {
         } else if (in_array(App::$victorykeyword, $status)) {
             if ($language == Language::FR) {
                 array_push($return, "Tu as gagné!");
-                array_push($return, "Tu as fait " . App::get_instance()->get_game()->get_actions() . " actions!");
+                array_push($return, "Tu as fait " . App::get_instance()->get_actions() . " actions!");
                 array_push($return, "Tu as visité " . count(App::get_instance()->get_game()->get_visited_locations()) . " lieux!");
-                array_push($return, "Tu as été tué " . App::get_instance()->get_game()->get_deaths() . " fois!");
+                array_push($return, "Tu as été tué " . App::get_instance()->get_deaths() . " fois!");
             } else {
                 array_push($return, "You won!");
-                array_push($return, "You did " . App::get_instance()->get_game()->get_actions() . " actions!");
+                array_push($return, "You did " . App::get_instance()->get_actions() . " actions!");
                 array_push($return, "You visited " .
                  count(App::get_instance()->get_game()->get_visited_locations()) . " locations!");
-                array_push($return, "You were killed " . App::get_instance()->get_game()->get_deaths() . " times!");
+                array_push($return, "You were killed " . App::get_instance()->get_deaths() . " times!");
             }
         } else {
             parent::set_status($status);
