@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Hint_Interface.php');
+
+/**
+ * Class Hint
+ * @package mod_serioustextualgame
+ */
 class Hint implements Hint_Interface {
     private int $id;
     private string $description;

@@ -38,6 +38,10 @@ use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\isInstanceOf;
 
+/**
+ * Class InventoryTest
+ * @package mod_serioustextualgame
+ */
 class InventoryTest extends TestCase {
     /**
      * vérifie le bon fonctionnement du constructeur de la classe Inventory
