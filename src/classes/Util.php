@@ -90,7 +90,14 @@ class Util {
 
         $url = "https://cnrtl.fr/synonymie/".$word;
         $doc = new DOMDocument();
-        $html = file_get_contents($url);
+        try {
+            $html = file_get_contents($url);
+            if ($html === false) {
+                return [];
+            }
+        } catch (Exception $e) {
+            return [];
+        }
         libxml_use_internal_errors(true);
         $doc->loadHTML($html);
         $htmlstring = $doc->saveHTML();
@@ -117,7 +124,14 @@ class Util {
     public static function get_english_synonyms($word) {
         $url = "https://dictionary.cambridge.org/thesaurus/".$word;
         $doc = new DOMDocument();
-        $html = file_get_contents($url);
+        try {
+            $html = @file_get_contents($url);
+            if ($html === false) {
+                return [];
+            }
+        } catch (Exception $e) {
+            return [];
+        }
         libxml_use_internal_errors(true);
         $doc->loadHTML($html);
         $htmlstring = $doc->saveHTML();
