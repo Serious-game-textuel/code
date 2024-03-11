@@ -79,7 +79,7 @@ class Node_Condition extends Condition {
         $sql = "select connector from {nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
-    public function set_condition(Condition_Interface $condition1) {
+    public function set_condition1(Condition_Interface $condition1) {
         global $DB;
         $DB->set_field('nodecondition', 'condition1_id', $condition1->get_id(), ['id' => $this->id]);
     }
@@ -114,7 +114,7 @@ class Node_Condition extends Condition {
 
     public function __toString() {
         return '('.$this->get_condition1()->__toString().' '
-        .$this->get_connector().' '.$this->get_condition1()->__toString().')';
+        .$this->get_connector().' '.$this->get_condition2()->__toString().')';
     }
 }
 
