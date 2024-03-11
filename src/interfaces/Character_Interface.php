@@ -16,6 +16,8 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
 
 /**
  * Interface Character_Interface
