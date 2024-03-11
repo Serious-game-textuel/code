@@ -34,9 +34,9 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 use PHPUnit\Framework\TestCase;
 
 /**
-*   Class ActionTest
-*   @package mod_serioustextualgame
-*/
+ * Class ActionTest
+ * @package mod_serioustextualgame
+ */
 class ActionTest extends TestCase {
     /**
      * vérifie que quand on appelle la méthode do_conditions, les conditions sont bien effectuées
