@@ -62,15 +62,15 @@ interface App_Interface {
 
     /**
      * Returns the list of all the visited locations
-     * @return Location_Interface[]
+     * @return string[]
      */
     public function get_visitedlocations();
 
     /**
-     * @param Location_Interface $location
+     * @param string $location
      * @return void
      */
-    public function add_visitedlocation(Location_Interface $location);
+    public function add_visitedlocation(string $location);
 
     /**
      * @return string

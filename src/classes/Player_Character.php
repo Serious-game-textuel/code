@@ -54,4 +54,10 @@ class Player_Character extends Character {
         }
         return $return;
     }
+
+    public function set_currentlocation(Location_Interface $newlocation) {
+        parent::set_currentlocation($newlocation);
+        App::get_instance()->add_visitedlocation($newlocation->get_name());
+    }
+
 }

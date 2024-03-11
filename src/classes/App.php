@@ -118,9 +118,11 @@ class App implements App_Interface {
         return $this->visitedlocations;
     }
 
-    public function add_visitedlocation(Location_Interface $location) {
-        array_push($this->visitedlocations, $location);
-        $this->visitedlocations = Util::clean_array($this->visitedlocations, Location_Interface::class);
+    public function add_visitedlocation(string $location) {
+        if (!in_array($location, $this->visitedlocations)) {
+            array_push($this->visitedlocations, $location);
+            $this->visitedlocations = Util::clean_array($this->visitedlocations, Location_Interface::class);
+        }
     }
 
     public function get_language() {
