@@ -27,12 +27,6 @@ interface Game_Interface {
     public function get_player();
 
     /**
-     * @param Player_Character $player
-     * @return void
-     */
-    public function set_player(Player_Character $player);
-
-    /**
      * Returns the list of all the visited locations
      * @return Location_Interface[]
      */

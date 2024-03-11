@@ -21,7 +21,7 @@ class Game implements Game_Interface {
 
     private int $id;
     private array $visitedlocations;
-    private ?Player_Character $player;
+    private Player_Character $player;
     private ?Default_Action_Interface $defaultactionsearch;
     private ?Default_Action_Interface $defaultactioninteract;
     private array $entities = [];
@@ -46,10 +46,6 @@ class Game implements Game_Interface {
 
     public function get_player() {
         return $this->player;
-    }
-
-    public function set_player(Player_Character $player) {
-        $this->player = $player;
     }
 
     public function get_visited_locations() {

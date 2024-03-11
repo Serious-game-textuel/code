@@ -697,12 +697,6 @@ class App implements App_Interface {
             $this->get_game()->get_default_action_interact(),
             array_values($this->get_startentities())
         ));
-
-        foreach ($this->get_game()->get_entities() as $entity) {
-            if ($entity instanceof Player_Character) {
-                $this->get_game()->set_player($entity);
-            }
-        }
     }
 
     public function restart_game_from_save() {
