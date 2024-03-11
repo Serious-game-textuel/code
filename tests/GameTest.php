@@ -61,22 +61,22 @@ class GameTest extends TestCase {
         $this->assertEquals(1, $game->get_actions());
     }
     /**
-     * vérifie si la méthode get_visited_locations retourne bien la liste des locations visitées
+     * vérifie si la méthode get_visitedlocations retourne bien la liste des locations visitées
      */
     public function testgetvisitedlocations() {
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
 
-        $this->assertEquals([], $game->get_visited_locations());
+        $this->assertEquals([], $game->get_visitedlocations());
     }
     /**
-     * vérifie si la méthode add_visited_location ajoute bien une location à la liste des locations visitées
+     * vérifie si la méthode add_visitedlocation ajoute bien une location à la liste des locations visitées
      */
     public function testaddvisitedlocation() {
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         $location = $this->createMock(Location_Interface::class);
 
-        $game->add_visited_location($location);
-        $this->assertEquals([$location], $game->get_visited_locations());
+        $game->add_visitedlocation($location);
+        $this->assertEquals([$location], $game->get_visitedlocations());
     }
     /**
      * vérifie si la méthode get_start_time retourne bien l'heure de début du jeu

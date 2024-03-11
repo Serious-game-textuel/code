@@ -64,19 +64,19 @@ interface App_Interface {
      * Returns the list of all the visited locations
      * @return Location_Interface[]
      */
-    public function get_visited_locations();
+    public function get_visitedlocations();
 
     /**
      * @param Location_Interface $location
      * @return void
      */
-    public function add_visited_location(Location_Interface $location);
+    public function add_visitedlocation(Location_Interface $location);
 
     /**
      * @return string
      */
     public function get_language();
-    
+
     /**
      * @param string $action
      * @return void

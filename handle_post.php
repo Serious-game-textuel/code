@@ -28,7 +28,7 @@ if (isset($_SESSION['conditionsdone'])) {
 }
 $game = $app->get_game();
 $inputtext = $_POST['inputText'];
-$currentlocation = $game->get_player()->get_current_location();
+$currentlocation = $game->get_player()->get_currentlocation();
 
 $action = $currentlocation->check_actions($inputtext);
 

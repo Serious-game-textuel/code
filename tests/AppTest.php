@@ -114,7 +114,7 @@ class AppTest extends TestCase {
         for ($i = 0; $i < count($itemids); $i++) {
             $this->assertTrue($citems[$i]->get_id() == $itemids[$i]);
         }
-        $this->assertTrue($character->get_current_location()->get_id() == $locationid);
+        $this->assertTrue($character->get_currentlocation()->get_id() == $locationid);
     }
 
     private function testlocations($locations) {

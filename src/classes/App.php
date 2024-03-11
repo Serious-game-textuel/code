@@ -114,11 +114,11 @@ class App implements App_Interface {
         return $this->defaultactioninteract;
     }
 
-    public function get_visited_locations() {
+    public function get_visitedlocations() {
         return $this->visitedlocations;
     }
 
-    public function add_visited_location(Location_Interface $location) {
+    public function add_visitedlocation(Location_Interface $location) {
         array_push($this->visitedlocations, $location);
         $this->visitedlocations = Util::clean_array($this->visitedlocations, Location_Interface::class);
     }
@@ -133,7 +133,7 @@ class App implements App_Interface {
 
     public function do_actionsdone($actionsdone) {
         foreach ($actionsdone as $action) {
-            $this->get_game()->get_player()->get_current_location()->check_actions($action);
+            $this->get_game()->get_player()->get_currentlocation()->check_actions($action);
         }
     }
     public function get_actionsdone() {
@@ -208,7 +208,7 @@ class App implements App_Interface {
         $this->defaultactionsearch = $this->create_action_defaut($defaultactionsearchrow);
 
         $player = $this->get_startentity(self::$playerkeyword);
-        if ($player->get_current_location() == null) {
+        if ($player->get_currentlocation() == null) {
             throw new Exception("One location must have '" . self::$playerkeyword . "' in their list of characters.");
         }
 

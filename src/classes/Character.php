@@ -41,7 +41,7 @@ class Character extends Entity implements Character_Interface {
         return false;
     }
 
-    public function get_current_location() {
+    public function get_currentlocation() {
         return $this->currentlocation;
     }
 
