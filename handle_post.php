@@ -28,10 +28,9 @@ if (isset($_SESSION['conditionsdone'])) {
 }
 $game = $app->get_game();
 $inputtext = $_POST['inputText'];
-$currentlocation = $game->get_current_location();
+$currentlocation = $game->get_player()->get_current_location();
 
 $action = $currentlocation->check_actions($inputtext);
-
 
 if (empty($action[0])) {
     echo "donne une autre commande";

@@ -57,7 +57,7 @@ class Condition implements Condition_Interface {
                         if ($character instanceof Npc_Character) {
                             $character->set_currentlocation($newlocation);
                         } else if ($character instanceof Player_Character) {
-                            $game->set_current_location($newlocation);
+                            $character->set_currentlocation($newlocation);
                             $app->add_visited_location($newlocation);
                             $descriptionreturn = $newlocation->check_actions("description");
 

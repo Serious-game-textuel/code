@@ -41,13 +41,6 @@ class Game implements Game_Interface {
         return $this->player;
     }
 
-    public function get_current_location() {
-        return $this->player->get_current_location();
-    }
-    public function set_current_location(Location_Interface $currentlocation) {
-        $this->player->set_currentlocation($currentlocation);
-    }
-
     public function get_entities() {
         return $this->entities;
     }

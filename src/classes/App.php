@@ -133,7 +133,7 @@ class App implements App_Interface {
 
     public function do_actionsdone($actionsdone) {
         foreach ($actionsdone as $action) {
-            $this->get_game()->get_current_location()->check_actions($action);
+            $this->get_game()->get_player()->get_current_location()->check_actions($action);
         }
     }
     public function get_actionsdone() {

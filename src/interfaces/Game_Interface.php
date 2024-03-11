@@ -27,17 +27,6 @@ interface Game_Interface {
     public function get_player();
 
     /**
-     * @return Location_Interface
-     */
-    public function get_current_location();
-
-    /**
-     * @param Location_Interface
-     * @return void
-     */
-    public function set_current_location(Location_Interface $location);
-
-    /**
      * @return array
      */
     public function get_entities();
