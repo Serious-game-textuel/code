@@ -13,6 +13,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Class Util
+ * @package mod_serioustextualgame
+ */
 class Util {
     public static function check_array(array $array, string $class) {
         if (self::has_array_duplicate($array)) {
@@ -80,4 +85,71 @@ class Util {
         }
         return false;
     }
+
+    public static function get_french_synonyms($word) {
+
+        $url = "https://cnrtl.fr/synonymie/".$word;
+        $doc = new DOMDocument();
+        try {
+            $html = file_get_contents($url);
+            if ($html === false) {
+                return [];
+            }
+        } catch (Exception $e) {
+            return [];
+        }
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($html);
+        $htmlstring = $doc->saveHTML();
+        $lines = explode("\n", $htmlstring);;
+        $pattern = '/<tr><td class="syno_format">.*<\/td><td>.*<\/td><\/tr>/';
+        $filteredlines = [];
+
+        foreach ($lines as $line) {
+            if (preg_match($pattern, $line)) {
+                $filteredlines[] = $line;
+            }
+        }
+        $pattern = '/<a[^>]*>([^<]*)<\/a>/';
+        $extractedwords = [];
+        foreach ($filteredlines as $line) {
+            preg_match($pattern, $line, $matches);
+            if (!empty($matches[1])) {
+                $extractedwords[] = $matches[1];
+            }
+        }
+        return $extractedwords;
+    }
+
+    public static function get_english_synonyms($word) {
+        $url = "https://dictionary.cambridge.org/thesaurus/".$word;
+        $doc = new DOMDocument();
+        try {
+            $html = @file_get_contents($url);
+            if ($html === false) {
+                return [];
+            }
+        } catch (Exception $e) {
+            return [];
+        }
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($html);
+        $htmlstring = $doc->saveHTML();
+        $lines = explode("\n", $htmlstring);
+        $pattern = '/<div class="tlcs lmt-10 lmb-20">/';
+        $filteredlines = [];
+        foreach ($lines as $line) {
+            if (preg_match($pattern, $line)) {
+                $filteredlines[] = $line;
+            }
+        }
+        $concatenatedline = "";
+        foreach ($filteredlines as $line) {
+            $concatenatedline .= $line;
+        }
+        $pattern = '/<span class="dx-h dthesButton synonym">([^<]+)<\/span>/';
+        preg_match_all($pattern, $concatenatedline, $matches);
+        return $matches[1];
+    }
+
 }

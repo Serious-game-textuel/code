@@ -24,6 +24,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class GameTest
+ * @package mod_serioustextualgame
+ */
 class GameTest extends TestCase {
     /**
      * vérifie si la méthode get_deaths retourne bien le nombre de morts

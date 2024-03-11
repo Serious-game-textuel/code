@@ -34,7 +34,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Cell_Exception.php');
 
-
+/**
+ * Class App
+ * @package mod_serioustextualgame
+ */
 class App implements App_Interface {
 
     private Game_Interface $game;
@@ -141,14 +144,14 @@ class App implements App_Interface {
             $itemsrow = $this->get_row("OBJETS");
             $charactersrow = $this->get_row("PERSONNAGES");
             $locationsrow = $this->get_row("LIEUX");
-            $interactiondefautrow = $this->get_row("interaction avec objet n'existant pas :");
-            $fouillerdefautrow = $this->get_row("Fouiller par défaut :");
+            $interactiondefautrow = $this->get_row("Interaction avec objet n'existant pas");
+            $fouillerdefautrow = $this->get_row("Fouiller par défaut");
         } else {
             $itemsrow = $this->get_row("ITEMS");
             $charactersrow = $this->get_row("CHARACTERS");
             $locationsrow = $this->get_row("LOCATIONS");
-            $interactiondefautrow = $this->get_row("interaction with non-existent object:");
-            $fouillerdefautrow = $this->get_row("Search by default:");
+            $interactiondefautrow = $this->get_row("Interaction with non-existent object");
+            $fouillerdefautrow = $this->get_row("Search by default");
         }
         $this->create_items($itemsrow);
         $this->create_characters($charactersrow);

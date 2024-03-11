@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
+
+/**
+ * Class No_Entity_Reaction
+ * @package mod_serioustextualgame
+ */
 class No_Entity_Reaction extends Reaction {
 
     public function __construct(string $description) {

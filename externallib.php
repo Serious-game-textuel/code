@@ -17,7 +17,6 @@
 /**
  * External services for mod_serioustextualgame.
  * @package     mod_serioustextualgame
- * @category    services
  * @copyright   2024 Your Name
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

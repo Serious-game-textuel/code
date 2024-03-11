@@ -17,6 +17,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
 
+/**
+ * Class Game
+ * @package mod_serioustextualgame
+ */
 class Game implements Game_Interface {
 
     private int $id;

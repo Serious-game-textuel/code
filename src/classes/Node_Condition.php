@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
+
+/**
+ * Class Node_Condition
+ * @package mod_serioustextualgame
+ */
 class Node_Condition extends Condition {
 
     private ?Condition_Interface $condition1;

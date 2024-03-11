@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
+
+/**
+ * Class Character_Reaction
+ * @package mod_serioustextualgame
+ */
 class Character_Reaction extends Reaction {
 
     private Character_Interface $character;

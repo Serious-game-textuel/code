@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_Interface.php');
+
+/**
+ * Class Reaction
+ * @package mod_serioustextualgame
+ */
 abstract class Reaction implements Reaction_Interface {
 
     private int $id;

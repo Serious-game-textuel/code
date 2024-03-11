@@ -17,6 +17,11 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
+
+/**
+ * Class Character
+ * @package mod_serioustextualgame
+ */
 class Character extends Entity implements Character_Interface {
 
     private Inventory_Interface $inventory;
