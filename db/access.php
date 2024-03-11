@@ -17,7 +17,7 @@
 /**
  * Serioustextualgame module capability definition
  *
- * @package    Serioustextualgame
+ * @package    mod_serioustextualgame
  * @copyright  2024 SG
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

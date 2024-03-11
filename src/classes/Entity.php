@@ -17,6 +17,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
+/**
+ * Class Entity
+ * @package mod_serioustextualgame
+ */
 class Entity implements Entity_Interface {
 
     private int $id;
@@ -25,9 +29,14 @@ class Entity implements Entity_Interface {
         global $DB;
         if (!isset($id)) {
             $app = App::get_instance();
+            $language = $app->get_language();
             Util::check_array($status, 'string');
             if ($app->get_startentity($name) != null) {
-                throw new InvalidArgumentException("Each entity name must be unique : ".$name);
+                if ($language == 'fr') {
+                    throw new InvalidArgumentException("Chaque nom d'objet doit être unique : ".$name);
+                } else {
+                    throw new InvalidArgumentException("Each entity name must be unique : ".$name);
+                }
             }
             $this->id = $DB->insert_record('entity', [
                 'description' => $description,
@@ -41,13 +50,19 @@ class Entity implements Entity_Interface {
             }
             $app->add_startentity_from_id($this->id);
         } else {
+            $app = App::get_instance();
+            $language = $app->get_language();
             $exists = $DB->record_exists_sql(
                 "SELECT id FROM {entity} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
             if (!$exists) {
+                if ($language == 'fr') {
+                    throw new InvalidArgumentException("Aucun objet Entity d'ID:".$id." existe.");
+                } else {
                 throw new InvalidArgumentException("No Entity object of ID:".$id." exists.");
+                }
             }
             $this->id = $id;
         }

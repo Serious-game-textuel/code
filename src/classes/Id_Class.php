@@ -15,45 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Interface Condition_Interface
+ * Class Id_Class
  * @package mod_serioustextualgame
  */
-interface Condition_Interface {
+class Id_Class {
 
-    /**
-     * @return int
-     */
-    public function get_id();
+    private static $map = [];
 
-    /**
-     * @return Condition_Interface
-     */
-    public static function get_instance(int $id);
-
-    /**
-     * @return Reaction_Interface[]
-     */
-    public function get_reactions();
-
-    /**
-     * @param Reaction_Interface[] $reactions
-     * @return void
-     */
-    public function set_reactions(array $reactions);
-
-    /**
-     * @return string
-     */
-    public function do_reactions();
-
-    /**
-     * @return array
-     */
-    public function is_true();
-
-    /**
-     * @return string
-     */
-    public function __toString();
+    public static function generate_id($class) {
+        if (array_key_exists($class, self::$map)) {
+            self::$map[$class]++;
+        } else {
+            self::$map[$class] = 1;
+        }
+        return self::$map[$class];
+    }
 
 }

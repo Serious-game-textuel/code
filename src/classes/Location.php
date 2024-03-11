@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
+
+/**
+ * Class Location
+ * @package mod_serioustextualgame
+ */
 class Location extends Entity implements Location_Interface {
 
     private int $id;
@@ -35,7 +40,7 @@ class Location extends Entity implements Location_Interface {
             foreach ($hints as $hint) {
                 $DB->insert_record('location_hints', [
                     'location_id' => $this->id,
-                    'hint' => $hint->get_id(),
+                    'hint_id' => $hint->get_id(),
                 ]);
             }
             foreach ($actions as $action) {
@@ -123,13 +128,38 @@ class Location extends Entity implements Location_Interface {
                 array_push($valid, $actions[$i]);
             }
         }
+        $actiontoken = explode(" ", $action);
+        $app = App::get_instance();
+        if ($app->get_language() == Language::FR) {
+            $synonyms = Util::get_french_synonyms($actiontoken[0]);
+        } else if ($app->get_language() == Language::EN) {
+            $synonyms = Util::get_english_synonyms($actiontoken[0]);
+        } else {
+            return $valid;
+        }
+        for ($i = 0; $i < count($actions); $i++){
+            $description = explode(" ", $actions[$i]->get_description());
+            $firstword = $description[0];
+            foreach ($synonyms as $synonym) {
+                if ($firstword == $synonym) {
+                    for ($j = 1; $j < count($actiontoken); $j++) {
+                        if ($description[$j] != $actiontoken[$j]) {
+                            break;
+                        }
+                        if ($j == count($actiontoken) - 1) {
+                            array_push($valid, $actions[$i]);
+                        }
+                    }
+                }
+            }
+        }
         return $valid;
     }
-
     public function check_actions(string $actionname) {
         $return = [];
         $debug = [];
         $app = App::get_instance();
+        $language = $app->get_language();
         $game = $app->get_game();
         $actionname = App::tokenize($actionname);
         $actionsvalide = $this->get_actions_valide($actionname);
@@ -142,7 +172,7 @@ class Location extends Entity implements Location_Interface {
                 }
                 array_push($debug, implode(', ', $result[1]));
             }
-        } else {
+        } else if ($language == "fr") {
             array_push($debug, '0 action trouvée');
             $defaultactionname = "fouiller";
             if (strpos($actionname, $defaultactionname) === 0) {
@@ -197,6 +227,62 @@ class Location extends Entity implements Location_Interface {
                     array_push($return, $actionname.'? Tu ne peux pas faire ca.');
                 }
             }
+        } else {
+            array_push($debug, '0 action found');
+            $defaultactionname = "search";
+            if (strpos($actionname, $defaultactionname) === 0) {
+                $entityname = substr($actionname, strlen($defaultactionname) + 1);
+                if ($game->get_entity($entityname) !== null) {
+                    $defaultactionsearch = $game->get_default_action_search();
+                    if ($defaultactionsearch !== null) {
+                        array_push($debug, "using default search action");
+                        $result = $defaultactionsearch->do_conditions_verb($defaultactionname);
+                        $return = array_merge($result[0], $return);
+                        array_push($debug, implode(', ', $result[1]));
+                    } else {
+                        array_push($return, "I don't understand what you want to ".$defaultactionname);
+                    }
+                } else {
+                    $defaultactioninteract = $game->get_default_action_interact();
+                    if ($defaultactioninteract !== null) {
+                        array_push($debug, "using default interact action");
+                        $result = $defaultactioninteract->do_conditions_verb($defaultactionname);
+                        $return = array_merge($result[0], $return);
+                        array_push($debug, implode(', ', $result[1]));
+                    } else {
+                        array_push($return, "I don't understand what you want to ".$defaultactionname);
+                    }
+                }
+            } else if ($actionname == "hints" || $actionname == "hint") {
+                array_push($debug, "using default hint action");
+                $hints = $this->get_hints();
+                $hintcount = $this->get_hintscount();
+                if ($hintcount < count($hints)) {
+                    $hint = $hints[$hintcount];
+                    $this->increments_hintscount();
+                    array_push($return, $hint->get_description());
+                } else {
+                    array_push($return, "No more hints available.");
+                }
+            } else if ($actionname == "exit") {
+                array_push($debug, "using default exit action");
+                array_push($return, $this->get_exit());
+            } else if ($actionname == "inventory") {
+                array_push($debug, "using default inventory action");
+                array_push($return, $game->get_player()->get_inventory()->__toString());
+            } else {
+                array_push($debug, "using default interact action");
+                $firstword = explode(' ', $actionname)[0];
+                $defaultactioninteract = $game->get_default_action_interact();
+                if ($defaultactioninteract !== null) {
+                    $result = $defaultactioninteract->do_conditions_verb($firstword);
+                    $return = array_merge($result[0], $return);
+                    array_push($debug, implode(', ', $result[1]));
+                } else {
+                    array_push($return, $actionname.'? You can\'t do that.');
+                }
+            }
+
         }
         return [$return, $debug];
     }
@@ -216,7 +302,13 @@ class Location extends Entity implements Location_Interface {
 
     public function get_exit() {
         global $DB;
-        $sortie = "Sorties disponibles : ";
+        $app = App::get_instance();
+        $language = $app->get_language();
+        if ($language == "fr") {
+            $sortie = "Sorties disponibles : ";
+        } else {
+            $sortie = "Exits available : ";
+        }
         foreach ($this->get_actions() as $action) {
             $conditions = $action->get_conditions();
             foreach ($conditions as $condition) {
@@ -241,5 +333,30 @@ class Location extends Entity implements Location_Interface {
 
     public function get_id() {
         return $this->id;
+    }
+        public function get_inventory_description() {
+        $app = App::get_instance();
+        $language = $app->get_language();
+        $game = $app->get_game();
+        $player = $game->get_player();
+        $inventory = $player->get_inventory();
+        $items = $inventory->get_items();
+        if ($language == "fr") {
+            $description = "Inventaire : ";
+        } else {
+            $description = "Inventory : ";
+        }
+        if (count($items) == 0) {
+            if ($language == "fr") {
+                $description .= "vide";
+            } else {
+                $description .= "empty";
+            }
+        } else {
+            foreach ($items as $item) {
+                $description .= $item->get_name().", ";
+            }
+        }
+        return rtrim($description, " ,");
     }
 }

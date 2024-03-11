@@ -34,6 +34,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class EntityTest
+ * @package mod_serioustextualgame
+ */
 class EntityTest extends TestCase {
 
 

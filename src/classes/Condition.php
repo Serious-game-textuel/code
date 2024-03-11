@@ -19,6 +19,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
 
+/**
+ * Class Condition
+ * @package mod_serioustextualgame
+ */
 class Condition implements Condition_Interface {
 
     private int $id;
@@ -87,7 +91,7 @@ class Condition implements Condition_Interface {
             array_push($descriptions, $reaction->get_description());
         }
         if (empty($descriptions)) {
-            return "pas de réaction";
+            return "no reaction";
         }
         return implode(' / ', $descriptions);
     }
@@ -121,5 +125,4 @@ class Condition implements Condition_Interface {
         }
         return '(no condition)';
     }
-
 }

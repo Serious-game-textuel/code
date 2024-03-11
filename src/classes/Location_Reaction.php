@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
+
+/**
+ * Class Location_Reaction
+ * @package mod_serioustextualgame
+ */
 class Location_Reaction extends Reaction {
 
     private int $id;

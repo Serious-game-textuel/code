@@ -19,6 +19,10 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
 
+/**
+ * Class Inventory
+ * @package mod_serioustextualgame
+ */
 class Inventory implements Inventory_Interface {
 
     private int $id;

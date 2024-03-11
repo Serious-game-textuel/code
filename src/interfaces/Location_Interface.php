@@ -17,6 +17,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
 
+/**
+ * Interface Location_Interface
+ * @package mod_serioustextualgame
+ */
 interface Location_Interface extends Entity_Interface {
 
     /**
