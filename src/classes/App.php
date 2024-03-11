@@ -661,7 +661,7 @@ class App implements App_Interface {
                         $game->set_player($entity);
                     }
                 } catch (Exception $e) {
-                    $e
+                    $e;
                 }
             }
         }
