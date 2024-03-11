@@ -14,10 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Class Cell_Exception
+ * @package mod_serioustextualgame
+ */
+
 class Cell_Exception extends Exception {
 
     public function __construct($message, $row, $col) {
-        parent::__construct($message . " (row: " . ($row + 1) . ", column: " . ($col + 1) . ")", 0, null);
+        if (App::get_instance()->get_language() == Language::FR) {
+            parent::__construct($message . " (ligne : " . ($row + 1) . ", colonne : " . ($col + 1) . ")", 0, null);
+        } else {
+            parent::__construct($message . " (row: " . ($row + 1) . ", column: " . ($col + 1) . ")", 0, null);
+        }
+        
     }
 
 }
