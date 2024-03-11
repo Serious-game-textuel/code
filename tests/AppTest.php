@@ -21,6 +21,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class AppTest
+ * @package mod_serioustextualgame
+ */
 class AppTest extends TestCase {
     /**
      * vérifie que le constructeur initialise correctement les propriétés

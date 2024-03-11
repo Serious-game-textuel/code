@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Class Util
+ * @package mod_serioustextualgame
+ */
 class Util {
     public static function check_array(array $array, string $class) {
         if (self::has_array_duplicate($array)) {

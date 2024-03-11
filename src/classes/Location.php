@@ -16,6 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
+
+/**
+ * Class Location
+ * @package mod_serioustextualgame
+ */
 class Location extends Entity implements Location_Interface {
 
     private Inventory_Interface $inventory;

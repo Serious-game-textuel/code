@@ -33,7 +33,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
 require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
 
-
+/**
+ * Class App
+ * @package mod_serioustextualgame
+ */
 class App implements App_Interface {
 
     private Game_Interface $game;

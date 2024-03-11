@@ -38,6 +38,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 use core\check\check;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class LocationTest
+ * @package mod_serioustextualgame
+ */
 class LocationTest extends TestCase {
     /**
      * vérifie que quand on appelle la méthode do_conditions, les conditions sont bien effectuées

@@ -36,6 +36,10 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 use core_reportbuilder\external\columns\sort\get;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class UtilTest
+ * @package mod_serioustextualgame
+ */
 class UtilTest extends TestCase {
     public function test_has_array_duplicate_string() {
         $str1 = "a";
