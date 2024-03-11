@@ -190,6 +190,8 @@ if ($rolename !== "student") {
         .catch((error) => {
             typeWriter(document.getElementById("text"), returnedtext, "white");
             typeWriter(document.getElementById("text"), 'Error : '+error, "yellow");
+            inputText.disabled = false;
+            inputText.value = '';
         });
     }
 </script>

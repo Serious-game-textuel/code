@@ -126,9 +126,7 @@ class Entity implements Entity_Interface {
     }
 
     public function remove_status(array $status) {
-        global $DB;
-        foreach ($status as $statut) {
-            $DB->delete_records('entity_status', ['entity_id' => $this->id, 'status' => $statut]);
-        }
+        $s = $this->get_status();
+        $this->set_status(array_diff($s, $status));
     }
 }
