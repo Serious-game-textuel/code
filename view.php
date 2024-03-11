@@ -122,6 +122,7 @@ if ($rolename !== "student") {
     });
     function displayDescription() {
         var csvcontent = <?php echo json_encode($csvcontent); ?>;
+        var returnedtext = '';
 
         fetch(`handle_post.php`, { 
             method: 'POST',
@@ -132,10 +133,17 @@ if ($rolename !== "student") {
         })
         .then(response => response.text())
         .then(text => {
+            returnedtext = text;
             jsontext = JSON.parse(text);
             typeWriter(document.getElementById("text"), jsontext[0], "red");
         })
         .then(() => {
+            inputText.disabled = false;
+            inputText.value = '';
+        })
+        .catch((error) => {
+            typeWriter(document.getElementById("text"), returnedtext, "white");
+            typeWriter(document.getElementById("text"), 'Error : '+error, "yellow");
             inputText.disabled = false;
             inputText.value = '';
         });

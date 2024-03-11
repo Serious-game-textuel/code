@@ -247,7 +247,6 @@ class App implements App_Interface {
 
     private function create_locations($row) {
         $col = 1;
-        global $DB;
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $name = $this->get_cell_string($row, $col);
             $statuses = $this->get_cell_array_string($row + 1, $col);
@@ -312,7 +311,6 @@ class App implements App_Interface {
 
     private function create_all_actions($row) {
         $col = 1;
-        global $DB;
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
             $locationname = $this->get_cell_string($row, $col);
             $location = $this->get_startentity($locationname);
@@ -505,7 +503,6 @@ class App implements App_Interface {
         while (!empty($stack)) {
             $output[] = array_pop($stack);
         }
-
         return $this->create_condition($output, $reactions);
     }
 
@@ -534,8 +531,8 @@ class App implements App_Interface {
         } else if ($tree[0] != null && $tree[1] != null) {
             return new Node_Condition(
                 null,
-                $this->read_tree($tree[1], $reactions),
-                $this->read_tree($tree[0], $reactions),
+                Condition::get_instance($this->read_tree($tree[1], $reactions)->get_parent_id()),
+                Condition::get_instance($this->read_tree($tree[0], $reactions)->get_parent_id()),
                 $tree[2],
                 $reactions
             );
