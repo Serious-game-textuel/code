@@ -21,7 +21,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Inte
 /**
  * Class Action
  * @package mod_serioustextualgame
-  */
+ */
 class Action implements Action_Interface {
 
     private int $id;
