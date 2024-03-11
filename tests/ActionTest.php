@@ -34,8 +34,7 @@ require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
 use PHPUnit\Framework\TestCase;
 
 /*
-    * Class ActionTest.
-    * This class tests the Action class.
+    * Class ActionTest
     * @package mod_serioustextualgame
 */
 
