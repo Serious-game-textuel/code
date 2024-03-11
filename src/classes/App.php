@@ -375,7 +375,7 @@ class App implements App_Interface {
                     if ($this->language == Language::FR) {
                         $errormessage = $entityname . " n'est pas une entité";
                     }
-                    throw new Exception($errormessage, $row + 3, $col);
+                    throw new Cell_Exception($errormessage, $row + 3, $col);
                 }
 
                 $newstatuses = $this->get_cell_array_string($row + 4, $col);

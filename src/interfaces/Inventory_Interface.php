@@ -26,7 +26,7 @@ interface Inventory_Interface {
 
     /**
      * @param int $id
-     * @return Item_Interface
+     * @return Item_Interface | null
      */
     public function get_item(int $id);
 
