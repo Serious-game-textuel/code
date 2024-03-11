@@ -53,13 +53,11 @@ class Location extends Entity implements Location_Interface {
         }
         $actiontoken = explode(" ", $action);
         $app = App::get_instance();
-        if ($app->get_language()==Language::FR){
+        if ($app->get_language() == Language::FR) {
             $synonyms = Util::get_french_synonyms($actiontoken[0]);
-        }
-        elseif ($app->get_language()==Language::EN){
+        } else if ($app->get_language() == Language::EN) {
             $synonyms = Util::get_english_synonyms($actiontoken[0]);
-        }
-        else{
+        } else {
             return null;
         }
         for ($i = 0; $i < count($this->actions); $i++) {

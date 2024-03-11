@@ -117,7 +117,7 @@ class Util {
         libxml_use_internal_errors(true);
         $doc->loadHTML($html);
         $htmlstring = $doc->saveHTML();
-        $lines = explode("\n", $htmlstring); 
+        $lines = explode("\n", $htmlstring);
         $pattern = '/<div class="tlcs lmt-10 lmb-20">/';
         $filteredlines = [];
         foreach ($lines as $line) {
