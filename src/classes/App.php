@@ -195,7 +195,6 @@ class App implements App_Interface {
 
         $this->game = new Game(
             [$player->get_current_location()],
-            $player,
             null,
             null,
             array_values($this->startentities));
@@ -694,7 +693,6 @@ class App implements App_Interface {
     public function restart_game_from_start() {
         $this->set_game(new Game(
             $this->get_game()->get_visited_locations(),
-            null,
             $this->get_game()->get_default_action_search(),
             $this->get_game()->get_default_action_interact(),
             array_values($this->get_startentities())

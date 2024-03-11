@@ -27,15 +27,18 @@ class Game implements Game_Interface {
     private array $entities = [];
     private static array $instances = [];
 
-    public function __construct(array $visitedlocations, ?Player_Character $player,
-    ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
+    public function __construct(array $visitedlocations, ?Default_Action_Interface $defaultactionsearch, ?Default_Action_Interface $defaultactioninteract, array $entities) {
         $this->id = Id_Class::generate_id(self::class);
         Util::check_array($visitedlocations, Location_Interface::class);
         $this->visitedlocations = $visitedlocations;
-        $this->player = $player;
         $this->defaultactionsearch = $defaultactionsearch;
         $this->defaultactioninteract = $defaultactioninteract;
         $this->entities = $entities;
+        foreach ($this->entities as $e) {
+            if ($e instanceof Player_Character) {
+                $this->player = $e;
+            }
+        }
         self::$instances[$this->id] = $this;
     }
 
