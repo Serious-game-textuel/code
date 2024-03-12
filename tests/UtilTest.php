@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
+<<<<<<< HEAD
 require_once($CFG->dirroot . '/mod/stg/src/interfaces/Condition_Interface.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Leaf_Condition.php');
@@ -32,13 +33,36 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Action.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Util.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/stg/src/Language.php');
+=======
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+>>>>>>> exceptions
 
 use core_reportbuilder\external\columns\sort\get;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class UtilTest
+<<<<<<< HEAD
  * @package mod_stg
+=======
+ * @package mod_serioustextualgame
+>>>>>>> exceptions
  */
 class UtilTest extends TestCase {
     public function test_has_array_duplicate_string() {
@@ -54,7 +78,11 @@ class UtilTest extends TestCase {
     }
     public function test_has_array_duplicate_object() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
         $this->assertFalse(Util::has_array_duplicate([$item1, $item2]));
@@ -107,7 +135,11 @@ class UtilTest extends TestCase {
     }
     public function test_check_array_object() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
         try {
@@ -157,7 +189,11 @@ class UtilTest extends TestCase {
     }
     public function test_clean_array_object() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         $item1 = new Item("une pomme", "pomme", []);
         $item2 = new Item("une poire", "poire", []);
         $this->assertTrue($this->array_equal(Util::clean_array([$item1], Item_Interface::class), [$item1]));

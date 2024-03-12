@@ -23,6 +23,61 @@ interface App_Interface {
       * @return string
       */
     public function get_language();
+
+    /**
+     * Returns the number of deaths.
+     * @return int
+     */
+    public function get_deaths();
+
+    /**
+     * Increases the number of deaths.
+     */
+    public function add_deaths();
+
+    /**
+     * Returns the number of actions performed.
+     * @return int
+     */
+    public function get_actions();
+
+    /**
+     * Increases the number of actions performed.
+     * @return void
+     */
+    public function add_action();
+
+    /**
+     * @return DateTime
+     */
+    public function get_start_time();
+
+    /**
+     * @param DateTime $time
+     */
+    public function set_start_time(DateTime $time);
+
+    /**
+     * @return Default_Action_Interface
+     */
+    public function get_default_action_search();
+
+    /**
+     * @return Default_Action_Interface
+     */
+    public function get_default_action_interact();
+
+    /**
+     * Returns the list of all the visited locations
+     * @return string[]
+     */
+    public function get_visited_locations();
+
+    /**
+     * @param Location_Interface $location
+     */
+    public function add_visited_location(Location_Interface $location);
+
     /**
      * @return int
      */
@@ -77,6 +132,10 @@ interface App_Interface {
       * @return App_Interface|null
       */
     public function get_save();
+    public function set_current_location(Location_Interface $location);
+    public function get_current_location();
+    public function do_action(string $actionname, bool $isdefault);
+    public function get_player();
 
 }
 

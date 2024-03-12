@@ -28,7 +28,7 @@ $app = App::get_instance();
 if ($app == null) {
     $app = new App(null, $tempfilepath);
 }
-$action = $app->get_game()->do_action($_POST['inputText'], $_POST['debug']);
+$action = $app->do_action($_POST['inputText'], $_POST['debug']);
 if (count($action[0]) == 0) {
     echo '["donne une autre commande", ["'.implode('", "', $action[1]).'"]]';
 } else {

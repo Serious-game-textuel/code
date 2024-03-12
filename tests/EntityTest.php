@@ -36,14 +36,22 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class EntityTest
+<<<<<<< HEAD
  * @package mod_stg
+=======
+ * @package mod_serioustextualgame
+>>>>>>> exceptions
  */
 class EntityTest extends TestCase {
 
 
     public function testnpc() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         $npccharacter = new Npc_Character("description", "name", ["status"], [], $this->createMock(Location_Interface::class));
 
         $this->assertInstanceOf(Npc_Character::class, $npccharacter);
@@ -53,7 +61,11 @@ class EntityTest extends TestCase {
     }
     public function testplayer() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         $playercharacter = new Player_Character(
             "description",
             "name",
@@ -67,7 +79,11 @@ class EntityTest extends TestCase {
     }
     public function testitem() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         $item = new Item("description", "name", ["status"]);
         $this->assertEquals("description", $item->get_description());
         $this->assertEquals("name", $item->get_name());
@@ -75,7 +91,11 @@ class EntityTest extends TestCase {
     }
     public function testlocation() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         $location = new Location("name", ["status"], [], [], [], 0);
         $this->assertEquals("name", $location->get_name());
         $this->assertEquals(["status"], $location->get_status());
@@ -86,7 +106,11 @@ class EntityTest extends TestCase {
      */
     public function teststatus() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         $npccharacter = new Npc_Character("description", "namenpc", ["status"], [], $this->createMock(Location_Interface::class));
         $playercharacter = new Player_Character(
             "description",

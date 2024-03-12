@@ -35,7 +35,11 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class ActionTest
+<<<<<<< HEAD
  * @package mod_stg
+=======
+ * @package mod_serioustextualgame
+>>>>>>> exceptions
  */
 class ActionTest extends TestCase {
     /**
@@ -43,7 +47,11 @@ class ActionTest extends TestCase {
      */
     public function testdoconditions() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'), Language::FR);
+>>>>>>> exceptions
         // Create a mock reaction.
         // Create mock objects for testing.
         $item1 = new Item("une pomme", "pomme", ["croquée"]);

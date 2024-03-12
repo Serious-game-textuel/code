@@ -97,7 +97,7 @@ class Action implements Action_Interface {
 
     public function do_conditions() {
         $game = App::get_instance()->get_game();
-        $game->add_action();
+        App::get_instance()->add_action();
         $conditions = $this->get_conditions();
         $conditionstrue = [];
         $debug = [];

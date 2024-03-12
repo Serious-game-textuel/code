@@ -115,9 +115,9 @@ class Character_Reaction extends Reaction {
                 } catch (Exception $e) {
                     try {
                         $playercharacter = Player_Character::get_instance_from_parent_id($character->get_id());
-                        $game->set_current_location($newlocation);
-                        $game->add_visited_location($newlocation);
-                        array_push($return, $game->do_action("description", false)[0]);
+                        $app->set_current_location($newlocation);
+                        $app->add_visited_location($newlocation);
+                        array_push($return, $app->do_action("description", false)[0]);
                     } catch (Exception $e) {
                         $e;
                     }
@@ -142,17 +142,17 @@ class Character_Reaction extends Reaction {
                     $playercharacter = Player_Character::get_instance_from_parent_id($character->get_id());
                     foreach ($newstatus as $status) {
                         if ($status == "mort") {
-                            $game->add_deaths();
+                            $app->add_deaths();
                             $app->restart_game_from_start();
                             array_push($return, "Vous avez échoué. Vous recommencez.");
                         }
                         if ($status == "victoire") {
-                            $deaths = $game->get_deaths();
-                            $starttime = $game->get_start_time();
+                            $deaths = $app->get_deaths();
+                            $starttime = $app->get_start_time();
                             $endtime = new DateTime();
                             $interval = $starttime->diff($endtime);
                             $time = $interval->format('%H:%I:%S');
-                            $lieux = $game->get_visited_locations();
+                            $lieux = $app->get_visited_locations();
                             array_push($return, "Vous avez gagné en " . $time . " avec " . $deaths
                             . " morts et " . count($lieux) . " lieux visités.");
                         }

@@ -104,11 +104,13 @@ if ($file) {
         <?php if ($element === 'FR'): ?>
             Avoir des indices = indices <br>
             Connaître les sorties = sortie <br>
+            Sauvegarder une partie = sauvegarder <br>
             Fouiller un endroit = fouiller [nom de l'endroit] <br>
             Connaître son inventaire = inventaire <br>
         <?php else: ?>
             Get hints = hints <br>
             Know the exits = exit <br>
+            Save a game = save <br>
             Search a place = search [place name] <br>
             Know your inventory = inventory <br>
         <?php endif; ?>

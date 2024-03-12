@@ -15,40 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Interface Game_Interface
- * @package mod_stg
+ * Class Cell_Exception
+ * @package mod_serioustextualgame
  */
-interface Game_Interface {
 
-    /**
-     * @return int
-     */
-    public function get_id();
-    /**
-     * @return array
-     */
-    public function get_entities();
+class Cell_Exception extends Exception {
 
-    /**
-     * @param array
-     * @return void
-     */
-    public function set_entities(array $entities);
+    public function __construct($message, $row, $col) {
+        if (App::get_instance()->get_language() == Language::FR) {
+            parent::__construct($message . " (ligne : " . ($row + 1) . ", colonne : " . ($col + 1) . ")", 0, null);
+        } else {
+            parent::__construct($message . " (row: " . ($row + 1) . ", column: " . ($col + 1) . ")", 0, null);
+        }
 
-    /**
-     * @return void
-     */
-    public function add_entity(Entity_Interface $entity);
-
-    /**
-     * @return ?Entity_Interface
-     */
-    public function get_entity(string $name);
-
-    /**
-     * @param int
-     * @return Game_Interface
-     */
-    public static function get_instance(int $id);
+    }
 
 }

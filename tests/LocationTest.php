@@ -39,7 +39,11 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class LocationTest
+<<<<<<< HEAD
  * @package mod_stg
+=======
+ * @package mod_serioustextualgame
+>>>>>>> exceptions
  */
 class LocationTest extends TestCase {
     /**
@@ -47,11 +51,15 @@ class LocationTest extends TestCase {
      */
     public function testdoconditions() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'));
+>>>>>>> exceptions
         $game = $app->get_game();
 
         // Prendre la canne a peche dans la hutte.
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $action = $currentlocation->check_actions("Prendre canne a peche");
         $player = $game->get_player();
         $canneapeche = $game->get_entity("canne a peche");
@@ -78,7 +86,7 @@ class LocationTest extends TestCase {
         $action = $currentlocation->check_actions("fouiller");
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("aller jardins royaux");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $this->assertEquals("jardins royaux", $currentlocation->get_name());
         $this->assertNotEquals("hutte", $currentlocation->get_name());
         $statuscurrentlocation = $currentlocation->get_status();
@@ -89,7 +97,7 @@ class LocationTest extends TestCase {
 
         // Aller dans l'etang.
         $action = $currentlocation->check_actions("aller etang");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $this->assertEquals("etang", $currentlocation->get_name());
 
         // Utiliser la canne a peche.
@@ -99,7 +107,7 @@ class LocationTest extends TestCase {
 
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("aller jardins royaux");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         // Sentir les roses.
         $action = $currentlocation->check_actions("sentir rose");
         $this->assertTrue(in_array("la rose sent bon", $action));
@@ -115,12 +123,12 @@ class LocationTest extends TestCase {
 
         // Aller sentier sinueux.
         $action = $currentlocation->check_actions("aller sentier sinueux");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $this->assertEquals("sentier sinueux", $currentlocation->get_name());
 
         // Aller au pont levis.
         $action = $currentlocation->check_actions("Aller Pont-Levis");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $this->assertEquals("pont-levis", $currentlocation->get_name());
         // Attaquer Troll.
 
@@ -136,7 +144,7 @@ class LocationTest extends TestCase {
         $this->assertTrue(in_array("ouvert", $currentstatus));
         // Aller Cour.
         $action = $currentlocation->check_actions("Aller Cour");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $this->assertEquals("cour", $currentlocation->get_name());
 
         // Voir la description de la cour.
@@ -145,9 +153,13 @@ class LocationTest extends TestCase {
 
     public function test_description() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'));
+>>>>>>> exceptions
         $game = $app->get_game();
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
 
         // La description est demandable en permanance plusieurs fois.
         $action = $currentlocation->check_actions("description");
@@ -165,7 +177,7 @@ class LocationTest extends TestCase {
 
         // La description est demandable dans n'importe quel lieu.
         $action = $currentlocation->check_actions("aller jardins royaux");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $action = $currentlocation->check_actions("description");
         $this->assertTrue(in_array(
         "vous etes dans les jardins royaux, leur vegetation est luxuriante. il y a des rose. vous apercevez aussi une hutte."
@@ -174,9 +186,13 @@ class LocationTest extends TestCase {
 
     public function test_deplacements() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'));
+>>>>>>> exceptions
         $game = $app->get_game();
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
 
         // On test d'aller à un endroit pas accessible d'ici (trop loin).
         $action = $currentlocation->check_actions("aller cour");
@@ -186,22 +202,26 @@ class LocationTest extends TestCase {
 
         // On test d'aller à un endroit fermé.
         $currentlocation->check_actions("aller jardins royaux");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $currentlocation->check_actions("aller sentier sinueux");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $currentlocation->check_actions("Aller Pont-Levis");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $this->assertTrue($currentlocation->get_name() === "pont-levis");
         $currentlocation->check_actions("Aller Cour");
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
         $this->assertTrue($currentlocation->get_name() !== "cour");
     }
 
     public function test_objets() {
         global $CFG;
+<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
+=======
+        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'));
+>>>>>>> exceptions
         $game = $app->get_game();
-        $currentlocation = $game->get_current_location();
+        $currentlocation = $game->get_currentlocation();
 
         // On test qu'on peut récupérer un objet qu'une seule fois.
         $action = $currentlocation->check_actions("Prendre canne a peche");

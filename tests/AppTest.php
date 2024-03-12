@@ -23,7 +23,11 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class AppTest
+<<<<<<< HEAD
  * @package mod_stg
+=======
+ * @package mod_serioustextualgame
+>>>>>>> exceptions
  */
 class AppTest extends TestCase {
     /**
@@ -32,7 +36,14 @@ class AppTest extends TestCase {
     public function testgetsetgame() {
         global $CFG;
         try {
+<<<<<<< HEAD
             $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
+=======
+            $app = new App(
+                file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'),
+                Language::FR
+            );
+>>>>>>> exceptions
             $this->assertTrue(true);
         } catch (Exception $e) {
             $this->assertFalse(false);
@@ -115,7 +126,7 @@ class AppTest extends TestCase {
         for ($i = 0; $i < count($itemids); $i++) {
             $this->assertTrue($citems[$i]->get_id() == $itemids[$i]);
         }
-        $this->assertTrue($character->get_current_location()->get_id() == $locationid);
+        $this->assertTrue($character->get_currentlocation()->get_id() == $locationid);
     }
 
     private function testlocations($locations) {
