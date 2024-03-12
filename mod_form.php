@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * The main mod_serioustextualgame configuration form.
+ * The main mod_stg configuration form.
  *
- * @package     mod_serioustextualgame
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @package     mod_stg
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,11 +28,11 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 /**
  * Module instance settings form.
  *
- * @package     mod_serioustextualgame
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @package     mod_stg
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_serioustextualgame_mod_form extends moodleform_mod {
+class mod_stg_mod_form extends moodleform_mod {
 
     /**
      * Defines forms elements
@@ -45,7 +45,7 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('serioustextualgamename', 'mod_serioustextualgame'), ['size' => '64']);
+        $mform->addElement('text', 'name', get_string('stgname', 'mod_stg'), ['size' => '64']);
 
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -55,7 +55,7 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
 
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'serioustextualgamename', 'mod_serioustextualgame');
+        $mform->addHelpButton('name', 'stgname', 'mod_stg');
         // Adding the standard "intro" and "introformat" fields.
         if ($CFG->branch >= 29) {
             $this->standard_intro_elements();
@@ -66,20 +66,22 @@ class mod_serioustextualgame_mod_form extends moodleform_mod {
          null, ['maxbytes' => 1111111111, 'accepted_types' => '.csv']);
         // Adding your new field here.
         $mform->addHelpButton('userfile', 'file');
+        $mform->addElement('filepicker', 'imagefile', "Carte(opt)",
+        null, ['maxbytes' => 5242880, 'accepted_types' => ['.png', '.jpg', '.jpeg', '.gif']]);
 
-        // Adding the rest of mod_serioustextualgame settings, spreading all them into this fieldset
+        // Adding the rest of mod_stg settings, spreading all them into this fieldset
         // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'serioustextualgamesettings',
-        get_string('serioustextualgamesettings', 'mod_serioustextualgame'));
-        $mform->addElement('header', 'serioustextualgamefieldset',
-        get_string('serioustextualgamefieldset', 'mod_serioustextualgame'));
+        $mform->addElement('static', 'label1', 'stgsettings',
+        get_string('stgsettings', 'mod_stg'));
+        $mform->addElement('header', 'stgfieldset',
+        get_string('stgfieldset', 'mod_stg'));
 
         // Add standard elements.
         $this->standard_coursemodule_elements();
 
         // Add standard buttons.
         $this->add_action_buttons();
-        $PAGE->requires->js_call_amd('mod_serioustextualgame/filepicker', 'init');
+        $PAGE->requires->js_call_amd('mod_stg/filepicker', 'init');
 
     }
 }

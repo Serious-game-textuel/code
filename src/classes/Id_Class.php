@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Class Id_Class
+ * @package mod_stg
+ */
 class Id_Class {
 
     private static $map = [];

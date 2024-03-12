@@ -14,22 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Interface App_Interface
+ * @package mod_stg
+ */
 interface App_Interface {
+     /**
+      * @return string
+      */
+    public function get_language();
     /**
-     * @param string $action
-     * @return void
+     * @return int
      */
-    public function store_actionsdone(string $action);
-
-    /**
-     * @param array $actionsdone
-     * @return void
-     */
-    public function do_actionsdone($actionsdone);
-    /**
-     * @return array
-     */
-    public function get_actionsdone();
+    public function get_id();
     /**
      * @return Game_Interface
      */
@@ -41,18 +38,6 @@ interface App_Interface {
      * @return void
      */
     public function set_game(Game_Interface $game);
-
-    /**
-     * @return Game_Interface
-     */
-    public function get_save();
-
-    /**
-     * @param Game_Interface $save
-     *
-     * @return void
-     */
-    public function set_save(Game_Interface $save);
 
     /**
      * @param string $entityname
@@ -69,24 +54,29 @@ interface App_Interface {
     public function add_startentity(Entity_Interface $entity);
 
     /**
-     * @return App_Interface
+     * @param int
+     */
+    public function add_startentity_from_id(int $entityid);
+
+    /**
+     * @return App_Interface|null
      */
     public static function get_instance();
 
     /**
      * @return void
      */
-    public function restart_game_from_save();
-
-    /**
-     * @return void
-     */
     public function restart_game_from_start();
 
-    /**
-     * @return void
-     */
-    public function create_save();
+     /**
+      * @return void
+      */
+    public function restart_game_from_save();
+
+     /**
+      * @return App_Interface|null
+      */
+    public function get_save();
 
 }
 

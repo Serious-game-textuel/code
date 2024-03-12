@@ -15,7 +15,37 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
 
+/**
+ * Interface Item_Interface
+ * @package mod_stg
+ */
 interface Item_Interface extends Entity_Interface {
+    /**
+     * @return Item_Interface
+     */
+    public function get_inventory();
+
+    /**
+     * @param int
+     * @return Item_Interface
+     */
+    public static function get_instance(int $id);
+
+    /**
+     * @return int
+     */
+    public function get_id();
+
+    /**
+     * @return int
+     */
+    public function get_parent_id();
+
+    /**
+     * @param int
+     * @return Item_Interface
+     */
+    public static function get_instance_from_parent_id(int $entityid);
 }

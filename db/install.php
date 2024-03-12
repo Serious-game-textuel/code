@@ -17,16 +17,16 @@
 /**
  * Code to be executed after the plugin's database scheme has been installed is defined here.
  *
- * @package     mod_serioustextualgame
+ * @package     mod_stg
  * @category    upgrade
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Custom code to be run on installing the plugin.
  */
-function xmldb_serioustextualgame_install() {
+function xmldb_stg_install() {
 
     return true;
 }

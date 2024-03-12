@@ -16,7 +16,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Action_Interface.php');
+
+/**
+ * Interface Default_Action_Interface
+ * @package mod_stg
+ */
 interface Default_Action_Interface extends Action_Interface {
     /**
      * @param string $verb
@@ -24,4 +29,27 @@ interface Default_Action_Interface extends Action_Interface {
      * @return array
      */
     public function do_conditions_verb(string $verb);
+
+    /**
+     * @param int
+     *
+     * @return Default_Action_Interface
+     */
+    public static function get_instance(int $id);
+
+    /**
+     * @return int
+     */
+    public function get_id();
+
+    /**
+     * @return int
+     */
+    public function get_parent_id();
+
+    /**
+     * @param int
+     * @return Default_Action_Interface
+     */
+    public static function get_instance_from_parent_id(int $actionid);
 }

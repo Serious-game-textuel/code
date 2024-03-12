@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Interface Action_Interface
+ * @package mod_stg
+ */
 interface Action_Interface {
 
     /**
@@ -49,5 +53,12 @@ interface Action_Interface {
      * @return array
      */
     public function do_conditions();
+
+    /**
+     * @param int
+     *
+     * @return Action_Interface
+     */
+    public static function get_instance(int $id);
 
 }

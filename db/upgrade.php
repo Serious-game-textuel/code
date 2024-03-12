@@ -17,9 +17,9 @@
 /**
  * Plugin upgrade steps are defined here.
  *
- * @package     mod_serioustextualgame
+ * @package     mod_stg
  * @category    upgrade
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,12 +28,12 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/upgradelib.php');
 
 /**
- * Execute mod_serioustextualgame upgrade from the given old version.
+ * Execute mod_stg upgrade from the given old version.
  *
  * @param int $oldversion
  * @return bool
  */
-function xmldb_serioustextualgame_upgrade($oldversion) {
+function xmldb_stg_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();

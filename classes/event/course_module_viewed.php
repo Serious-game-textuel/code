@@ -17,22 +17,22 @@
 /**
  * The mod_yourplugin course module viewed event.
  *
- * @package    mod_serioustextualgame
+ * @package    mod_stg
  * @copyright  [Your Year] [Your Name] <[Your Email]>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- namespace mod_serioustextualgame\event;
+ namespace mod_stg\event;
 
 class course_module_viewed extends \core\event\course_module_viewed {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'serioustextualgame';
+        $this->data['objecttable'] = 'stg';
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'serioustextualgame', 'restore' => 'serioustextualgame'];
+        return ['db' => 'stg', 'restore' => 'stg'];
     }
 
     public static function get_other_mapping() {

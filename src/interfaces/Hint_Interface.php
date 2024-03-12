@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Interface Hint_Interface
+ * @package mod_stg
+ */
 interface Hint_Interface {
 
     /**
@@ -31,4 +35,10 @@ interface Hint_Interface {
      * @return void
      */
     public function set_description(string $description);
+
+    /**
+     * @param int
+     * @return Hint_Interface
+     */
+    public static function get_instance(int $id);
 }

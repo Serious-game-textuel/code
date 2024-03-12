@@ -15,38 +15,92 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Character_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Inventory.php');
+
+/**
+ * Class Character
+ * @package mod_stg
+ */
 class Character extends Entity implements Character_Interface {
 
-    private Inventory_Interface $inventory;
+    private int $id;
 
-    private ?Location_Interface $currentlocation;
-
-    public function __construct(string $description, string $name,
+    public function __construct(?int $id, string $description, string $name,
     array $status, array $items, ?Location_Interface $currentlocation) {
-        Util::check_array($status, 'string');
-        parent::__construct($description, $name, $status);
-        $this->inventory = new Inventory($items);
-        $this->currentlocation = $currentlocation;
+        global $DB;
+        if (!isset($id)) {
+            $super = new Entity(null, $description, $name, $status);
+            parent::__construct($super->get_id(), "", "", []);
+            $inventory = new Inventory(null, $items);
+            $arguments = [
+                'entity_id' => $super->get_id(),
+                'inventory_id' => $inventory->get_id(),
+            ];
+            if ($currentlocation != null) {
+                $arguments['currentlocation_id'] = $currentlocation->get_id();
+            }
+            $this->id = $DB->insert_record('stg_character', $arguments);
+        } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {stg_character} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Character object of ID:".$id." exists.");
+            }
+            $sql = "select entity_id from {stg_character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, "", "", []);
+            $this->id = $id;
+        }
     }
+
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $entityid) {
+        global $DB;
+        $sql = "select id from {stg_character} where "
+        . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $entityid]);
+        return self::get_instance($id);
+    }
+
+    public static function get_instance(int $id) {
+        return new Character($id, "", "", [], [], null);
+    }
+
+    public function get_id() {
+        return $this->id;
+    }
+
     public function get_inventory() {
-        return $this->inventory;
+        global $DB;
+        $sql = "select inventory_id from {stg_character} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public function has_item_character(Item_Interface $item) {
-        if ($this->inventory !== null) {
-            return $this->inventory->check_item($item);
+        $inventory = $this->get_inventory();
+        if ($inventory !== null) {
+            return $inventory->check_item($item);
         }
         return false;
     }
 
     public function get_current_location() {
-        return $this->currentlocation;
+        global $DB;
+        $sql = "select currentlocation_id from {stg_character} where "
+        . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Location::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public function set_currentlocation(Location_Interface $newlocation) {
-        $this->currentlocation = $newlocation;
+        global $DB;
+        $DB->set_field('stg_character', 'currentlocation_id', $newlocation->get_id(), ['id' => $this->id]);
     }
 
 }

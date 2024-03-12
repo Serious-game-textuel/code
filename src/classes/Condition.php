@@ -17,16 +17,42 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Condition_Interface.php');
+
+/**
+ * Class Condition
+ * @package mod_stg
+ */
 class Condition implements Condition_Interface {
 
     private int $id;
-    private array $reactions = [];
 
-    public function __construct(array $reactions) {
-        Util::check_array($reactions, Reaction_Interface::class);
-        $this->id = Id_Class::generate_id(self::class);
-        $this->reactions = $reactions;
+    public function __construct(?int $id, array $reactions) {
+        global $DB;
+        if (!isset($id)) {
+            Util::check_array($reactions, Reaction_Interface::class);
+            $this->id = $DB->insert_record('stg_condition', ['test' => 'a']);
+            foreach ($reactions as $reaction) {
+                $DB->insert_record('stg_condition_reactions', [
+                    'condition_id' => $this->id,
+                    'reaction_id' => $reaction->get_id(),
+                ]);
+            }
+        } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {stg_condition} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Condition object of ID:".$id." exists.");
+            }
+            $this->id = $id;
+        }
+    }
+
+    public static function get_instance(int $id) {
+        return new Condition($id, []);
     }
 
     public function get_id() {
@@ -34,172 +60,70 @@ class Condition implements Condition_Interface {
     }
 
     public function get_reactions() {
-        return $this->reactions;
+        $reactions = [];
+        global $DB;
+        $sql = "select reaction_id from {stg_condition_reactions} where "
+        . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
+        foreach ($ids as $id) {
+            array_push($reactions, Reaction::get_instance($id));
+        }
+        return $reactions;
     }
 
     public function set_reactions(array $reactions) {
-        $this->reactions = Util::clean_array($reactions, Reaction_Interface::class);
+        $reactions = Util::clean_array($reactions, Reaction_Interface::class);
+        global $DB;
+        $DB->delete_records('stg_condition_reactions', ['condition_id' => $this->id]);
+        foreach ($reactions as $reaction) {
+            $DB->insert_record('stg_condition_reactions', [
+                'condition_id' => $this->id,
+                'reaction_id' => $reaction->get_id(),
+            ]);
+        }
     }
 
     public function do_reactions() {
-        $app = App::get_instance();
-        $game = $app->get_game();
         $reactions = $this->get_reactions();
         $descriptions = [];
         foreach ($reactions as $reaction) {
-            if ($reaction instanceof Character_Reaction) {
-                if ($reaction->get_character() != null) {
-                    $character = $reaction->get_character();
-
-                    if ($reaction->get_new_location() != null) {
-                        $newlocation = $reaction->get_new_location();
-                        if ($character instanceof Npc_Character) {
-                            $character->set_currentlocation($newlocation);
-                        } else if ($character instanceof Player_Character) {
-                            $game->set_current_location($newlocation);
-                            $game->add_visited_location($newlocation);
-                            $descriptionreturn = $newlocation->check_actions("description");
-
-                        }
-                    }
-                    if ($reaction->get_new_item() != null) {
-                        $newitems = $reaction->get_new_item();
-                        foreach ($newitems as $item) {
-                            $character->get_inventory()->add_item($item);
-                        }
-                    }
-                    if ($reaction->get_old_item() != null) {
-                        $olditem = $reaction->get_old_item();
-                        foreach ($olditem as $item) {
-                            $character->get_inventory()->remove_item($item);
-                        }
-                    }
-                    if ($reaction->get_new_status() != null) {
-                        $newstatus = $reaction->get_new_status();
-                        $character->add_status($newstatus);
-                        if ($character instanceof Player_Character) {
-                            foreach ($newstatus as $status) {
-                                if ($status == "mort") {
-                                    $game->add_deaths();
-                                    echo "playermort recommmencer au début(pas implémenter)\n";
-                                }
-                            }
-                            if ($newstatus == "victoire") {
-                                $deaths = $game->get_deaths();
-                                $starttime = $game->get_start_time();
-                                $endtime = new DateTime();
-                                $interval = $starttime->diff($endtime);
-                                $time = $interval->format('%H:%I:%S');
-                                $lieux = $game->get_visited_locations();
-                                return "Vous avez gagné en " . $time . " avec " . $deaths
-                                . " morts et " . count($lieux) . " lieux visités.";
-                            }
-                        }
-                    }
-                    if ($reaction->get_old_status() != null) {
-                        $oldstatus = $reaction->get_old_status();
-                        $character->remove_status($oldstatus);
-                    }
-                }
-            } else if ($reaction instanceof Location_Reaction) {
-                if ($reaction->get_location() != null) {
-                    $location = $reaction->get_location();
-                    if ($reaction->get_new_status() != null) {
-                        $newstatus = $reaction->get_new_status();
-                        $location->add_status($newstatus);
-                    }
-                    if ($reaction->get_old_status() != null) {
-                        $oldstatus = $reaction->get_old_status();
-                        $location->remove_status($oldstatus);
-                    }
-                    if ($reaction->get_new_item() != null) {
-                        $newitems = $reaction->get_new_item();
-                        foreach ($newitems as $item) {
-                            $location->get_inventory()->add_item($item);
-                        }
-                    }
-                    if ($reaction->get_old_item() != null) {
-                        $olditem = $reaction->get_old_item();
-                        foreach ($olditem as $item) {
-                            $location->get_inventory()->remove_item($item);
-                        }
-                    }
-                }
-            }
+            $return = $reaction->do_reactions();
+            $descriptions = array_merge($descriptions, ...$return);
             array_push($descriptions, $reaction->get_description());
         }
         if (empty($descriptions)) {
-            return "pas de réaction";
-        }
-        if (isset($descriptionreturn[0])) {
-            array_push($descriptions, $descriptionreturn[0]);
+            return "no reaction";
         }
         return implode(' / ', $descriptions);
     }
 
     public function is_true() {
-        if ($this instanceof Leaf_Condition) {
-            $entity1 = $this->get_entity1();
-            $entity2 = $this->get_entity2();
-            $connector = $this->get_connector();
-            $status = $this->get_status();
-
-            if ($entity1 != null) {
-                $entity1status = $entity1->get_status();
+        try {
+            $nodecondition = Node_Condition::get_instance_from_parent_id($this->id);
+            return $nodecondition->is_true();
+        } catch (Exception $e) {
+            try {
+                $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->id);
+                return $leafcondition->is_true();
+            } catch (Exception $e) {
+                $e;
             }
-
-            if ($entity1 instanceof Character) {
-                if ($entity2 == null) {
-                    if ($connector == "est") {
-                        return $entity1status == $status;
-                    } else if ($connector == "est pas") {
-                        return $entity1status != $status;
-                    }
-                } else if ($entity2 instanceof Item) {
-                    if ($connector == "possède" || $connector == "a") {
-                        return $entity1->has_item_character($entity2);
-                    } else if ($connector == "possède pas" || $connector == "a pas") {
-                        return !$entity1->has_item_character($entity2);
-                    }
-                }
-            } else if ($entity1 instanceof Item) {
-                if ($entity2 == null) {
-                    if ($connector == "est") {
-                        return $entity1status == $status;
-                    } else if ($connector == "est pas") {
-                        return $entity1status != $status;
-                    }
-                }
-            } else if ($entity1 instanceof Location) {
-                if ($entity2 == null) {
-                    if ($connector == "est") {
-                        return $entity1status == $status;
-                    } else if ($connector == "est pas") {
-                        return $entity1status != $status;
-                    }
-                } else if ($entity2 instanceof Item) {
-                    if ($connector == "possède" || $connector == "a") {
-                        return $entity1->has_item_location($entity2);
-                    } else if ($connector == "possède pas" || $connector == "a pas") {
-                        return !$entity1->has_item_location($entity2);
-                    }
-                }
-
-            } else if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
-                return true;
-            }
-        } else if ($this instanceof Node_Condition) {
-            $condition1 = $this->get_condition1();
-            $condition2 = $this->get_condition2();
-            $connector = $this->get_connector();
-            if ($connector == "&") {
-                return $condition1->is_true() && $condition2->is_true();
-            } else if ($connector == "|") {
-                return $condition1->is_true() || $condition2->is_true();
-            }
-            return false;
         }
-        return false;
+        return [false, 'error : pas de condition noeud ni feuille'];
     }
 
+    public function __toString() {
+        try {
+            $nodecondition = Node_Condition::get_instance_from_parent_id($this->id);
+            return $nodecondition->__toString();
+        } catch (Exception $e) {
+            try {
+                $leafcondition = Leaf_Condition::get_instance_from_parent_id($this->id);
+                return $leafcondition->__toString();
+            } catch (Exception $e) {
+                $e;
+            }
+        }
+        return '(no condition)';
+    }
 }

@@ -15,15 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Action_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Player_Character.php');
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class GameTest
+ * @package mod_stg
+ */
 class GameTest extends TestCase {
     /**
      * vérifie si la méthode get_deaths retourne bien le nombre de morts

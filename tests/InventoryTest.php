@@ -15,36 +15,39 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Inventory.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Entity.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Condition_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Character_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Inventory_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Action.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Inventory.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Location.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Entity.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Npc_Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Player_Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/stg/src/Language.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Item_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\isInstanceOf;
 
+/**
+ * Class InventoryTest
+ * @package mod_stg
+ */
 class InventoryTest extends TestCase {
     /**
      * vérifie le bon fonctionnement du constructeur de la classe Inventory
      */
     public function testinventory() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = $app->get_game();
         $item = new Item("description1", "name1", ["status1"]);
         $item2 = new Item("description2", "name2", ["status2"]);
@@ -53,7 +56,7 @@ class InventoryTest extends TestCase {
     }
     public function testcheckitem() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = $app->get_game();
         $item = new Item("description1", "name1", ["status1"]);
         $item2 = new Item("description2", "name2", ["status2"]);
@@ -66,7 +69,7 @@ class InventoryTest extends TestCase {
 
     public function testgetitem() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = $app->get_game();
         $item = new Item("description1", "name1", ["status1"]);
         $item2 = new Item("description2", "name2", ["status2"]);
@@ -81,7 +84,7 @@ class InventoryTest extends TestCase {
 
     public function testaddremove() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = $app->get_game();
         $item = new Item("description1", "name1", ["status1"]);
         $item2 = new Item("description2", "name2", ["status2"]);

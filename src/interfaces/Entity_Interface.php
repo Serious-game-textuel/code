@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Interface Entity_Interface
+ * @package mod_stg
+ */
 interface Entity_Interface {
 
     /**
@@ -65,6 +69,10 @@ interface Entity_Interface {
      */
     public function remove_status(array $status);
 
-
+    /**
+     * @param int
+     * @return Entity_Interface
+     */
+    public static function get_instance(int $id);
 
 }

@@ -15,34 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Condition_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Leaf_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Character_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Inventory_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Player_Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Location.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ConditionTest
+ * @package mod_stg
+ */
 class ConditionTest extends TestCase {
     /**
      * vérifie le bon fonctionnement du constructeur de Node_Condition et des getters
      */
     public function testnodecondition() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
 
         $condition1 = $this->createMock(Condition_Interface::class);
         $condition2 = $this->createMock(Condition_Interface::class);
@@ -59,7 +63,7 @@ class ConditionTest extends TestCase {
      */
     public function testleafcondition() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $entity1 = $this->createMock(Entity_Interface::class);
         $entity2 = $this->createMock(Entity_Interface::class);
         $condition = $this->createMock(Condition_Interface::class);
@@ -77,7 +81,7 @@ class ConditionTest extends TestCase {
      */
     public function testistrueforleafcondition() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $entity1 = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
@@ -94,7 +98,7 @@ class ConditionTest extends TestCase {
      */
     public function testistrueforleafconditionwithitem() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $entity1 = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
@@ -134,7 +138,7 @@ class ConditionTest extends TestCase {
      */
     public function testistrueforleafconditionwithstatus() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $entity1 = new Character("description", "character1", ["status"], [], $this->createMock(Location_Interface::class));
@@ -158,7 +162,7 @@ class ConditionTest extends TestCase {
      */
     public function testistrueforleafconditionwithstatusitem() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $entity1 = new Item("description", "item", ["status"]);
@@ -181,10 +185,10 @@ class ConditionTest extends TestCase {
      */
     public function testistrueforleafconditionwithstatuslocation() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $entity1 = new Location("description", ["status"], [], [], [], []);
+        $entity1 = new Location("description", ["status"], [], [], [], 0);
         // Test when entity1 has status.
         $condition = new Leaf_Condition($entity1, null, "est", ["status"], []);
         $this->assertTrue($condition->is_true());
@@ -204,10 +208,10 @@ class ConditionTest extends TestCase {
      */
     public function testistrueforleafconditionwithitemlocation() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $entity1 = new Location("description", ["status"], [], [], [], []);
+        $entity1 = new Location("description", ["status"], [], [], [], 0);
         $entity2 = new Item("description", "item", ["status"]);
         // Test when entity1 has item.
         $entity1->get_inventory()->add_item($entity2);
@@ -243,7 +247,7 @@ class ConditionTest extends TestCase {
      */
     public function testistruefornodecondition() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $entity1 = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
@@ -269,7 +273,7 @@ class ConditionTest extends TestCase {
      */
     public function testcharacterdoreactionsaddstatus() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $character = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
@@ -294,7 +298,7 @@ class ConditionTest extends TestCase {
      */
     public function testcharacterdoreactionsremovestatus() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $character = new Character("description", "character", ["status"], [], $this->createMock(Location_Interface::class));
@@ -315,7 +319,7 @@ class ConditionTest extends TestCase {
      */
     public function testcharacterdoreactionsaddremoveitem() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $item1 = new Item("description", "item1", ["status"]);
@@ -342,11 +346,11 @@ class ConditionTest extends TestCase {
      */
     public function testlocationdoreactionsaddremoveitem() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
         $item1 = new Item("description", "item1", ["status"]);
-        $location = new Location( "location", ["status"], [$item1], [], [], []);
+        $location = new Location( "location", ["status"], [$item1], [], [], 0);
         $item = new Item("description", "item", ["status"]);
         // Mock reactions.
         $locationreaction = new Location_Reaction('location_reaction', [], [], [], [$item], $location);
@@ -370,10 +374,10 @@ class ConditionTest extends TestCase {
      */
     public function testlocationdoreactionsaddremovestatus() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = new Game(0, 0, [], new DateTime(), $this->createMock(Player_Character::class), null, null, []);
         // Create mock objects for testing.
-        $location = new Location( "location", ["status"], [], [], [], []);
+        $location = new Location( "location", ["status"], [], [], [], 0);
         // Mock reactions.
         $locationreaction = new Location_Reaction('location_reaction', [], ['new_status'], [], [], $location);
 

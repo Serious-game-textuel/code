@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Interface Reaction_Interface
+ * @package mod_stg
+ */
 interface Reaction_Interface {
 
     /**
@@ -75,5 +79,16 @@ interface Reaction_Interface {
      * @return void
      */
     public function set_new_item(array $item);
+
+    /**
+     * @param int
+     * @return Reaction_Interface
+     */
+    public static function get_instance(int $id);
+
+    /**
+     * @return string[]
+     */
+    public function do_reactions();
 
 }

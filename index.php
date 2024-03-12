@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Display information about all the mod_serioustextualgame modules in the requested course.
+ * Display information about all the mod_stg modules in the requested course.
  *
- * @package     mod_serioustextualgame
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @package     mod_stg
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,24 +33,24 @@ require_course_login($course);
 
 $coursecontext = context_course::instance($course->id);
 
-$event = \mod_serioustextualgame\event\course_module_instance_list_viewed::create(['context' => $modulecontext]);
+$event = \mod_stg\event\course_module_instance_list_viewed::create(['context' => $modulecontext]);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
 
-$PAGE->set_url('/mod/serioustextualgame/index.php', ['id' => $id]);
+$PAGE->set_url('/mod/stg/index.php', ['id' => $id]);
 $PAGE->set_title(format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($coursecontext);
 
 echo $OUTPUT->header();
 
-$modulenameplural = get_string('modulenameplural', 'mod_serioustextualgame');
+$modulenameplural = get_string('modulenameplural', 'mod_stg');
 echo $OUTPUT->heading($modulenameplural);
 
-$serioustextualgames = get_all_instances_in_course('serioustextualgame', $course);
+$stgs = get_all_instances_in_course('stg', $course);
 
-if (empty($serioustextualgames)) {
-    notice(get_string('no$serioustextualgameinstances', 'mod_serioustextualgame'),
+if (empty($stgs)) {
+    notice(get_string('no$stginstances', 'mod_stg'),
     new moodle_url('/course/view.php', ['id' => $course->id]));
 }
 
@@ -68,24 +68,26 @@ if ($course->format == 'weeks') {
     $table->align = ['left', 'left', 'left'];
 }
 
-foreach ($serioustextualgames as $serioustextualgame) {
-    if (!$serioustextualgame->visible) {
+foreach ($stgs as $stg) {
+    if (!$stg->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/serioustextualgame/view.php', ['id' => $serioustextualgame->coursemodule]),
-            format_string($serioustextualgame->name, true),
+            new moodle_url('/mod/stg/view.php', ['id' => $stg->coursemodule]),
+            format_string($stg->name, true),
             ['class' => 'dimmed']);
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/serioustextualgame/view.php', ['id' => $serioustextualgame->coursemodule]),
-            format_string($serioustextualgame->name, true));
+            new moodle_url('/mod/stg/view.php', ['id' => $stg->coursemodule]),
+            format_string($stg->name, true));
     }
 
     if ($course->format == 'weeks' || $course->format == 'topics') {
-        $table->data[] = [$serioustextualgame->section, $link];
+        $table->data[] = [$stg->section, $link];
     } else {
         $table->data[] = [$link];
     }
 }
 
 echo html_writer::table($table);
+echo $OUTPUT->pix_icon('monologo', 'Logo', 'mod_stg');
+
 echo $OUTPUT->footer();

@@ -16,7 +16,7 @@ TODO Provide more detailed description here.
 
 The plugin can be also installed by putting the contents of this directory to
 
-    {your/moodle/dirroot}/mod/serioustextualgame
+    {your/moodle/dirroot}/mod/stg
 
 Afterwards, log in to your Moodle site as an admin and go to _Site administration >
 Notifications_ to complete the installation.
@@ -29,7 +29,7 @@ to complete the installation from the command line.
 
 ## License ##
 
-2024 Your Name <serioustextualgame@gmail.com>
+2024 Your Name <stg@gmail.com>
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
