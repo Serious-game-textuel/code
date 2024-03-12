@@ -87,7 +87,8 @@ class Condition implements Condition_Interface {
         $reactions = $this->get_reactions();
         $descriptions = [];
         foreach ($reactions as $reaction) {
-            array_merge($descriptions, $reaction->do_reactions());
+            $return = $reaction->do_reactions();
+            $descriptions = array_merge($descriptions, ...$return);
             array_push($descriptions, $reaction->get_description());
         }
         if (empty($descriptions)) {
