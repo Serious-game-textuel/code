@@ -713,10 +713,12 @@ class App implements App_Interface {
     }
 
     public function restart_game_from_start() {
-        $this->game = new Game($this->startentities); //ATTENTION : Faux, il faut retirer l'aliasing des entitités que startentities ne soit pas modifié
+        // ATTENTION : Faux, il faut retirer l'aliasing des entitités que startentities ne soit pas modifié !
+        $this->game = new Game($this->startentities);
     }
 
     public function restart_game_from_save() {
-        $this->set_game(clone $this->get_save()); //ATTENTION : A vérifier
+        // ATTENTION : A vérifier !
+        $this->set_game(clone $this->get_save());
     }
 }
