@@ -16,26 +16,26 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Player_Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Npc_Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Location.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/No_Entity_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Leaf_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Action.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Default_Action.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Hint.php');
 
 /**
  * Class App
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class App implements App_Interface {
 
@@ -63,9 +63,10 @@ class App implements App_Interface {
                     $playerkeyword = "player";
                 }
                 global $USER;
-                $sql = "select id from {language} where " . $DB->sql_compare_text('name') . " = ".$DB->sql_compare_text(':name');
+                $sql = "select id from {stg_language} where " . $DB->sql_compare_text('name') .
+                 " = ".$DB->sql_compare_text(':name');
                 $languageid = $DB->get_field_sql($sql, ['name' => $language]);
-                $this->id = $DB->insert_record('app', [
+                $this->id = $DB->insert_record('stg_app', [
                     'studentid' => $USER->id,
                     'language_id' => $languageid,
                     'playerkeyword' => $playerkeyword,
@@ -76,7 +77,7 @@ class App implements App_Interface {
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {app} WHERE "
+                "SELECT id FROM {stg_app} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -88,19 +89,19 @@ class App implements App_Interface {
     }
     public function get_language_id() {
         global $DB;
-        $sql = "SELECT language_id FROM {app} WHERE " . $DB->sql_compare_text('id') . " = " . $DB->sql_compare_text(':id');
+        $sql = "SELECT language_id FROM {stg_app} WHERE " . $DB->sql_compare_text('id') . " = " . $DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
     public function get_language() {
         global $DB;
-        $sql = "select name from {language} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select name from {stg_language} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->get_language_id()]);
     }
 
     public static function get_instance() {
         global $DB;
         global $USER;
-        $sql = "select id from {app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid');
+        $sql = "select id from {stg_app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid');
         $id = $DB->get_field_sql($sql, ['studentid' => $USER->id]);
         if ($id > 0) {
             return new App($id, null);
@@ -111,22 +112,22 @@ class App implements App_Interface {
 
     public function get_game() {
         global $DB;
-        $sql = "select game_id from {app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select game_id from {stg_app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $gameid = $DB->get_field_sql($sql, ['id' => $this->id]);
         return Game::get_instance($gameid);
     }
 
     public function set_game(Game_Interface $game) {
         global $DB;
-        $DB->set_field('app', 'game_id', $game->get_id(), ['id' => $this->id]);
+        $DB->set_field('stg_app', 'game_id', $game->get_id(), ['id' => $this->id]);
     }
 
     public function get_startentity($entityname) {
         global $DB;
-        $sql = "select {entity}.id from {app_startentities} left join {entity} "
-        . "on {app_startentities}.entity_id = {entity}.id where "
-        . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
-        . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select {stg_entity}.id from {stg_app_startentities} left join {stg_entity} "
+        . "on {stg_app_startentities}.entity_id = {stg_entity}.id where "
+        . $DB->sql_compare_text('{stg_entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
+        . $DB->sql_compare_text('{stg_app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->id, 'entityname' => $entityname]);
         if ($id > 0) {
             return Entity::get_instance($id);
@@ -138,9 +139,9 @@ class App implements App_Interface {
     public function get_startentities() {
         $startentities = [];
         global $DB;
-        $sql = "select {entity}.id from {app_startentities} ".
-        "left join {entity} on {app_startentities}.entity_id = {entity}.id where "
-        . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select {stg_entity}.id from {stg_app_startentities} ".
+        "left join {stg_entity} on {stg_app_startentities}.entity_id = {stg_entity}.id where "
+        . $DB->sql_compare_text('{stg_app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($startentities, Entity::get_instance($id));
@@ -150,7 +151,7 @@ class App implements App_Interface {
 
     public function add_startentity(Entity_Interface $entity) {
         global $DB;
-        $DB->insert_record('app_startentities', [
+        $DB->insert_record('stg_app_startentities', [
             'app_id' => $this->id,
             'entity_id' => $entity->get_id(),
         ]);
@@ -158,7 +159,7 @@ class App implements App_Interface {
 
     public function add_startentity_from_id(int $entityid) {
         global $DB;
-        $DB->insert_record('app_startentities', [
+        $DB->insert_record('stg_app_startentities', [
             'app_id' => $this->id,
             'entity_id' => $entityid,
         ]);
@@ -186,7 +187,7 @@ class App implements App_Interface {
         $fouillerdefaut = $this->create_action_defaut($fouillerdefautrow);
 
         global $DB;
-        $sql = "select playerkeyword from {app} where "
+        $sql = "select playerkeyword from {stg_app} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->id]);
         $player = $this->get_startentity($playerkeyword);
@@ -247,7 +248,7 @@ class App implements App_Interface {
     private function create_characters($row) {
         $col = 1;
         global $DB;
-        $sql = "select playerkeyword from {app} where "
+        $sql = "select playerkeyword from {stg_app} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->id]);
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
@@ -779,7 +780,7 @@ class App implements App_Interface {
     public function restart_game_from_start() {
         $game = $this->get_game();
         global $DB;
-        $DB->delete_records('game_entities', ['game' => $game->get_id()]);
+        $DB->delete_records('stg_game_entities', ['game' => $game->get_id()]);
 
         foreach ($game->get_entities() as $entity) {
             if ($entity != null) {

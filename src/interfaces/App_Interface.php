@@ -16,7 +16,7 @@
 
 /**
  * Interface App_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface App_Interface {
      /**

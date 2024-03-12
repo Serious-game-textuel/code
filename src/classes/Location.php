@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Location_Interface.php');
 
 /**
  * Class Location
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Location extends Entity implements Location_Interface {
 
@@ -33,32 +33,32 @@ class Location extends Entity implements Location_Interface {
             Util::check_array($actions, Action_Interface::class);
             parent::__construct(null, "", $name, $status);
             $inventory = new Inventory(null, $items);
-            $this->id = $DB->insert_record('location', [
+            $this->id = $DB->insert_record('stg_location', [
                 'entity_id' => parent::get_id(),
                 'inventory_id' => $inventory->get_id(),
             ]);
             foreach ($hints as $hint) {
-                $DB->insert_record('location_hints', [
+                $DB->insert_record('stg_location_hints', [
                     'location_id' => $this->id,
                     'hint_id' => $hint->get_id(),
                 ]);
             }
             foreach ($actions as $action) {
-                $DB->insert_record('location_actions', [
+                $DB->insert_record('stg_location_actions', [
                     'location_id' => $this->id,
                     'action_id' => $action->get_id(),
                 ]);
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {location} WHERE "
+                "SELECT id FROM {stg_location} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
             if (!$exists) {
                 throw new InvalidArgumentException("No Location object of ID:".$id." exists.");
             }
-            $sql = "select entity_id from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $sql = "select entity_id from {stg_location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", "", []);
             $this->id = $id;
@@ -71,7 +71,7 @@ class Location extends Entity implements Location_Interface {
 
     public static function get_instance_from_parent_id(int $entityid): Location {
         global $DB;
-        $sql = "select id from {location} where "
+        $sql = "select id from {stg_location} where "
         . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $entityid]);
         return self::get_instance($id);
@@ -83,13 +83,13 @@ class Location extends Entity implements Location_Interface {
 
     public function get_inventory() {
         global $DB;
-        $sql = "select inventory_id from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select inventory_id from {stg_location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Inventory::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
     public function get_actions() {
         $actions = [];
         global $DB;
-        $sql = "select action_id from {location_actions} where "
+        $sql = "select action_id from {stg_location_actions} where "
         . $DB->sql_compare_text('location_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -100,9 +100,9 @@ class Location extends Entity implements Location_Interface {
     public function set_actions(array $actions) {
         $actions = Util::clean_array($actions, Action_Interface::class);
         global $DB;
-        $DB->delete_records('location_actions', ['location_id' => $this->id]);
+        $DB->delete_records('stg_location_actions', ['location_id' => $this->id]);
         foreach ($actions as $action) {
-            $DB->insert_record('location_actions', [
+            $DB->insert_record('stg_location_actions', [
                 'location_id' => $this->id,
                 'action_id' => $action->get_id(),
             ]);
@@ -111,7 +111,7 @@ class Location extends Entity implements Location_Interface {
     public function get_hints() {
         $hints = [];
         global $DB;
-        $sql = "select hint_id from {location_hints} where "
+        $sql = "select hint_id from {stg_location_hints} where "
         . $DB->sql_compare_text('location_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -289,12 +289,12 @@ class Location extends Entity implements Location_Interface {
 
     public function get_hintscount() {
         global $DB;
-        $sql = "select hintscount from {location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select hintscount from {stg_location} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
     public function increments_hintscount() {
         global $DB;
-        $DB->set_field('location', 'hintscount', $this->get_hintscount() + 1, ['id' => $this->id]);
+        $DB->set_field('stg_location', 'hintscount', $this->get_hintscount() + 1, ['id' => $this->id]);
     }
     public function has_item_location(Item_Interface $item) {
         return $this->get_inventory()->check_item($item);

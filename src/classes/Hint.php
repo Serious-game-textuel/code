@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Hint_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Hint_Interface.php');
 
 /**
  * Class Hint
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Hint implements Hint_Interface {
     private int $id;
@@ -27,12 +27,12 @@ class Hint implements Hint_Interface {
     public function __construct(?int $id, string $description) {
         global $DB;
         if (!isset($id)) {
-            $this->id = $DB->insert_record('hint', [
+            $this->id = $DB->insert_record('stg_hint', [
                 'description' => $description,
             ]);
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {hint} WHERE "
+                "SELECT id FROM {stg_hint} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -53,13 +53,13 @@ class Hint implements Hint_Interface {
 
     public function get_description() {
         global $DB;
-        $sql = "select description from {hint} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select description from {stg_hint} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('hint', 'description', $description, ['id' => $this->id]);
+        $DB->set_field('stg_hint', 'description', $description, ['id' => $this->id]);
     }
 
 }

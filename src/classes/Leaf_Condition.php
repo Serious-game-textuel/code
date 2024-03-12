@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Condition.php');
 
 /**
  * Class Leaf_Condition
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Leaf_Condition extends Condition {
 
@@ -41,23 +41,23 @@ class Leaf_Condition extends Condition {
             if (isset($entity2)) {
                 $arguments['entity2_id'] = $entity2->get_id();
             }
-            $this->id = $DB->insert_record('leafcondition', $arguments);
+            $this->id = $DB->insert_record('stg_leafcondition', $arguments);
             foreach ($status as $statut) {
-                $DB->insert_record('leafcondition_status', [
+                $DB->insert_record('stg_leafcondition_status', [
                     'leafcondition_id' => $this->id,
                     'status' => $statut,
                 ]);
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {leafcondition} WHERE "
+                "SELECT id FROM {stg_leafcondition} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
             if (!$exists) {
                 throw new InvalidArgumentException("No Leaf_Condition object of ID:".$id." exists.");
             }
-            $sql = "select condition_id from {leafcondition} where "
+            $sql = "select condition_id from {stg_leafcondition} where "
             . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, []);
@@ -71,7 +71,7 @@ class Leaf_Condition extends Condition {
 
     public static function get_instance_from_parent_id(int $conditionid): Leaf_Condition {
         global $DB;
-        $sql = "select id from {leafcondition} where "
+        $sql = "select id from {stg_leafcondition} where "
         . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $conditionid]);
         return self::get_instance($id);
@@ -83,7 +83,8 @@ class Leaf_Condition extends Condition {
 
     public function get_entity1() {
         global $DB;
-        $sql = "select entity1_id from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select entity1_id from {stg_leafcondition} where ".
+        $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->id]);
         if ($id > 0) {
             return Entity::get_instance($id);
@@ -94,12 +95,13 @@ class Leaf_Condition extends Condition {
 
     public function set_entity1(Entity_Interface $entity1) {
         global $DB;
-        $DB->set_field('leafcondition', 'entity1_id', $entity1->get_id(), ['id' => $this->id]);
+        $DB->set_field('stg_leafcondition', 'entity1_id', $entity1->get_id(), ['id' => $this->id]);
     }
 
     public function get_entity2() {
         global $DB;
-        $sql = "select entity2_id from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select entity2_id from {stg_leafcondition} where ". $DB->sql_compare_text('id') . " = ".
+        $DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->id]);
         if ($id > 0) {
             return Entity::get_instance($id);
@@ -110,23 +112,23 @@ class Leaf_Condition extends Condition {
 
     public function set_entity2(Entity_Interface $entity2) {
         global $DB;
-        $DB->set_field('leafcondition', 'entity2_id', $entity2->get_id(), ['id' => $this->id]);
+        $DB->set_field('stg_leafcondition', 'entity2_id', $entity2->get_id(), ['id' => $this->id]);
     }
 
     public function get_connector() {
         global $DB;
-        $sql = "select connector from {leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select connector from {stg_leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_connector(string $connector) {
         global $DB;
-        $DB->set_field('leafcondition', 'connector', $connector, ['id' => $this->id]);
+        $DB->set_field('stg_leafcondition', 'connector', $connector, ['id' => $this->id]);
     }
 
     public function get_status() {
         global $DB;
-        $sql = "select status from {leafcondition_status} where "
+        $sql = "select status from {stg_leafcondition_status} where "
         . $DB->sql_compare_text('leafcondition_id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_fieldset_sql($sql, ['id' => $this->id]);
     }
@@ -134,9 +136,9 @@ class Leaf_Condition extends Condition {
     public function set_status(array $status) {
         $status = Util::clean_array($status, 'string');
         global $DB;
-        $DB->delete_records('leafcondition_status', ['leafcondition_id' => $this->id]);
+        $DB->delete_records('stg_leafcondition_status', ['leafcondition_id' => $this->id]);
         foreach ($status as $statut) {
-            $DB->insert_record('leafcondition_status', [
+            $DB->insert_record('stg_leafcondition_status', [
                 'leafcondition_id' => $this->id,
                 'status' => $statut,
             ]);

@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Util.php');
 /**
  * Class Entity
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Entity implements Entity_Interface {
 
@@ -38,12 +38,12 @@ class Entity implements Entity_Interface {
                     throw new InvalidArgumentException("Each entity name must be unique : ".$name);
                 }
             }
-            $this->id = $DB->insert_record('entity', [
+            $this->id = $DB->insert_record('stg_entity', [
                 'description' => $description,
                 'name' => $name,
             ]);
             foreach ($status as $statut) {
-                $DB->insert_record('entity_status', [
+                $DB->insert_record('stg_entity_status', [
                     'entity_id' => $this->id,
                     'status' => $statut,
                 ]);
@@ -53,7 +53,7 @@ class Entity implements Entity_Interface {
             $app = App::get_instance();
             $language = $app->get_language();
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {entity} WHERE "
+                "SELECT id FROM {stg_entity} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -78,30 +78,30 @@ class Entity implements Entity_Interface {
 
     public function get_description() {
         global $DB;
-        $sql = "select description from {entity} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select description from {stg_entity} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('entity', 'description', $description, ['id' => $this->id]);
+        $DB->set_field('stg_entity', 'description', $description, ['id' => $this->id]);
     }
 
     public function get_name() {
         global $DB;
-        $sql = "select name from {entity} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select name from {stg_entity} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_name(string $name) {
         global $DB;
-        $DB->set_field('entity', 'name', $name, ['id' => $this->id]);
+        $DB->set_field('stg_entity', 'name', $name, ['id' => $this->id]);
     }
 
     public function get_status() {
         $statusarray = [];
         global $DB;
-        $sql = "select status from {entity_status} where "
+        $sql = "select status from {stg_entity_status} where "
         . $DB->sql_compare_text('entity_id') . " = ".$DB->sql_compare_text(':id');
         $status = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($status as $statut) {
@@ -113,9 +113,9 @@ class Entity implements Entity_Interface {
     public function set_status(array $status) {
         $status = Util::clean_array($status, 'string');
         global $DB;
-        $DB->delete_records('entity_status', ['entity_id' => $this->id]);
+        $DB->delete_records('stg_entity_status', ['entity_id' => $this->id]);
         foreach ($status as $statut) {
-            $DB->insert_record('entity_status', [
+            $DB->insert_record('stg_entity_status', [
                 'entity_id' => $this->id,
                 'status' => $statut,
             ]);
@@ -126,13 +126,13 @@ class Entity implements Entity_Interface {
         global $DB;
         foreach ($status as $s) {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {entity_status} WHERE "
+                "SELECT id FROM {stg_entity_status} WHERE "
                 .$DB->sql_compare_text('entity_id')." = ".$DB->sql_compare_text(':id')." and "
                 .$DB->sql_compare_text('status')." = ".$DB->sql_compare_text(':status'),
                 ['id' => $this->id, 'status' => $s]
             );
             if (!$exists) {
-                $DB->insert_record('entity_status', [
+                $DB->insert_record('stg_entity_status', [
                     'entity_id' => $this->id,
                     'status' => $s,
                 ]);

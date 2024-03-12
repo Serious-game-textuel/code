@@ -17,11 +17,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Condition_Interface.php');
 
 /**
  * Class Condition
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Condition implements Condition_Interface {
 
@@ -31,16 +31,16 @@ class Condition implements Condition_Interface {
         global $DB;
         if (!isset($id)) {
             Util::check_array($reactions, Reaction_Interface::class);
-            $this->id = $DB->insert_record('condition', ['test' => 'a']);
+            $this->id = $DB->insert_record('stg_condition', ['test' => 'a']);
             foreach ($reactions as $reaction) {
-                $DB->insert_record('condition_reactions', [
+                $DB->insert_record('stg_condition_reactions', [
                     'condition_id' => $this->id,
                     'reaction_id' => $reaction->get_id(),
                 ]);
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {condition} WHERE "
+                "SELECT id FROM {stg_condition} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -62,7 +62,7 @@ class Condition implements Condition_Interface {
     public function get_reactions() {
         $reactions = [];
         global $DB;
-        $sql = "select reaction_id from {condition_reactions} where "
+        $sql = "select reaction_id from {stg_condition_reactions} where "
         . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -74,9 +74,9 @@ class Condition implements Condition_Interface {
     public function set_reactions(array $reactions) {
         $reactions = Util::clean_array($reactions, Reaction_Interface::class);
         global $DB;
-        $DB->delete_records('condition_reactions', ['condition_id' => $this->id]);
+        $DB->delete_records('stg_condition_reactions', ['condition_id' => $this->id]);
         foreach ($reactions as $reaction) {
-            $DB->insert_record('condition_reactions', [
+            $DB->insert_record('stg_condition_reactions', [
                 'condition_id' => $this->id,
                 'reaction_id' => $reaction->get_id(),
             ]);

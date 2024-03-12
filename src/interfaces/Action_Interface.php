@@ -16,7 +16,7 @@
 
 /**
  * Interface Action_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Action_Interface {
 

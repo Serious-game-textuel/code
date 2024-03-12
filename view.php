@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Prints an instance of mod_serioustextualgame.
+ * Prints an instance of mod_stg.
  *
- * @package     mod_serioustextualgame
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @package     mod_stg
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 // Course module id.
 $id = optional_param('id', 0, PARAM_INT);
 
@@ -36,37 +36,37 @@ foreach (Language::get_all_languages() as $lang) {
     $comparedescription = $DB->sql_compare_text('name');
     $comparedescriptionplaceholder = $DB->sql_compare_text(':name');
     $todogroups = $DB->record_exists_sql(
-        "SELECT id FROM {language} WHERE {$comparedescription} = {$comparedescriptionplaceholder}",
+        "SELECT id FROM {stg_language} WHERE {$comparedescription} = {$comparedescriptionplaceholder}",
         ['name' => $lang]
     );
     if (!$todogroups) {
-        $DB->insert_record('language', ['name' => $lang]);
+        $DB->insert_record('stg_language', ['name' => $lang]);
     }
 }
 
 if ($id) {
-    $cm = get_coursemodule_from_id('serioustextualgame', $id, 0, false, MUST_EXIST);
+    $cm = get_coursemodule_from_id('stg', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
-    $moduleinstance = $DB->get_record('serioustextualgame', ['id' => $cm->instance], '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record('stg', ['id' => $cm->instance], '*', MUST_EXIST);
 } else {
-    $moduleinstance = $DB->get_record('serioustextualgame', ['id' => $s], '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record('stg', ['id' => $s], '*', MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('serioustextualgame', $moduleinstance->id, $course->id, false, MUST_EXIST);
+    $cm = get_coursemodule_from_instance('stg', $moduleinstance->id, $course->id, false, MUST_EXIST);
 }
 
 require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
-$event = \mod_serioustextualgame\event\course_module_viewed::create([
+$event = \mod_stg\event\course_module_viewed::create([
     'objectid' => $moduleinstance->id,
     'context' => $modulecontext,
 ]);
 $event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('serioustextualgame', $moduleinstance);
+$event->add_record_snapshot('stg', $moduleinstance);
 $event->trigger();
 
-$PAGE->set_url('/mod/serioustextualgame/view.php', ['id' => $cm->id]);
+$PAGE->set_url('/mod/stg/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);

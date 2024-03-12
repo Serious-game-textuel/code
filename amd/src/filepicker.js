@@ -1,7 +1,7 @@
 /**
  * get les informations du fichier userfile
  *
- * @module    mod_serioustextualgame/filepicker
+ * @module    mod_stg/filepicker
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(["jquery", "core/ajax", "core/notification"], function (
@@ -15,7 +15,7 @@ define(["jquery", "core/ajax", "core/notification"], function (
         var draftitemid = $(this).val();
 
         var request = {
-          methodname: "mod_serioustextualgame_get_file_info",
+          methodname: "mod_stg_get_file_info",
           args: {
             draftitemid: draftitemid,
           },

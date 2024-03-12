@@ -16,13 +16,13 @@
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 
 
 
 $csvcontent = $_POST['csvcontent'];
-$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
+$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_stg');
 file_put_contents($tempfilepath, $csvcontent);
 $app = App::get_instance();
 if ($app == null) {

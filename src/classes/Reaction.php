@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Reaction_Interface.php');
 
 
 /**
  * Class Reaction
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Reaction implements Reaction_Interface {
 
@@ -34,36 +34,36 @@ class Reaction implements Reaction_Interface {
             Util::check_array($newstatus, 'string');
             Util::check_array($olditem, Item_Interface::class);
             Util::check_array($newitem, Item_Interface::class);
-            $this->id = $DB->insert_record('reaction', [
+            $this->id = $DB->insert_record('stg_reaction', [
                 'description' => $description,
             ]);
             foreach ($oldstatus as $oldstatut) {
-                $DB->insert_record('reaction_oldstatus', [
+                $DB->insert_record('stg_reaction_oldstatus', [
                     'reaction_id' => $this->id,
                     'status' => $oldstatut,
                 ]);
             }
             foreach ($newstatus as $newstatut) {
-                $DB->insert_record('reaction_newstatus', [
+                $DB->insert_record('stg_reaction_newstatus', [
                     'reaction_id' => $this->id,
                     'status' => $newstatut,
                 ]);
             }
             foreach ($olditem as $item) {
-                $DB->insert_record('reaction_olditems', [
+                $DB->insert_record('stg_reaction_olditems', [
                     'reaction_id' => $this->id,
                     'item_id' => $item->get_id(),
                 ]);
             }
             foreach ($newitem as $item) {
-                $DB->insert_record('reaction_newitems', [
+                $DB->insert_record('stg_reaction_newitems', [
                     'reaction_id' => $this->id,
                     'item_id' => $item->get_id(),
                 ]);
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {reaction} WHERE "
+                "SELECT id FROM {stg_reaction} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -84,18 +84,18 @@ class Reaction implements Reaction_Interface {
 
     public function get_description() {
         global $DB;
-        $sql = "select description from {reaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select description from {stg_reaction} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('reaction', 'description', $description, ['id' => $this->id]);
+        $DB->set_field('stg_reaction', 'description', $description, ['id' => $this->id]);
     }
 
     public function get_old_status() {
         global $DB;
-        $sql = "select status from {reaction_oldstatus} where "
+        $sql = "select status from {stg_reaction_oldstatus} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_fieldset_sql($sql, ['id' => $this->id]);
     }
@@ -103,9 +103,9 @@ class Reaction implements Reaction_Interface {
     public function set_old_status(array $status) {
         $oldstatus = Util::clean_array($status, 'string');
         global $DB;
-        $DB->delete_records('reaction_oldstatus', ['reaction_id' => $this->id]);
+        $DB->delete_records('stg_reaction_oldstatus', ['reaction_id' => $this->id]);
         foreach ($oldstatus as $status) {
-            $DB->insert_record('reaction_oldstatus', [
+            $DB->insert_record('stg_reaction_oldstatus', [
                 'reaction_id' => $this->id,
                 'status' => $status,
             ]);
@@ -114,7 +114,7 @@ class Reaction implements Reaction_Interface {
 
     public function get_new_status() {
         global $DB;
-        $sql = "select status from {reaction_newstatus} where "
+        $sql = "select status from {stg_reaction_newstatus} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_fieldset_sql($sql, ['id' => $this->id]);
     }
@@ -122,9 +122,9 @@ class Reaction implements Reaction_Interface {
     public function set_new_status(array $status) {
         $oldstatus = Util::clean_array($status, 'string');
         global $DB;
-        $DB->delete_records('reaction_newstatus', ['reaction_id' => $this->id]);
+        $DB->delete_records('stg_reaction_newstatus', ['reaction_id' => $this->id]);
         foreach ($oldstatus as $status) {
-            $DB->insert_record('reaction_newstatus', [
+            $DB->insert_record('stg_reaction_newstatus', [
                 'reaction_id' => $this->id,
                 'status' => $status,
             ]);
@@ -134,7 +134,7 @@ class Reaction implements Reaction_Interface {
     public function get_old_item() {
         $items = [];
         global $DB;
-        $sql = "select item_id from {reaction_olditems} where "
+        $sql = "select item_id from {stg_reaction_olditems} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -146,9 +146,9 @@ class Reaction implements Reaction_Interface {
     public function set_old_item(array $item) {
         $items = Util::clean_array($item, Item_Interface::class);
         global $DB;
-        $DB->delete_records('reaction_olditems', ['reaction_id' => $this->id]);
+        $DB->delete_records('stg_reaction_olditems', ['reaction_id' => $this->id]);
         foreach ($items as $item) {
-            $DB->insert_record('reaction_olditems', [
+            $DB->insert_record('stg_reaction_olditems', [
                 'reaction_id' => $this->id,
                 'item_id' => $item->get_id(),
             ]);
@@ -158,7 +158,7 @@ class Reaction implements Reaction_Interface {
     public function get_new_item() {
         $items = [];
         global $DB;
-        $sql = "select item_id from {reaction_newitems} where "
+        $sql = "select item_id from {stg_reaction_newitems} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -170,9 +170,9 @@ class Reaction implements Reaction_Interface {
     public function set_new_item(array $item) {
         $items = Util::clean_array($item, Item_Interface::class);
         global $DB;
-        $DB->delete_records('reaction_newitems', ['reaction_id' => $this->id]);
+        $DB->delete_records('stg_reaction_newitems', ['reaction_id' => $this->id]);
         foreach ($items as $item) {
-            $DB->insert_record('reaction_newitems', [
+            $DB->insert_record('stg_reaction_newitems', [
                 'reaction_id' => $this->id,
                 'item_id' => $item->get_id(),
             ]);

@@ -16,7 +16,7 @@
 
 /**
  * Interface Reaction_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Reaction_Interface {
 

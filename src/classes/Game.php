@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Game_Interface.php');
 
 /**
  * Class Game
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Game implements Game_Interface {
 
@@ -33,7 +33,7 @@ class Game implements Game_Interface {
             $app = App::get_instance();
             Util::check_array($visitedlocations, Location_Interface::class);
             Util::check_array($entities, Entity_Interface::class);
-            $this->id = $DB->insert_record('game', [
+            $this->id = $DB->insert_record('stg_game', [
                 'deaths' => $deaths,
                 'actions' => $actions,
                 'starttime' => $starttime->getTimestamp(),
@@ -43,20 +43,20 @@ class Game implements Game_Interface {
             ]);
             $app->set_game($this);
             foreach ($visitedlocations as $location) {
-                $DB->insert_record('game_visitedlocations', [
+                $DB->insert_record('stg_game_visitedlocations', [
                     'game_id' => $this->id,
                     'location_id' => $location->get_id(),
                 ]);
             }
             foreach ($entities as $entity) {
-                $DB->insert_record('game_entities', [
+                $DB->insert_record('stg_game_entities', [
                     'game_id' => $this->id,
                     'entity_id' => $entity->get_id(),
                 ]);
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {game} WHERE "
+                "SELECT id FROM {stg_game} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -77,45 +77,45 @@ class Game implements Game_Interface {
 
     public function get_deaths() {
         global $DB;
-        $sql = "select deaths from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select deaths from {stg_game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
     public function add_deaths() {
         global $DB;
-        $DB->set_field('game', 'deaths', $this->get_deaths() + 1, ['id' => $this->id]);
+        $DB->set_field('stg_game', 'deaths', $this->get_deaths() + 1, ['id' => $this->id]);
     }
 
     public function get_actions() {
         global $DB;
-        $sql = "select actions from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select actions from {stg_game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
     public function set_actions(int $actions) {
         global $DB;
-        $DB->set_field('game', 'actions', $actions, ['id' => $this->id]);
+        $DB->set_field('stg_game', 'actions', $actions, ['id' => $this->id]);
     }
 
     public function add_action() {
         global $DB;
-        $DB->set_field('game', 'actions', $this->get_actions() + 1, ['id' => $this->id]);
+        $DB->set_field('stg_game', 'actions', $this->get_actions() + 1, ['id' => $this->id]);
     }
 
     public function get_player() {
         global $DB;
-        $sql = "select player_id from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select player_id from {stg_game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->id]);
         return Player_Character::get_instance($id);
     }
 
     public function set_player(Player_Character $player) {
         global $DB;
-        $DB->set_field('game', 'player_id', $player->get_id(), ['id' => $this->id]);
+        $DB->set_field('stg_game', 'player_id', $player->get_id(), ['id' => $this->id]);
     }
 
     public function get_visited_locations() {
         $visitedlocations = [];
         global $DB;
-        $sql = "select location_id from {game_visitedlocations} where "
+        $sql = "select location_id from {stg_game_visitedlocations} where "
         . $DB->sql_compare_text('game_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -126,9 +126,9 @@ class Game implements Game_Interface {
     public function set_visited_locations(array $visitedlocations) {
         $visitedlocations = Util::clean_array($visitedlocations, Location_Interface::class);
         global $DB;
-        $DB->delete_records('game_visitedlocations', ['game_id' => $this->id]);
+        $DB->delete_records('stg_game_visitedlocations', ['game_id' => $this->id]);
         foreach ($visitedlocations as $location) {
-            $DB->insert_record('game_visitedlocations', [
+            $DB->insert_record('stg_game_visitedlocations', [
                 'game_id' => $this->id,
                 'location_id' => $location->get_id(),
             ]);
@@ -143,14 +143,14 @@ class Game implements Game_Interface {
 
     public function get_start_time() {
         global $DB;
-        $sql = "select starttime from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select starttime from {stg_game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $datetime = new DateTime();
         $datetime->setTimestamp($DB->get_field_sql($sql, ['id' => $this->id]));
         return $datetime;
     }
     public function set_start_time(DateTime $starttime) {
         global $DB;
-        $DB->set_field('game', 'starttime', $starttime->getTimestamp(), ['id' => $this->id]);
+        $DB->set_field('stg_game', 'starttime', $starttime->getTimestamp(), ['id' => $this->id]);
     }
 
     public function get_current_location() {
@@ -162,31 +162,32 @@ class Game implements Game_Interface {
 
     public function get_default_action_search() {
         global $DB;
-        $sql = "select defaultactionsearch_id from {game} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select defaultactionsearch_id from {stg_game} where ".
+        $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Default_Action::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public function set_default_action_search(Default_Action_Interface $action) {
         global $DB;
-        $DB->set_field('game', 'defaultactionsearch_id', $action->get_id(), ['id' => $this->id]);
+        $DB->set_field('stg_game', 'defaultactionsearch_id', $action->get_id(), ['id' => $this->id]);
     }
 
     public function get_default_action_interact() {
         global $DB;
-        $sql = "select defaultactioninteract_id from {game} where "
+        $sql = "select defaultactioninteract_id from {stg_game} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Default_Action::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public function set_default_action_interact(Default_Action_Interface $action) {
         global $DB;
-        $DB->set_field('game', 'defaultactioninteract_id', $action->get_id(), ['id' => $this->id]);
+        $DB->set_field('stg_game', 'defaultactioninteract_id', $action->get_id(), ['id' => $this->id]);
     }
 
     public function get_entities() {
         $entities = [];
         global $DB;
-        $sql = "select entity_id from {game_entities} where "
+        $sql = "select entity_id from {stg_game_entities} where "
         . $DB->sql_compare_text('game_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -198,9 +199,9 @@ class Game implements Game_Interface {
     public function set_entities(array $entities) {
         $entities = Util::clean_array($entities, Entity_Interface::class);
         global $DB;
-        $DB->delete_records('game_entities', ['game_id' => $this->id]);
+        $DB->delete_records('stg_game_entities', ['game_id' => $this->id]);
         foreach ($entities as $entity) {
-            $DB->insert_record('game_entities', [
+            $DB->insert_record('stg_game_entities', [
                 'game_id' => $this->id,
                 'location_id' => $entity->get_id(),
             ]);
@@ -218,10 +219,10 @@ class Game implements Game_Interface {
      */
     public function get_entity(string $name) {
         global $DB;
-        $sql = "select {entity}.id from {game_entities} left join {entity} "
-        . "on {game_entities}.entity_id = {entity}.id where "
-        . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
-        . $DB->sql_compare_text('{game_entities}.game_id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select {stg_entity}.id from {stg_game_entities} left join {stg_entity} "
+        . "on {stg_game_entities}.entity_id = {stg_entity}.id where "
+        . $DB->sql_compare_text('{stg_entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
+        . $DB->sql_compare_text('{stg_game_entities}.game_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->id, 'entityname' => $name]);
         if ($id > 0) {
             return Entity::get_instance($id);

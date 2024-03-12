@@ -17,16 +17,16 @@
 /**
  * Plugin upgrade helper functions are defined here.
  *
- * @package     mod_serioustextualgame
+ * @package     mod_stg
  * @category    upgrade
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Helper function used by the upgrade.php file.
  */
-function mod_serioustextualgame_helper_function() {
+function mod_stg_helper_function() {
     global $DB;
 
     // Please note: you can only use raw low level database access here.

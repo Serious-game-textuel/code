@@ -17,9 +17,9 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     mod_serioustextualgame
+ * @package     mod_stg
  * @category    string
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,15 +27,15 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Serious Textual Game';
 $string['modulename'] = 'Serious Textual Game';
-$string['serioustextualgamefieldset'] = 'Fieldset';
-$string['serioustextualgamesettings'] = 'Settings';
-$string['serioustextualgamename'] = 'Name';
-$string['serioustextualgame'] = 'Serious Textual Game';
+$string['stgfieldset'] = 'Champs';
+$string['stgsettings'] = 'Options';
+$string['stgname'] = 'Nom';
+$string['stg'] = 'Serious Textual Game';
 $string['pluginadministration'] = 'Serious Textual Game administration';
-$string['serioustextualgame:addinstance'] = 'Add a new serioustextualgame resource';
-$string['serioustextualgamename_help'] = 'This is the content of the help tooltip associated with the serioustextualgamename field. Markdown syntax is supported.';
-$string['mod_serioustextualgame'] = 'Serious Textual Game';
+$string['stg:addinstance'] = 'Ajouter une nouvelle ressource stg';
+$string['stgname_help'] = 'Cela est le contenu de l\'aide associée au champ stgname. La syntaxe Markdown est supportée.';
+$string['mod_stg'] = 'Serious Textual Game';
 $string['modulenameplural'] = 'Serious Textual Games';
-$string['file_help'] = 'This is the help text for the file field.';
+$string['file_help'] = 'Ceci est le texte d\'aide pour le champ fichier.';
 $string['moodle'] = 'Moodle';
-$string['serioustextualgame:view'] = 'View Serious Textual Game';
+$string['stg:view'] = 'Voir Serious Textual Game';

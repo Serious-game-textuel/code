@@ -16,7 +16,7 @@
 
 /**
  * Interface Condition_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Condition_Interface {
 

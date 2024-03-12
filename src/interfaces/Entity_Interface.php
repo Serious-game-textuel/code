@@ -16,7 +16,7 @@
 
 /**
  * Interface Entity_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Entity_Interface {
 

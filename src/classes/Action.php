@@ -16,11 +16,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Action_Interface.php');
 
 /**
  * Class Action
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Action implements Action_Interface {
 
@@ -30,18 +30,18 @@ class Action implements Action_Interface {
         global $DB;
         if (!isset($id)) {
             Util::check_array($conditions, Condition_Interface::class);
-            $this->id = $DB->insert_record('action', [
+            $this->id = $DB->insert_record('stg_action', [
                 'description' => $description,
             ]);
             foreach ($conditions as $condition) {
-                $DB->insert_record('action_conditions', [
+                $DB->insert_record('stg_action_conditions', [
                     'action_id' => $this->id,
                     'condition_id' => $condition->get_id(),
                 ]);
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {action} WHERE "
+                "SELECT id FROM {stg_action} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -62,19 +62,19 @@ class Action implements Action_Interface {
 
     public function get_description() {
         global $DB;
-        $sql = "select description from {action} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select description from {stg_action} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_description(string $description) {
         global $DB;
-        $DB->set_field('action', 'description', $description, ['id' => $this->id]);
+        $DB->set_field('stg_action', 'description', $description, ['id' => $this->id]);
     }
 
     public function get_conditions() {
         $conditions = [];
         global $DB;
-        $sql = "select condition_id from {action_conditions} where "
+        $sql = "select condition_id from {stg_action_conditions} where "
         . $DB->sql_compare_text('action_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -86,9 +86,9 @@ class Action implements Action_Interface {
     public function set_conditions(array $conditions) {
         $conditions = Util::clean_array($conditions, Condition_Interface::class);
         global $DB;
-        $DB->delete_records('action_conditions', ['action_id' => $this->id]);
+        $DB->delete_records('stg_action_conditions', ['action_id' => $this->id]);
         foreach ($conditions as $condition) {
-            $DB->insert_record('game_visitedlocations', [
+            $DB->insert_record('stg_game_visitedlocations', [
                 'action_id' => $this->id,
                 'condition_id' => $condition->get_id(),
             ]);

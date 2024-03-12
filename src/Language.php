@@ -16,7 +16,7 @@
 
 /**
  * Class Language
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Language {
     const FR = 'fr';

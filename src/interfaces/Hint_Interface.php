@@ -16,7 +16,7 @@
 
 /**
  * Interface Hint_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Hint_Interface {
 

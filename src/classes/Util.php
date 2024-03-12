@@ -16,7 +16,7 @@
 
 /**
  * Class Util
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Util {
     public static function check_array(array $array, string $class) {
