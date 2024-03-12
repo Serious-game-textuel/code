@@ -62,6 +62,7 @@ class App implements App_Interface {
                     'studentid' => $USER->id,
                     'language_id' => $languageid,
                     'playerkeyword' => $playerkeyword,
+                    'activityid' => intval($_POST['module']),
                 ]);
                 $this->parse();
             } else {
@@ -83,8 +84,9 @@ class App implements App_Interface {
     public static function get_instance() {
         global $DB;
         global $USER;
-        $sql = "select id from {app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid');
-        $id = $DB->get_field_sql($sql, ['studentid' => $USER->id]);
+        $sql = "select id from {app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid')
+        . " and " . $DB->sql_compare_text('activityid') . " = ".$DB->sql_compare_text(':activityid');
+        $id = $DB->get_field_sql($sql, ['studentid' => $USER->id, 'activityid' => intval($_POST['module'])]);
         if ($id > 0) {
             return new App($id, null, null);
         } else {

@@ -75,7 +75,6 @@ $csvcontent = $moduleinstance->filecontent;
 unset($_SESSION['conditionsdone']);
 
 
-
 echo $OUTPUT->header();
 
 ?>
@@ -142,7 +141,7 @@ document.getElementById('text').addEventListener('DOMSubtreeModified', scrollToB
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'inputText=description&debug=false&csvcontent=' + encodeURIComponent(csvcontent),
+            body: 'inputText=description&debug=false&' + '&module=' + <?php echo $cm->id?> + '&csvcontent=' + encodeURIComponent(csvcontent),
         })
         .then(response => response.text())
         .then(text => {
@@ -189,7 +188,7 @@ document.getElementById('text').addEventListener('DOMSubtreeModified', scrollToB
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: 'inputText=' + encodeURIComponent(inputText.value)
-            + '&debug=' + debug + '&csvcontent=' + encodeURIComponent(csvcontent),
+            + '&debug=' + debug + '&module=' + <?php echo $cm->id?> + '&csvcontent=' + encodeURIComponent(csvcontent),
         })
         .then((response) => response.text())
         .then((text) => {

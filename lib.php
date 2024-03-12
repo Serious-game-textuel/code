@@ -50,7 +50,6 @@ function serioustextualgame_supports($feature) {
  */
 function serioustextualgame_add_instance($moduleinstance, $mform = null) {
     global $DB;
-
     $moduleinstance->timecreated = time();
 
     $filecontent = $mform->get_file_content('userfile');
