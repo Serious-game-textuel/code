@@ -182,7 +182,8 @@ document.getElementById('text').addEventListener('DOMSubtreeModified', scrollToB
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'inputText=description&debug=false&' + '&module=' + <?php echo $cm->id?> + '&csvcontent=' + encodeURIComponent(csvcontent),
+            body: 'inputText=description&debug=false&' + '&module=' 
+            + <?php echo $cm->id?> + '&csvcontent=' + encodeURIComponent(csvcontent),
         })
         .then(response => response.text())
         .then(text => {
