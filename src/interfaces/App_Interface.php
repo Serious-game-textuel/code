@@ -20,8 +20,8 @@
  */
 interface App_Interface {
      /**
-     * @return string
-     */
+      * @return string
+      */
     public function get_language();
     /**
      * @return int
@@ -71,12 +71,12 @@ interface App_Interface {
      /**
       * @return void
       */
-     public function restart_game_from_save();
+    public function restart_game_from_save();
 
      /**
       * @return App_Interface|null
       */
-     public function get_save();
+    public function get_save();
 
 }
 

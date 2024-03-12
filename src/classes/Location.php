@@ -137,7 +137,7 @@ class Location extends Entity implements Location_Interface {
         } else {
             return $valid;
         }
-        for ($i = 0; $i < count($actions); $i++){
+        for ($i = 0; $i < count($actions); $i++) {
             $description = explode(" ", $actions[$i]->get_description());
             $firstword = $description[0];
             foreach ($synonyms as $synonym) {
@@ -334,7 +334,7 @@ class Location extends Entity implements Location_Interface {
     public function get_id() {
         return $this->id;
     }
-        public function get_inventory_description() {
+    public function get_inventory_description() {
         $app = App::get_instance();
         $language = $app->get_language();
         $game = $app->get_game();

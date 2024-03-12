@@ -153,7 +153,7 @@ class Util {
         $synonyms = $matches[1];
         $synonyms = array_unique($synonyms);
 
-    return $synonyms;
+        return $synonyms;
     }
 
 }

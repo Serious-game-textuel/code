@@ -199,14 +199,14 @@ class App implements App_Interface {
                     if ($this->get_language() == Language::FR) {
                         throw new Exception('Aucun joueur trouvé dans ce jeu');
                     } else {
-                    throw new Exception('No player found in this game');
+                        throw new Exception('No player found in this game');
                     }
                 }
             } catch (Exception $e) {
                 if ($this->get_language() == Language::FR) {
                     throw new Exception('Aucun joueur trouvé dans ce jeu');
                 } else {
-                throw new Exception('No player found in this game');
+                    throw new Exception('No player found in this game');
                 }
             }
         }
@@ -263,16 +263,18 @@ class App implements App_Interface {
                         $item = Item::get_instance_from_parent_id($item->get_id());
                     } catch (Exception $e) {
                         if ($this->get_language() == Language::FR) {
-                            throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . " et la colonne: " . $col ."");
+                                throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . "
+                                et la colonne: " . $col ."");
                         } else {
                             throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
                         }
                     }
                 } else {
                     if ($this->get_language() == Language::FR) {
-                        throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . " et la colonne: " . $col ."");
+                            throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . " et
+                             la colonne: " . $col ."");
                     } else {
-                    throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
+                        throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
                     }
                 }
                 array_push($items, $item);
@@ -300,18 +302,20 @@ class App implements App_Interface {
                         $item = Item::get_instance_from_parent_id($item->get_id());
                     } catch (Exception $e) {
                         if ($this->get_language() == Language::FR) {
-                            throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . " et la colonne: " . $col ."");
+                            throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . "
+                            et la colonne: " . $col ."");
                         } else {
-                        throw new Exception($itemname . "is not an item and here is the row: "
-                        . $row . " and the col: " . $col ."");
+                            throw new Exception($itemname . "is not an item and here is the row: "
+                            . $row . " and the col: " . $col ."");
                         }
                     }
                 } else {
                     if ($this->get_language() == Language::FR) {
-                        throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . " et la colonne: " . $col ."");
+                        throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . " et la
+                         colonne: " . $col ."");
                     } else {
-                    throw new Exception($itemname . "is not an item and here is the row: "
-                    . $row . " and the col: " . $col ."");
+                        throw new Exception($itemname . "is not an item and here is the row: "
+                        . $row . " and the col: " . $col ."");
                     }
                 }
                 array_push($items, $item);
@@ -337,14 +341,14 @@ class App implements App_Interface {
                     if ($this->get_language() == Language::FR) {
                         throw new Exception($locationname . " n'est pas un lieu");
                     } else {
-                    throw new Exception($locationname . "is not a location");
+                        throw new Exception($locationname . "is not a location");
                     }
                 }
             } else {
                 if ($this->get_language() == Language::FR) {
                     throw new Exception($locationname . " n'est pas un lieu");
                 } else {
-                throw new Exception($locationname . "is not a location");
+                    throw new Exception($locationname . "is not a location");
                 }
             }
             $character = $this->get_startentity($name);
@@ -358,14 +362,14 @@ class App implements App_Interface {
                         if ($this->get_language() == Language::FR) {
                             throw new Exception($name . " n'est pas un personnage");
                         } else {
-                        throw new Exception($name . " is not a character");
+                            throw new Exception($name . " is not a character");
                         }
                     }
                 } else {
                     if ($this->get_language() == Language::FR) {
                         throw new Exception($name . " n'est pas un personnage");
                     } else {
-                    throw new Exception($name . " is not a character");
+                        throw new Exception($name . " is not a character");
                     }
                 }
                 $character->set_currentlocation($location);
@@ -386,14 +390,14 @@ class App implements App_Interface {
                     if ($this->get_language() == Language::FR) {
                         throw new Exception($locationname . " n'est pas un lieu");
                     } else {
-                    throw new Exception($locationname . "is not a location");
+                        throw new Exception($locationname . "is not a location");
                     }
                 }
             } else {
                 if ($this->get_language() == Language::FR) {
                     throw new Exception($locationname . " n'est pas un lieu");
                 } else {
-                throw new Exception($locationname . "is not a location");
+                    throw new Exception($locationname . "is not a location");
                 }
             }
             $actions = $this->create_column_actions($location, $col, $row + 6);
@@ -462,14 +466,14 @@ class App implements App_Interface {
                             if ($this->get_language() == Language::FR) {
                                 throw new Exception($name . " n'est pas un objet");
                             } else {
-                            throw new Exception($name . " is not an Item");
+                                throw new Exception($name . " is not an Item");
                             }
                         }
                     } else {
                         if ($this->get_language() == Language::FR) {
                             throw new Exception($name . " n'est pas un objet");
                         } else {
-                        throw new Exception($name . " is not an Item");
+                            throw new Exception($name . " is not an Item");
                         }
                     }
                     array_push($newitems, $item);
@@ -485,14 +489,14 @@ class App implements App_Interface {
                             if ($this->get_language() == Language::FR) {
                                 throw new Exception($name . " n'est pas un objet");
                             } else {
-                            throw new Exception($name . " is not an Item");
+                                throw new Exception($name . " is not an Item");
                             }
                         }
                     } else {
                         if ($this->get_language() == Language::FR) {
                             throw new Exception($name . " n'est pas un objet");
                         } else {
-                        throw new Exception($name . " is not an Item");
+                            throw new Exception($name . " is not an Item");
                         }
                     }
                     array_push($olditems, $item);
@@ -529,14 +533,14 @@ class App implements App_Interface {
                             if ($this->get_language() == Language::FR) {
                                 throw new Exception($locationname . " n'est pas un lieu");
                             } else {
-                            throw new Exception($locationname . " is not a location");
+                                throw new Exception($locationname . " is not a location");
                             }
                         }
                     } else {
                         if ($this->get_language() == Language::FR) {
                             throw new Exception($locationname . " n'est pas un lieu");
                         } else {
-                        throw new Exception($locationname . " is not a location");
+                            throw new Exception($locationname . " is not a location");
                         }
                     }
                 }

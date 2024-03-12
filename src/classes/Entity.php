@@ -61,7 +61,7 @@ class Entity implements Entity_Interface {
                 if ($language == 'fr') {
                     throw new InvalidArgumentException("Aucun objet Entity d'ID:".$id." existe.");
                 } else {
-                throw new InvalidArgumentException("No Entity object of ID:".$id." exists.");
+                    throw new InvalidArgumentException("No Entity object of ID:".$id." exists.");
                 }
             }
             $this->id = $id;
