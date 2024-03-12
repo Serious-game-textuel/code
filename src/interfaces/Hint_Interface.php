@@ -16,7 +16,7 @@
 
 /**
  * Interface Hint_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Hint_Interface {
 
@@ -35,4 +35,10 @@ interface Hint_Interface {
      * @return void
      */
     public function set_description(string $description);
+
+    /**
+     * @param int
+     * @return Hint_Interface
+     */
+    public static function get_instance(int $id);
 }

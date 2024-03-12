@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Reaction_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Reaction_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Character_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Location_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/stg/src/Language.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class ReactionTest
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class ReactionTest extends TestCase {
     /**
@@ -38,7 +38,7 @@ class ReactionTest extends TestCase {
      */
     public function testcharacterreaction() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = $app->get_game();
         $olditem = new Item("description1", "name1", ["status1"]);
         $newitem = new Item("description2", "name2", ["status2"]);
@@ -58,7 +58,7 @@ class ReactionTest extends TestCase {
      */
     public function testlocationreaction() {
         global $CFG;
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+        $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
         $game = $app->get_game();
         $olditem = new Item("description1", "name1", ["status1"]);
         $newitem = new Item("description2", "name2", ["status2"]);

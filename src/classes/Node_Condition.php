@@ -15,49 +15,113 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Condition.php');
 
 /**
  * Class Node_Condition
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Node_Condition extends Condition {
 
-    private ?Condition_Interface $condition1;
-    private ?Condition_Interface $condition2;
-    private string $connector;
+    private int $id;
 
+    public function __construct(?int $id, ?Condition_Interface $condition1, ?Condition_Interface $condition2,
+    string $connector, ?array $reactions) {
+        global $DB;
+        if (!isset($id)) {
+            parent::__construct(null, $reactions);
+            $this->id = $DB->insert_record('stg_nodecondition', [
+                'condition_id' => parent::get_id(),
+                'condition1_id' => $condition1->get_id(),
+                'condition2_id' => $condition2->get_id(),
+                'connector' => $connector,
+            ]);
+        } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {stg_nodecondition} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Node_Condition object of ID:".$id." exists.");
+            }
+            $sql = "select condition_id from {stg_nodecondition} where "
+            . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, []);
+            $this->id = $id;
+        }
+    }
 
-    public function __construct(
-        ?Condition_Interface $condition1,
-        ?Condition_Interface $condition2,
-        string $connector,
-        ?array $reactions
-    ) {
-        Util::check_array($reactions, Reaction_Interface::class);
-        parent::__construct($reactions);
-        $this->condition1 = $condition1;
-        $this->condition2 = $condition2;
-        $this->connector = $connector;
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $conditionid): Node_Condition {
+        global $DB;
+        $sql = "select id from {stg_nodecondition} where "
+        . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $conditionid]);
+        return self::get_instance($id);
+    }
+
+    public static function get_instance(int $id): Node_Condition {
+        return new Node_Condition($id, null, null, "", null);
     }
 
     public function get_condition1() {
-        return $this->condition1;
+        global $DB;
+        $sql = "select condition1_id from {stg_nodecondition} where ".
+        $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Condition::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
     public function get_condition2() {
-        return $this->condition2;
+        global $DB;
+        $sql = "select condition2_id from {stg_nodecondition} where ".
+        $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return Condition::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
     public function get_connector() {
-        return $this->connector;
+        global $DB;
+        $sql = "select connector from {stg_nodecondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
-    public function set_condition(Condition_Interface $condition1) {
-        $this->condition1 = $condition1;
+    public function set_condition1(Condition_Interface $condition1) {
+        global $DB;
+        $DB->set_field('stg_nodecondition', 'condition1_id', $condition1->get_id(), ['id' => $this->id]);
     }
     public function set_condition2(Condition_Interface $condition2) {
-        $this->condition2 = $condition2;
+        global $DB;
+        $DB->set_field('stg_nodecondition', 'condition2_id', $condition2->get_id(), ['id' => $this->id]);
     }
     public function set_connector(string $connector) {
-        $this->connector = $connector;
+        global $DB;
+        $DB->set_field('stg_nodecondition', 'connector', $connector, ['id' => $this->id]);
+    }
+
+    public function is_true(): array {
+        $condition1 = $this->get_condition1();
+        $condition2 = $this->get_condition2();
+        $connector = $this->get_connector();
+        if ($connector == "&") {
+            $res1 = $condition1->is_true();
+            $res2 = $condition2->is_true();
+            return [$res1[0] && $res2[0], $res1[1].' '.$res2[1]];
+        } else if ($connector == "|") {
+            $res1 = $condition1->is_true();
+            $res2 = $condition2->is_true();
+            return [$res1[0] || $res2[0], $res1[1].' '.$res2[1]];
+        }
+        return [false, 'condition error : wrong connector'];
+    }
+
+    public function get_id() {
+        return $this->id;
+    }
+
+    public function __toString() {
+        return '('.$this->get_condition1()->__toString().' '
+        .$this->get_connector().' '.$this->get_condition2()->__toString().')';
     }
 }
 

@@ -16,7 +16,7 @@
 
 /**
  * Interface Action_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Action_Interface {
 
@@ -53,5 +53,12 @@ interface Action_Interface {
      * @return array
      */
     public function do_conditions();
+
+    /**
+     * @param int
+     *
+     * @return Action_Interface
+     */
+    public static function get_instance(int $id);
 
 }

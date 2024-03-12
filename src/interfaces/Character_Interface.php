@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
 
 /**
  * Interface Character_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Character_Interface extends Entity_Interface {
 
@@ -33,4 +33,36 @@ interface Character_Interface extends Entity_Interface {
      * @return boolean
      */
     public function has_item_character(Item_Interface $item);
+
+    /**
+     * @return int
+     */
+    public function get_id();
+
+    /**
+     * @param int
+     * @return Character_Interface
+     */
+    public static function get_instance(int $id);
+
+    /**
+     * @return int
+     */
+    public function get_parent_id();
+
+    /**
+     * @param int
+     * @return Character_Interface
+     */
+    public static function get_instance_from_parent_id(int $entityid);
+
+    /**
+     * @return Location_Interface
+     */
+    public function get_current_location();
+
+    /**
+     * @param Location_Interface
+     */
+    public function set_currentlocation(Location_Interface $newlocation);
 }

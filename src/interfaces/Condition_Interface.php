@@ -16,7 +16,7 @@
 
 /**
  * Interface Condition_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Condition_Interface {
 
@@ -24,6 +24,11 @@ interface Condition_Interface {
      * @return int
      */
     public function get_id();
+
+    /**
+     * @return Condition_Interface
+     */
+    public static function get_instance(int $id);
 
     /**
      * @return Reaction_Interface[]
@@ -42,8 +47,13 @@ interface Condition_Interface {
     public function do_reactions();
 
     /**
-     * @return boolean
+     * @return array
      */
     public function is_true();
+
+    /**
+     * @return string
+     */
+    public function __toString();
 
 }

@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
 
 /**
  * Interface Location_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Location_Interface extends Entity_Interface {
 
@@ -47,22 +47,43 @@ interface Location_Interface extends Entity_Interface {
 
     /**
      * @param string $action
-     *
-     * @return string[]
+     * @return array
      * // This method checks if the actions are valid for the location by parsing the string into a Action and called do_condition
      */
     public function check_actions(string $action);
 
     /**
      * @param string $action
-     * @return ?Action_Interface
+     * @return Action_Interface[]
      */
-    public function is_action_valide(string $action);
+    public function get_actions_valide(string $action);
 
     /**
      * @param Item_Interface $item
      * @return bool
      */
     public function has_item_location(Item_Interface $item);
+
+    /**
+     * @param int
+     * @return Location_Interface
+     */
+    public static function get_instance(int $id);
+
+    /**
+     * @return int
+     */
+    public function get_id();
+
+    /**
+     * @return int
+     */
+    public function get_parent_id();
+
+    /**
+     * @param int
+     * @return Location_Interface
+     */
+    public static function get_instance_from_parent_id(int $entityid);
 
 }

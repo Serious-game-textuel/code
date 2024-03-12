@@ -16,9 +16,13 @@
 
 /**
  * Class Language
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Language {
     const FR = 'fr';
     const EN = 'en';
+
+    public static function get_all_languages() {
+        return [self::FR, self::EN];
+    }
 }

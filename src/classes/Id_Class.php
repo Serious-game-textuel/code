@@ -16,7 +16,7 @@
 
 /**
  * Class Id_Class
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Id_Class {
 

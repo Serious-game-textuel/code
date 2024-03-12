@@ -16,7 +16,7 @@
 
 /**
  * Class Util
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Util {
     public static function check_array(array $array, string $class) {
@@ -41,7 +41,7 @@ class Util {
         }
     }
 
-    public static function clean_array(array $array, string $class) {
+    public static function clean_array(array $array, string $class): array {
         $values = array_values($array);
         $result = [];
         if ($class == "string") {
@@ -118,6 +118,7 @@ class Util {
                 $extractedwords[] = $matches[1];
             }
         }
+        $extractedwords = array_unique($extractedwords);
         return $extractedwords;
     }
 
@@ -149,7 +150,10 @@ class Util {
         }
         $pattern = '/<span class="dx-h dthesButton synonym">([^<]+)<\/span>/';
         preg_match_all($pattern, $concatenatedline, $matches);
-        return $matches[1];
+        $synonyms = $matches[1];
+        $synonyms = array_unique($synonyms);
+
+        return $synonyms;
     }
 
 }

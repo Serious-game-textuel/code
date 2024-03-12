@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Item_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
 
 /**
  * Interface Inventory_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Inventory_Interface {
 
@@ -31,7 +31,7 @@ interface Inventory_Interface {
 
     /**
      * @param int $id
-     * @return Item_Interface
+     * @return Item_Interface|null
      */
     public function get_item(int $id);
 
@@ -57,4 +57,15 @@ interface Inventory_Interface {
      * @return boolean
      */
     public function check_item(Item_Interface $item);
+
+    /**
+     * @param int
+     * @return Inventory_Interface
+     */
+    public static function get_instance(int $id);
+
+    /**
+     * @return string
+     */
+    public function __toString();
 }

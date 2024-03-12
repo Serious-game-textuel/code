@@ -17,15 +17,15 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package     mod_serioustextualgame
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @package     mod_stg
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_serioustextualgame';
-$plugin->release = '1.0.0';
+$plugin->component = 'mod_stg';
+$plugin->release = '1.1.0';
 $plugin->version = 2024013100;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_ALPHA;

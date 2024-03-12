@@ -16,7 +16,7 @@
 
 /**
  * Interface Entity_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Entity_Interface {
 
@@ -69,6 +69,10 @@ interface Entity_Interface {
      */
     public function remove_status(array $status);
 
-
+    /**
+     * @param int
+     * @return Entity_Interface
+     */
+    public static function get_instance(int $id);
 
 }

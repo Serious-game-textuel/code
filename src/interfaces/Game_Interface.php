@@ -16,7 +16,7 @@
 
 /**
  * Interface Game_Interface
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 interface Game_Interface {
 
@@ -135,5 +135,18 @@ interface Game_Interface {
      * @return ?Entity_Interface
      */
     public function get_entity(string $name);
+
+    /**
+     * @param int
+     * @return Game_Interface
+     */
+    public static function get_instance(int $id);
+
+    /**
+     * @param string $actionname
+     * @param bool $debug
+     * @return array
+     */
+    public function do_action(string $actionname, bool $debug);
 
 }

@@ -16,37 +16,23 @@
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 
 
 
 $csvcontent = $_POST['csvcontent'];
-$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
+$tempfilepath = tempnam(sys_get_temp_dir(), 'mod_stg');
 file_put_contents($tempfilepath, $csvcontent);
-
-$app = new App($tempfilepath);
-if (isset($_SESSION['conditionsdone'])) {
-    $conditionsdone = $_SESSION['conditionsdone'];
-    $conditionsdone = unserialize($conditionsdone);
-    $app->do_actionsdone($conditionsdone);
+$app = App::get_instance();
+if ($app == null) {
+    $app = new App(null, $tempfilepath);
 }
-$game = $app->get_game();
-$inputtext = $_POST['inputText'];
-$currentlocation = $game->get_current_location();
-
-$action = $currentlocation->check_actions($inputtext);
-
-
-if (empty($action[0])) {
-    echo "donne une autre commande";
+$action = $app->get_game()->do_action($_POST['inputText'], $_POST['debug']);
+if (count($action[0]) == 0) {
+    echo '["donne une autre commande", ["'.implode('", "', $action[1]).'"]]';
 } else {
-    echo $action[0];
+    echo '["'.implode(' / ', $action[0]).'", ["'.implode('", "', $action[1]).'"]]';
 }
-
-$conditionsdone = $app->get_actionsdone();
-$conditionsdone = serialize($conditionsdone);
-$_SESSION['conditionsdone'] = $conditionsdone;
-
 
 exit();

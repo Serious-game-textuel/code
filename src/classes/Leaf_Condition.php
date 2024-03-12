@@ -15,64 +15,390 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Condition.php');
 
 /**
  * Class Leaf_Condition
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 class Leaf_Condition extends Condition {
 
-    private ?Entity_Interface $entity1;
-    private ?Entity_Interface $entity2;
-    private string $connector;
-    private ?array $status;
+    private ?int $id;
 
-    public function __construct(?Entity_Interface $entity1, ?Entity_Interface $entity2, string $connector,
-    ?array $status, array $reactions) {
-        Util::check_array($reactions, Reaction_Interface::class);
-        parent::__construct($reactions);
-        $this->entity1 = $entity1;
-        $this->entity2 = $entity2;
-        $this->connector = $connector;
-        if ($status !== null) {
+    public function __construct(?int $id, ?Entity_Interface $entity1, ?Entity_Interface $entity2,
+    string $connector, ?array $status, array $reactions) {
+        global $DB;
+        if (!isset($id)) {
             Util::check_array($status, 'string');
-            $status = array_filter($status);
+            parent::__construct(null, $reactions);
+            $arguments = [
+                'condition_id' => parent::get_id(),
+                'connector' => $connector,
+            ];
+            if (isset($entity1)) {
+                $arguments['entity1_id'] = $entity1->get_id();
+            }
+            if (isset($entity2)) {
+                $arguments['entity2_id'] = $entity2->get_id();
+            }
+            $this->id = $DB->insert_record('stg_leafcondition', $arguments);
+            foreach ($status as $statut) {
+                $DB->insert_record('stg_leafcondition_status', [
+                    'leafcondition_id' => $this->id,
+                    'status' => $statut,
+                ]);
+            }
+        } else {
+            $exists = $DB->record_exists_sql(
+                "SELECT id FROM {stg_leafcondition} WHERE "
+                .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+                ['id' => $id]
+            );
+            if (!$exists) {
+                throw new InvalidArgumentException("No Leaf_Condition object of ID:".$id." exists.");
+            }
+            $sql = "select condition_id from {stg_leafcondition} where "
+            . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+            $super = $DB->get_field_sql($sql, ['id' => $id]);
+            parent::__construct($super, []);
+            $this->id = $id;
         }
-        $this->status = $status;
+    }
+
+    public function get_parent_id() {
+        return parent::get_id();
+    }
+
+    public static function get_instance_from_parent_id(int $conditionid): Leaf_Condition {
+        global $DB;
+        $sql = "select id from {stg_leafcondition} where "
+        . $DB->sql_compare_text('condition_id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $conditionid]);
+        return self::get_instance($id);
+    }
+
+    public static function get_instance(int $id): Leaf_Condition {
+        return new Leaf_Condition($id, null, null, "", null, []);
     }
 
     public function get_entity1() {
-        return $this->entity1;
+        global $DB;
+        $sql = "select entity1_id from {stg_leafcondition} where ".
+        $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $this->id]);
+        if ($id > 0) {
+            return Entity::get_instance($id);
+        } else {
+            return null;
+        }
     }
 
     public function set_entity1(Entity_Interface $entity1) {
-        $this->entity1 = $entity1;
+        global $DB;
+        $DB->set_field('stg_leafcondition', 'entity1_id', $entity1->get_id(), ['id' => $this->id]);
     }
 
     public function get_entity2() {
-        return $this->entity2;
+        global $DB;
+        $sql = "select entity2_id from {stg_leafcondition} where ". $DB->sql_compare_text('id') . " = ".
+        $DB->sql_compare_text(':id');
+        $id = $DB->get_field_sql($sql, ['id' => $this->id]);
+        if ($id > 0) {
+            return Entity::get_instance($id);
+        } else {
+            return null;
+        }
     }
 
     public function set_entity2(Entity_Interface $entity2) {
-        $this->entity2 = $entity2;
+        global $DB;
+        $DB->set_field('stg_leafcondition', 'entity2_id', $entity2->get_id(), ['id' => $this->id]);
     }
 
     public function get_connector() {
-        return $this->connector;
+        global $DB;
+        $sql = "select connector from {stg_leafcondition} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
     }
 
     public function set_connector(string $connector) {
-        $this->connector = $connector;
+        global $DB;
+        $DB->set_field('stg_leafcondition', 'connector', $connector, ['id' => $this->id]);
     }
 
     public function get_status() {
-        return $this->status;
+        global $DB;
+        $sql = "select status from {stg_leafcondition_status} where "
+        . $DB->sql_compare_text('leafcondition_id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_fieldset_sql($sql, ['id' => $this->id]);
     }
 
     public function set_status(array $status) {
-        $this->status = Util::clean_array($status, 'string');
+        $status = Util::clean_array($status, 'string');
+        global $DB;
+        $DB->delete_records('stg_leafcondition_status', ['leafcondition_id' => $this->id]);
+        foreach ($status as $statut) {
+            $DB->insert_record('stg_leafcondition_status', [
+                'leafcondition_id' => $this->id,
+                'status' => $statut,
+            ]);
+        }
     }
 
+    public function is_true(): array {
+        $entity1 = $this->get_entity1();
+        $entity2 = $this->get_entity2();
+        $connector = $this->get_connector();
+        $status = $this->get_status();
+        $app = App::get_instance();
+        $language = $app->get_language();
+        if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
+            return [true, ""];
+        }
+        global $DB;
+        if ($language == "fr") {
+            if ($entity1 != null) {
+                $entity1status = $entity1->get_status();
+                try {
+                    $character1 = Character::get_instance_from_parent_id($entity1->get_id());
+                    if ($entity2 != null) {
+                        try {
+                            $item2 = Item::get_instance_from_parent_id($entity2->get_id());
+                            if ($connector == "possède" || $connector == "a") {
+                                $return = $character1->has_item_character($item2);
+                                if ($return) {
+                                    return [$return, ""];
+                                } else {
+                                    return [$return, $character1->get_name().' a pas '.$item2->get_name()];
+                                }
+                            } else if ($connector == "possède pas" || $connector == "a pas") {
+                                $return = !$character1->has_item_character($item2);
+                                if ($return) {
+                                    return [$return, ""];
+                                } else {
+                                    return [$return, $character1->get_name().' a '.$item2->get_name()];
+                                }
+                            }
+                        } catch (Exception $e) {
+                            $e;
+                        }
+                    } else {
+                        if ($connector == "est") {
+                            foreach ($status as $s) {
+                                if (!in_array($s, $entity1status)) {
+                                    return [false, $character1->get_name().' est pas '.$s];
+                                }
+                            }
+                            return [true, ""];
+                        } else if ($connector == "est pas") {
+                            foreach ($status as $s) {
+                                if (in_array($s, $entity1status)) {
+                                    return [false, $character1->get_name().' est '.$s];
+                                }
+                            }
+                            return [true, ""];
+                        }
+                    }
+                } catch (Exception $e) {
+                    try {
+                        $item1 = Item::get_instance_from_parent_id($entity1->get_id());
+                        if ($entity2 == null) {
+                            if ($connector == "est") {
+                                foreach ($status as $s) {
+                                    if (!in_array($s, $entity1status)) {
+                                        return [false, $item1->get_name().' est pas '.$s];
+                                    }
+                                }
+                                return [true, ""];
+                            } else if ($connector == "est pas") {
+                                foreach ($status as $s) {
+                                    if (in_array($s, $entity1status)) {
+                                        return [false, $item1->get_name().' est '.$s];
+                                    }
+                                }
+                                return [true, ""];
+                            }
+                        }
+                    } catch (Exception $e) {
+                        try {
+                            $location1 = Location::get_instance_from_parent_id($entity1->get_id());
+                            if ($entity2 == null) {
+                                if ($connector == "est") {
+                                    foreach ($status as $s) {
+                                        if (!in_array($s, $entity1status)) {
+                                            return [false, $location1->get_name().' est pas '.$s];
+                                        }
+                                    }
+                                    return [true, ""];
+                                } else if ($connector == "est pas") {
+                                    foreach ($status as $s) {
+                                        if (in_array($s, $entity1status)) {
+                                            return [false, $location1->get_name().' est '.$s];
+                                        }
+                                    }
+                                    return [true, ""];
+                                }
+                            } else {
+                                try {
+                                    $item2 = item::get_instance_from_parent_id($entity2->get_id());
+                                    if ($connector == "possède" || $connector == "a") {
+                                        $return = $location1->has_item_location($item2);
+                                        if ($return) {
+                                            return [true, ""];
+                                        } else {
+                                            return [false, $location1->get_name().' a pas '.$item2->get_name()];
+                                        }
+                                    } else if ($connector == "possède pas" || $connector == "a pas") {
+                                        $return = !$location1->has_item_location($item2);
+                                        if ($return) {
+                                            return [true, ""];
+                                        } else {
+                                            return [false, $location1->get_name().' a '.$item2->get_name()];
+                                        }
+                                    }
+                                } catch (Exception $e) {
+                                    $e;
+                                }
+                            }
+                        } catch (Exception $e) {
+                            $e;
+                        }
+                    }
+                }
+            }
+        } else {
+            if ($entity1 != null) {
+                $entity1status = $entity1->get_status();
+                try {
+                    $character1 = Character::get_instance_from_parent_id($entity1->get_id());
+                    if ($entity2 != null) {
+                        try {
+                            $item2 = Item::get_instance_from_parent_id($entity2->get_id());
+                            if ($connector == "has" || $connector == "have") {
+                                $return = $character1->has_item_character($item2);
+                                if ($return) {
+                                    return [$return, ""];
+                                } else {
+                                    return [$return, $character1->get_name().' has not '.$item2->get_name()];
+                                }
+                            } else if ($connector == "has not" || $connector == "have not") {
+                                $return = !$character1->has_item_character($item2);
+                                if ($return) {
+                                    return [$return, ""];
+                                } else {
+                                    return [$return, $character1->get_name().' has '.$item2->get_name()];
+                                }
+                            }
+                        } catch (Exception $e) {
+                            $e;
+                        }
+                    } else {
+                        if ($connector == "is") {
+                            foreach ($status as $s) {
+                                if (!in_array($s, $entity1status)) {
+                                    return [false, $character1->get_name().' is not '.$s];
+                                }
+                            }
+                            return [true, ""];
+                        } else if ($connector == "is not") {
+                            foreach ($status as $s) {
+                                if (in_array($s, $entity1status)) {
+                                    return [false, $character1->get_name().' is '.$s];
+                                }
+                            }
+                            return [true, ""];
+                        }
+                    }
+                } catch (Exception $e) {
+                    try {
+                        $item1 = Item::get_instance_from_parent_id($entity1->get_id());
+                        if ($entity2 == null) {
+                            if ($connector == "is") {
+                                foreach ($status as $s) {
+                                    if (!in_array($s, $entity1status)) {
+                                        return [false, $item1->get_name().' is not '.$s];
+                                    }
+                                }
+                                return [true, ""];
+                            } else if ($connector == "is not") {
+                                foreach ($status as $s) {
+                                    if (in_array($s, $entity1status)) {
+                                        return [false, $item1->get_name().' is '.$s];
+                                    }
+                                }
+                                return [true, ""];
+                            }
+                        }
+                    } catch (Exception $e) {
+                        try {
+                            $location1 = Location::get_instance_from_parent_id($entity1->get_id());
+                            if ($entity2 == null) {
+                                if ($connector == "is") {
+                                    foreach ($status as $s) {
+                                        if (!in_array($s, $entity1status)) {
+                                            return [false, $location1->get_name().' is not '.$s];
+                                        }
+                                    }
+                                    return [true, ""];
+                                } else if ($connector == "is not") {
+                                    foreach ($status as $s) {
+                                        if (in_array($s, $entity1status)) {
+                                            return [false, $location1->get_name().' is '.$s];
+                                        }
+                                    }
+                                    return [true, ""];
+                                }
+                            } else {
+                                try {
+                                    $item2 = item::get_instance_from_parent_id($entity2->get_id());
+                                    if ($connector == "has" || $connector == "have") {
+                                        $return = $location1->has_item_location($item2);
+                                        if ($return) {
+                                            return [true, ""];
+                                        } else {
+                                            return [false, $location1->get_name().' has not '.$item2->get_name()];
+                                        }
+                                    } else if ($connector == "has not" || $connector == "have not") {
+                                        $return = !$location1->has_item_location($item2);
+                                        if ($return) {
+                                            return [true, ""];
+                                        } else {
+                                            return [false, $location1->get_name().' has '.$item2->get_name()];
+                                        }
+                                    }
+                                } catch (Exception $e) {
+                                    $e;
+                                }
+                            }
+                        } catch (Exception $e) {
+                            $e;
+                        }
+                    }
+                }
+            }
+        }
+        return [false, "Error in condition"];
+    }
+
+    public function get_id() {
+        return $this->id;
+    }
+
+    public function __toString() {
+        $entity1 = $this->get_entity1();
+        $entity2 = $this->get_entity2();
+        $connector = $this->get_connector();
+        $status = $this->get_status();
+        $return = '(';
+        if (isset($entity1)) {
+            $return = $return."'".$entity1->get_name()."' ".$connector.' ';
+            if (isset($entity2)) {
+                $return = $return."'".$entity2->get_name()."'";
+            } else {
+                $return = $return.'['.implode(', ', $status).']';
+            }
+        }
+        return $return.')';
+    }
 }
 
