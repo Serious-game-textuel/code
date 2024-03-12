@@ -148,10 +148,13 @@ class Leaf_Condition extends Condition {
         $entity2 = $this->get_entity2();
         $connector = $this->get_connector();
         $status = $this->get_status();
+        $app = App::get_instance();
+        $language = $app->get_language();
         if ($entity1 == null && $entity2 == null && $connector == "" && $status == null) {
             return [true, ""];
         }
         global $DB;
+        if ($language =="fr"){
         if ($entity1 != null) {
             $entity1status = $entity1->get_status();
             try {
@@ -261,6 +264,118 @@ class Leaf_Condition extends Condition {
                 }
             }
         }
+    }
+    else {
+        if ($entity1 != null) {
+            $entity1status = $entity1->get_status();
+            try {
+                $character1 = Character::get_instance_from_parent_id($entity1->get_id());
+                if ($entity2 != null) {
+                    try {
+                        $item2 = Item::get_instance_from_parent_id($entity2->get_id());
+                        if ($connector == "has" || $connector == "have") {
+                            $return = $character1->has_item_character($item2);
+                            if ($return) {
+                                return [$return, ""];
+                            } else {
+                                return [$return, $character1->get_name().' has not '.$item2->get_name()];
+                            }
+                        } else if ($connector == "has not" || $connector == "have not") {
+                            $return = !$character1->has_item_character($item2);
+                            if ($return) {
+                                return [$return, ""];
+                            } else {
+                                return [$return, $character1->get_name().' has '.$item2->get_name()];
+                            }
+                        }
+                    } catch (Exception $e) {
+                        $e;
+                    }
+                } else {
+                    if ($connector == "is") {
+                        foreach ($status as $s) {
+                            if (!in_array($s, $entity1status)) {
+                                return [false, $character1->get_name().' is not '.$s];
+                            }
+                        }
+                        return [true, ""];
+                    } else if ($connector == "is not") {
+                        foreach ($status as $s) {
+                            if (in_array($s, $entity1status)) {
+                                return [false, $character1->get_name().' is '.$s];
+                            }
+                        }
+                        return [true, ""];
+                    }
+                }
+            } catch (Exception $e) {
+                try {
+                    $item1 = Item::get_instance_from_parent_id($entity1->get_id());
+                    if ($entity2 == null) {
+                        if ($connector == "is") {
+                            foreach ($status as $s) {
+                                if (!in_array($s, $entity1status)) {
+                                    return [false, $item1->get_name().' is not '.$s];
+                                }
+                            }
+                            return [true, ""];
+                        } else if ($connector == "is not") {
+                            foreach ($status as $s) {
+                                if (in_array($s, $entity1status)) {
+                                    return [false, $item1->get_name().' is '.$s];
+                                }
+                            }
+                            return [true, ""];
+                        }
+                    }
+                } catch (Exception $e) {
+                    try {
+                        $location1 = Location::get_instance_from_parent_id($entity1->get_id());
+                        if ($entity2 == null) {
+                            if ($connector == "is") {
+                                foreach ($status as $s) {
+                                    if (!in_array($s, $entity1status)) {
+                                        return [false, $location1->get_name().' is not '.$s];
+                                    }
+                                }
+                                return [true, ""];
+                            } else if ($connector == "is not") {
+                                foreach ($status as $s) {
+                                    if (in_array($s, $entity1status)) {
+                                        return [false, $location1->get_name().' is '.$s];
+                                    }
+                                }
+                                return [true, ""];
+                            }
+                        } else {
+                            try {
+                                $item2 = item::get_instance_from_parent_id($entity2->get_id());
+                                if ($connector == "has" || $connector == "have") {
+                                    $return = $location1->has_item_location($item2);
+                                    if ($return) {
+                                        return [true, ""];
+                                    } else {
+                                        return [false, $location1->get_name().' has not '.$item2->get_name()];
+                                    }
+                                } else if ($connector == "has not" || $connector == "have not") {
+                                    $return = !$location1->has_item_location($item2);
+                                    if ($return) {
+                                        return [true, ""];
+                                    } else {
+                                        return [false, $location1->get_name().' has '.$item2->get_name()];
+                                    }
+                                }
+                            } catch (Exception $e) {
+                                $e;
+                            }
+                        }
+                    } catch (Exception $e) {
+                        $e;
+                    }
+                }
+            }
+        }
+    }
         return [false, "Error in condition"];
     }
 

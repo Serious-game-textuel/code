@@ -26,7 +26,7 @@ $tempfilepath = tempnam(sys_get_temp_dir(), 'mod_serioustextualgame');
 file_put_contents($tempfilepath, $csvcontent);
 $app = App::get_instance();
 if ($app == null) {
-    $app = new App(null, $tempfilepath, Language::FR);
+    $app = new App(null, $tempfilepath);
 }
 $action = $app->get_game()->do_action($_POST['inputText'], $_POST['debug']);
 if (count($action[0]) == 0) {

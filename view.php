@@ -102,17 +102,13 @@ if ($file) {
     <div id="helpText" style="display: none; position: absolute; top: 30px; right: 0;
      background-color: white; color: black; padding: 10px;">
         <?php if ($element === 'FR'): ?>
-            Avoir de l'aide = Help<br>
             Avoir des indices = indices <br>
             Connaître les sorties = sortie <br>
-            Sauvegarder une partie = sauvegarder <br>
             Fouiller un endroit = fouiller [nom de l'endroit] <br>
             Connaître son inventaire = inventaire <br>
         <?php else: ?>
-            Get help = Help<br>
             Get hints = hints <br>
             Know the exits = exit <br>
-            Save a game = save <br>
             Search a place = search [place name] <br>
             Know your inventory = inventory <br>
         <?php endif; ?>

@@ -118,6 +118,7 @@ class Util {
                 $extractedwords[] = $matches[1];
             }
         }
+        $extractedwords = array_unique($extractedwords);
         return $extractedwords;
     }
 
@@ -149,7 +150,10 @@ class Util {
         }
         $pattern = '/<span class="dx-h dthesButton synonym">([^<]+)<\/span>/';
         preg_match_all($pattern, $concatenatedline, $matches);
-        return $matches[1];
+        $synonyms = $matches[1];
+        $synonyms = array_unique($synonyms);
+
+    return $synonyms;
     }
 
 }

@@ -42,7 +42,7 @@ class App implements App_Interface {
     private $id;
     private array $csvdata;
 
-    public function __construct(?int $id, ?string $csvfilepath, ?string $language) {
+    public function __construct(?int $id, ?string $csvfilepath) {
         global $DB;
         if (!isset($id)) {
             $file = fopen($csvfilepath, 'r');
@@ -103,7 +103,7 @@ class App implements App_Interface {
         $sql = "select id from {app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid');
         $id = $DB->get_field_sql($sql, ['studentid' => $USER->id]);
         if ($id > 0) {
-            return new App($id, null, null);
+            return new App($id, null);
         } else {
             return null;
         }
