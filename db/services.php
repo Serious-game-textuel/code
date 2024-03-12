@@ -15,17 +15,16 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * External services for mod_serioustextualgame.
- * @package     mod_serioustextualgame
- * @category    services
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * External services for mod_stg.
+ * @package     mod_stg
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $functions = [
-    'mod_serioustextualgame_get_file_info' => [
-        'classname'   => 'mod_serioustextualgame_external',
+    'mod_stg_get_file_info' => [
+        'classname'   => 'mod_stg_external',
         'methodname'  => 'get_file_info',
         'description' => 'Get file information',
         'type'        => 'read',

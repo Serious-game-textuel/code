@@ -15,8 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Item_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Item_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
+
+/**
+ * Interface Inventory_Interface
+ * @package mod_stg
+ */
 interface Inventory_Interface {
 
     /**

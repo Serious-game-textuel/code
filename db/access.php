@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Serioustextualgame module capability definition
+ * stg module capability definition
  *
- * @package    Serioustextualgame
+ * @package    mod_stg
  * @copyright  2024 SG
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 $capabilities = [
-    'mod/serioustextualgame:view' => [
+    'mod/stg:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -34,7 +34,7 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
-    'mod/serioustextualgame:addinstance' => [
+    'mod/stg:addinstance' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,

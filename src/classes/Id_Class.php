@@ -13,39 +13,22 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
 
 /**
- * Interface Item_Interface
+ * Class Id_Class
  * @package mod_stg
  */
-interface Item_Interface extends Entity_Interface {
-    /**
-     * @return Item_Interface
-     */
-    public function get_inventory();
+class Id_Class {
 
-    /**
-     * @param int
-     * @return Item_Interface
-     */
-    public static function get_instance(int $id);
+    private static $map = [];
 
-    /**
-     * @return int
-     */
-    public function get_id();
+    public static function generate_id($class) {
+        if (array_key_exists($class, self::$map)) {
+            self::$map[$class]++;
+        } else {
+            self::$map[$class] = 1;
+        }
+        return self::$map[$class];
+    }
 
-    /**
-     * @return int
-     */
-    public function get_parent_id();
-
-    /**
-     * @param int
-     * @return Item_Interface
-     */
-    public static function get_instance_from_parent_id(int $entityid);
 }

@@ -15,12 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Game_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Game_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
+require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class AppTest
+ * @package mod_stg
+ */
 class AppTest extends TestCase {
     /**
      * vérifie que le constructeur initialise correctement les propriétés
@@ -28,7 +32,7 @@ class AppTest extends TestCase {
     public function testgetsetgame() {
         global $CFG;
         try {
-            $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv', Language::FR);
+            $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv', Language::FR);
             $this->assertTrue(true);
         } catch (Exception $e) {
             $this->assertFalse(false);

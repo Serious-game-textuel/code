@@ -15,9 +15,8 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * External services for mod_serioustextualgame.
- * @package     mod_serioustextualgame
- * @category    services
+ * External services for mod_stg.
+ * @package     mod_stg
  * @copyright   2024 Your Name
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
 
-class mod_serioustextualgame_external extends external_api {
+class mod_stg_external extends external_api {
 
     public static function get_file_info($draftitemid) {
         global $USER;

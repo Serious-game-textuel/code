@@ -17,12 +17,12 @@
 /**
  * The mod_page instance list viewed event.
  *
- * @package    mod_serioustextualgame
+ * @package    mod_stg
  * @copyright  2013 Ankit Agarwal
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_serioustextualgame\event;
+namespace mod_stg\event;
 
 /**
  * The mod_seriousgame instance list viewed event class.

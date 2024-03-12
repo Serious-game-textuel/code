@@ -15,7 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Reaction.php');
+
+/**
+ * Class Character_Reaction
+ * @package mod_stg
+ */
 class Character_Reaction extends Reaction {
 
     private int $id;
@@ -32,17 +37,17 @@ class Character_Reaction extends Reaction {
             if (isset($newlocation)) {
                 $arguments['newlocation_id'] = $newlocation->get_id();
             }
-            $this->id = $DB->insert_record('characterreaction', $arguments);
+            $this->id = $DB->insert_record('stg_characterreaction', $arguments);
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {characterreaction} WHERE "
+                "SELECT id FROM {stg_characterreaction} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
             if (!$exists) {
                 throw new InvalidArgumentException("No Character_Reaction object of ID:".$id." exists.");
             }
-            $sql = "select reaction_id from {characterreaction} where "
+            $sql = "select reaction_id from {stg_characterreaction} where "
             . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
             $super = $DB->get_field_sql($sql, ['id' => $id]);
             parent::__construct($super, "", [], [], [], []);
@@ -56,7 +61,7 @@ class Character_Reaction extends Reaction {
 
     public static function get_instance_from_parent_id(int $reactionid): Character_Reaction {
         global $DB;
-        $sql = "select id from {characterreaction} where "
+        $sql = "select id from {stg_characterreaction} where "
         . $DB->sql_compare_text('reaction_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $reactionid]);
         return self::get_instance($id);
@@ -72,14 +77,14 @@ class Character_Reaction extends Reaction {
 
     public function get_character(): Character {
         global $DB;
-        $sql = "select character_id from {characterreaction} where "
+        $sql = "select character_id from {stg_characterreaction} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         return Character::get_instance($DB->get_field_sql($sql, ['id' => $this->id]));
     }
 
     public function get_new_location() {
         global $DB;
-        $sql = "select newlocation_id from {characterreaction} where ". $DB->sql_compare_text('id')
+        $sql = "select newlocation_id from {stg_characterreaction} where ". $DB->sql_compare_text('id')
         . " = ".$DB->sql_compare_text(':id');
         $newlocationid = $DB->get_field_sql($sql, ['id' => $this->id]);
         if ($newlocationid > 0) {
@@ -91,7 +96,7 @@ class Character_Reaction extends Reaction {
 
     public function set_new_location(Location_Interface $newlocation) {
         global $DB;
-        $DB->set_field('characterreaction', 'newlocation_id', $newlocation->get_id(), ['id' => $this->id]);
+        $DB->set_field('stg_characterreaction', 'newlocation_id', $newlocation->get_id(), ['id' => $this->id]);
     }
 
     public function do_reactions(): array {

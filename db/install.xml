@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/serioustextualgame/db" VERSION="20240131" COMMENT="XMLDB file for Moodle mod_serioustextualgame"
+<XMLDB PATH="mod/stg/db" VERSION="20240131" COMMENT="XMLDB file for Moodle mod_stg"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="serioustextualgame" COMMENT="Stores the serioustextualgame activity module instances.">
+    <TABLE NAME="stg" COMMENT="Stores the stg activity module instances.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the course this activity is part of."/>
@@ -14,13 +14,15 @@
         <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Activity description."/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The format of the intro field."/>
         <FIELD NAME="filecontent" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The content of the file."/>
+        <FIELD NAME="fileid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the uploaded file."/>
+
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="language" COMMENT="Language enum">
+    <TABLE NAME="stg_language" COMMENT="Language enum">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="name" TYPE="text" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Name of the language."/>
@@ -30,7 +32,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="app" COMMENT="App objects">
+    <TABLE NAME="stg_app" COMMENT="App objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="studentid" TYPE="text" LENGTH="6" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the student."/>
@@ -44,7 +46,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="app_startentities" COMMENT="Startentities field of app object">
+    <TABLE NAME="stg_app_startentities" COMMENT="Startentities field of app object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="app_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the app."/>
@@ -55,7 +57,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="game" COMMENT="Game objects">
+    <TABLE NAME="stg_game" COMMENT="Game objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="deaths" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of deaths"/>
@@ -70,7 +72,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="game_visitedlocations" COMMENT="Visitedlocations field of game object">
+    <TABLE NAME="stg_game_visitedlocations" COMMENT="Visitedlocations field of game object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="game_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the game."/>
@@ -81,7 +83,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="game_entities" COMMENT="entities field of game object">
+    <TABLE NAME="stg_game_entities" COMMENT="entities field of game object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="game_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the game."/>
@@ -92,7 +94,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="entity" COMMENT="Entity objects">
+    <TABLE NAME="stg_entity" COMMENT="Entity objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="description" TYPE="text" LENGTH="100" DEFAULT="" NOTNULL="true" SEQUENCE="false" COMMENT="Description of the entity."/>
@@ -103,7 +105,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="entity_status" COMMENT="Status field of entity object">
+    <TABLE NAME="stg_entity_status" COMMENT="Status field of entity object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="entity_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the entity."/>
@@ -114,7 +116,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="location" COMMENT="Location objects">
+    <TABLE NAME="stg_location" COMMENT="Location objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="entity_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super entity."/>
@@ -126,7 +128,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="location_hints" COMMENT="Hints field of location object">
+    <TABLE NAME="stg_location_hints" COMMENT="Hints field of location object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="location_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the location."/>
@@ -137,7 +139,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="location_actions" COMMENT="Actions field of location object">
+    <TABLE NAME="stg_location_actions" COMMENT="Actions field of location object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="location_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the location."/>
@@ -148,7 +150,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="hint" COMMENT="Hint objects">
+    <TABLE NAME="stg_hint" COMMENT="Hint objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="description" TYPE="text" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Description of the hint."/>
@@ -158,7 +160,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="action" COMMENT="Action objects">
+    <TABLE NAME="stg_action" COMMENT="Action objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="description" TYPE="text" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Description of the hint."/>
@@ -168,7 +170,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="action_conditions" COMMENT="Conditions field of the action object">
+    <TABLE NAME="stg_action_conditions" COMMENT="Conditions field of the action object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="action_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the action."/>
@@ -179,7 +181,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="defaultaction" COMMENT="Default_Action objects">
+    <TABLE NAME="stg_defaultaction" COMMENT="Default_Action objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="action_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the action."/>
@@ -189,7 +191,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="condition" COMMENT="Condition objects">
+    <TABLE NAME="stg_condition" COMMENT="Condition objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="test" TYPE="text" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="To avoid no field issue."/>
@@ -199,7 +201,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="condition_reactions" COMMENT="Reactions field of the condition object">
+    <TABLE NAME="stg_condition_reactions" COMMENT="Reactions field of the condition object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="condition_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the condition."/>
@@ -210,7 +212,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="nodecondition" COMMENT="Node_Condition objects">
+    <TABLE NAME="stg_nodecondition" COMMENT="Node_Condition objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="condition_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super condition."/>
@@ -223,7 +225,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="leafcondition" COMMENT="Leaf_Condition objects">
+    <TABLE NAME="stg_leafcondition" COMMENT="Leaf_Condition objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="condition_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super condition."/>
@@ -236,7 +238,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="leafcondition_status" COMMENT="Status field of the Leaf_Condition object">
+    <TABLE NAME="stg_leafcondition_status" COMMENT="Status field of the Leaf_Condition object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="leafcondition_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the Leaf_Condition."/>
@@ -247,7 +249,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="reaction" COMMENT="Reaction objects">
+    <TABLE NAME="stg_reaction" COMMENT="Reaction objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="description" TYPE="text" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Description of the reaction."/>
@@ -257,7 +259,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="reaction_oldstatus" COMMENT="Oldstatus field of the Reaction object">
+    <TABLE NAME="stg_reaction_oldstatus" COMMENT="Oldstatus field of the Reaction object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
@@ -268,7 +270,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="reaction_newstatus" COMMENT="Newstatus field of the Reaction object">
+    <TABLE NAME="stg_reaction_newstatus" COMMENT="Newstatus field of the Reaction object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
@@ -279,7 +281,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="reaction_olditems" COMMENT="Olditems field of the Reaction object">
+    <TABLE NAME="stg_reaction_olditems" COMMENT="Olditems field of the Reaction object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
@@ -290,7 +292,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="reaction_newitems" COMMENT="Newitems field of the Reaction object">
+    <TABLE NAME="stg_reaction_newitems" COMMENT="Newitems field of the Reaction object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the reaction."/>
@@ -301,7 +303,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="noentityreaction" COMMENT="No_Entity_Reaction objects">
+    <TABLE NAME="stg_noentityreaction" COMMENT="No_Entity_Reaction objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
@@ -311,7 +313,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="locationreaction" COMMENT="Location_Reaction objects">
+    <TABLE NAME="stg_locationreaction" COMMENT="Location_Reaction objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
@@ -322,7 +324,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="characterreaction" COMMENT="Character_Reaction objects">
+    <TABLE NAME="stg_characterreaction" COMMENT="Character_Reaction objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="reaction_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super reaction."/>
@@ -334,7 +336,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="character" COMMENT="Character objects">
+    <TABLE NAME="stg_character" COMMENT="Character objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="entity_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super entity."/>
@@ -346,7 +348,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="npccharacter" COMMENT="Npc_Character objects">
+    <TABLE NAME="stg_npccharacter" COMMENT="Npc_Character objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="character_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super character."/>
@@ -356,7 +358,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="playercharacter" COMMENT="Player_Character objects">
+    <TABLE NAME="stg_playercharacter" COMMENT="Player_Character objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="character_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super character."/>
@@ -366,7 +368,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="inventory" COMMENT="Inventory objects">
+    <TABLE NAME="stg_inventory" COMMENT="Inventory objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="test" TYPE="text" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="To avoid no field."/>
@@ -376,7 +378,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="inventory_items" COMMENT="Items field of the Inventory object">
+    <TABLE NAME="stg_inventory_items" COMMENT="Items field of the Inventory object">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="inventory_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the inventory."/>
@@ -387,7 +389,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="item" COMMENT="Item objects">
+    <TABLE NAME="stg_item" COMMENT="Item objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="entity_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the super entity."/>

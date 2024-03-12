@@ -16,9 +16,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Inventory_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
 
+/**
+ * Class Inventory
+ * @package mod_stg
+ */
 class Inventory implements Inventory_Interface {
 
     private int $id;
@@ -27,16 +31,16 @@ class Inventory implements Inventory_Interface {
         global $DB;
         if (!isset($id)) {
             Util::check_array($items, Item_Interface::class);
-            $this->id = $DB->insert_record('inventory', ['test' => 'n']);
+            $this->id = $DB->insert_record('stg_inventory', ['test' => 'n']);
             foreach ($items as $item) {
-                $DB->insert_record('inventory_items', [
+                $DB->insert_record('stg_inventory_items', [
                     'inventory_id' => $this->id,
                     'item_id' => $item->get_id(),
                 ]);
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {inventory} WHERE "
+                "SELECT id FROM {stg_inventory} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -58,7 +62,7 @@ class Inventory implements Inventory_Interface {
     public function get_item(int $id) {
         global $DB;
         $present = $DB->record_exists_sql(
-            "SELECT id FROM {inventory_items} WHERE ".$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
+            "SELECT id FROM {stg_inventory_items} WHERE ".$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
             ['id' => $id]
         );
         if ($present) {
@@ -70,7 +74,7 @@ class Inventory implements Inventory_Interface {
     public function get_items() {
         $items = [];
         global $DB;
-        $sql = "select item_id from {inventory_items} where "
+        $sql = "select item_id from {stg_inventory_items} where "
         . $DB->sql_compare_text('inventory_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
@@ -84,9 +88,9 @@ class Inventory implements Inventory_Interface {
         array_push($items, $item);
         $items = Util::clean_array($items, Item_Interface::class);
         global $DB;
-        $DB->delete_records('inventory_items', ['inventory_id' => $this->id]);
+        $DB->delete_records('stg_inventory_items', ['inventory_id' => $this->id]);
         foreach ($items as $item) {
-            $DB->insert_record('inventory_items', [
+            $DB->insert_record('stg_inventory_items', [
                 'inventory_id' => $this->id,
                 'item_id' => $item->get_id(),
             ]);
@@ -95,7 +99,7 @@ class Inventory implements Inventory_Interface {
 
     public function remove_item(Item_Interface $item) {
         global $DB;
-        $DB->delete_records('inventory_items', ['inventory_id' => $this->id, 'item_id' => $item->get_id()]);
+        $DB->delete_records('stg_inventory_items', ['inventory_id' => $this->id, 'item_id' => $item->get_id()]);
     }
 
     public function check_item(Item_Interface $item) {

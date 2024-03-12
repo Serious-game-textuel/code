@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Class Language
+ * @package mod_stg
+ */
 class Language {
     const FR = 'fr';
     const EN = 'en';

@@ -16,30 +16,33 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/App_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Player_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Npc_Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/No_Entity_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Game.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Default_Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Util.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/App_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Player_Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Npc_Character.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Location.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/No_Entity_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Character_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Location_Reaction.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Leaf_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Action.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Game.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Default_Action.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Util.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
+require_once($CFG->dirroot . '/mod/stg/src/classes/Hint.php');
 
-
+/**
+ * Class App
+ * @package mod_stg
+ */
 class App implements App_Interface {
 
     private $id;
     private array $csvdata;
 
-    public function __construct(?int $id, ?string $csvfilepath, ?string $language) {
+    public function __construct(?int $id, ?string $csvfilepath) {
         global $DB;
         if (!isset($id)) {
             $file = fopen($csvfilepath, 'r');
@@ -50,15 +53,20 @@ class App implements App_Interface {
                 }
                 fclose($file);
                 $playerkeyword = "";
+                $language = $this->get_cell_string(2, 1);
+                if (strlen($language) == 0) {
+                    throw new Exception("Language not found");
+                }
                 if ($language == Language::FR) {
                     $playerkeyword = "joueur";
                 } else {
                     $playerkeyword = "player";
                 }
                 global $USER;
-                $sql = "select id from {language} where " . $DB->sql_compare_text('name') . " = ".$DB->sql_compare_text(':name');
+                $sql = "select id from {stg_language} where " . $DB->sql_compare_text('name') .
+                 " = ".$DB->sql_compare_text(':name');
                 $languageid = $DB->get_field_sql($sql, ['name' => $language]);
-                $this->id = $DB->insert_record('app', [
+                $this->id = $DB->insert_record('stg_app', [
                     'studentid' => $USER->id,
                     'language_id' => $languageid,
                     'playerkeyword' => $playerkeyword,
@@ -70,7 +78,7 @@ class App implements App_Interface {
             }
         } else {
             $exists = $DB->record_exists_sql(
-                "SELECT id FROM {app} WHERE "
+                "SELECT id FROM {stg_app} WHERE "
                 .$DB->sql_compare_text('id')." = ".$DB->sql_compare_text(':id'),
                 ['id' => $id]
             );
@@ -80,15 +88,25 @@ class App implements App_Interface {
             $this->id = $id;
         }
     }
+    public function get_language_id() {
+        global $DB;
+        $sql = "SELECT language_id FROM {stg_app} WHERE " . $DB->sql_compare_text('id') . " = " . $DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->id]);
+    }
+    public function get_language() {
+        global $DB;
+        $sql = "select name from {stg_language} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        return $DB->get_field_sql($sql, ['id' => $this->get_language_id()]);
+    }
 
     public static function get_instance() {
         global $DB;
         global $USER;
-        $sql = "select id from {app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid')
+        $sql = "select id from {stg_app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid')
         . " and " . $DB->sql_compare_text('activityid') . " = ".$DB->sql_compare_text(':activityid');
         $id = $DB->get_field_sql($sql, ['studentid' => $USER->id, 'activityid' => intval($_POST['module'])]);
         if ($id > 0) {
-            return new App($id, null, null);
+            return new App($id, null);
         } else {
             return null;
         }
@@ -96,22 +114,22 @@ class App implements App_Interface {
 
     public function get_game() {
         global $DB;
-        $sql = "select game_id from {app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select game_id from {stg_app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $gameid = $DB->get_field_sql($sql, ['id' => $this->id]);
         return Game::get_instance($gameid);
     }
 
     public function set_game(Game_Interface $game) {
         global $DB;
-        $DB->set_field('app', 'game_id', $game->get_id(), ['id' => $this->id]);
+        $DB->set_field('stg_app', 'game_id', $game->get_id(), ['id' => $this->id]);
     }
 
     public function get_startentity($entityname) {
         global $DB;
-        $sql = "select {entity}.id from {app_startentities} left join {entity} "
-        . "on {app_startentities}.entity_id = {entity}.id where "
-        . $DB->sql_compare_text('{entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
-        . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select {stg_entity}.id from {stg_app_startentities} left join {stg_entity} "
+        . "on {stg_app_startentities}.entity_id = {stg_entity}.id where "
+        . $DB->sql_compare_text('{stg_entity}.name') . " = ".$DB->sql_compare_text(':entityname') . " and "
+        . $DB->sql_compare_text('{stg_app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
         $id = $DB->get_field_sql($sql, ['id' => $this->id, 'entityname' => $entityname]);
         if ($id > 0) {
             return Entity::get_instance($id);
@@ -123,9 +141,9 @@ class App implements App_Interface {
     public function get_startentities() {
         $startentities = [];
         global $DB;
-        $sql = "select {entity}.id from {app_startentities} ".
-        "left join {entity} on {app_startentities}.entity_id = {entity}.id where "
-        . $DB->sql_compare_text('{app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
+        $sql = "select {stg_entity}.id from {stg_app_startentities} ".
+        "left join {stg_entity} on {stg_app_startentities}.entity_id = {stg_entity}.id where "
+        . $DB->sql_compare_text('{stg_app_startentities}.app_id') . " = ".$DB->sql_compare_text(':id');
         $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
         foreach ($ids as $id) {
             array_push($startentities, Entity::get_instance($id));
@@ -135,7 +153,7 @@ class App implements App_Interface {
 
     public function add_startentity(Entity_Interface $entity) {
         global $DB;
-        $DB->insert_record('app_startentities', [
+        $DB->insert_record('stg_app_startentities', [
             'app_id' => $this->id,
             'entity_id' => $entity->get_id(),
         ]);
@@ -143,18 +161,26 @@ class App implements App_Interface {
 
     public function add_startentity_from_id(int $entityid) {
         global $DB;
-        $DB->insert_record('app_startentities', [
+        $DB->insert_record('stg_app_startentities', [
             'app_id' => $this->id,
             'entity_id' => $entityid,
         ]);
     }
 
     private function parse() {
-        $itemsrow = $this->get_row("OBJETS");
-        $charactersrow = $this->get_row("PERSONNAGES");
-        $locationsrow = $this->get_row("LIEUX");
-        $interactiondefautrow = $this->get_row("interaction avec objet n'existant pas :");
-        $fouillerdefautrow = $this->get_row("Fouiller par défaut :");
+        if ($this->get_language() == Language::FR) {
+            $itemsrow = $this->get_row("OBJETS");
+            $charactersrow = $this->get_row("PERSONNAGES");
+            $locationsrow = $this->get_row("LIEUX");
+            $interactiondefautrow = $this->get_row("interaction avec objet n'existant pas :");
+            $fouillerdefautrow = $this->get_row("Fouiller par défaut :");
+        } else {
+            $itemsrow = $this->get_row("ITEMS");
+            $charactersrow = $this->get_row("CHARACTERS");
+            $locationsrow = $this->get_row("LOCATIONS");
+            $interactiondefautrow = $this->get_row("Interaction with non-existent object");
+            $fouillerdefautrow = $this->get_row("Search by default");
+        }
         $this->create_items($itemsrow);
         $this->create_characters($charactersrow);
         $this->create_locations($locationsrow);
@@ -163,7 +189,7 @@ class App implements App_Interface {
         $fouillerdefaut = $this->create_action_defaut($fouillerdefautrow);
 
         global $DB;
-        $sql = "select playerkeyword from {app} where "
+        $sql = "select playerkeyword from {stg_app} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->id]);
         $player = $this->get_startentity($playerkeyword);
@@ -173,10 +199,18 @@ class App implements App_Interface {
                 try {
                     $player = Player_Character::get_instance_from_parent_id($character->get_id());
                 } catch (Exception $e) {
-                    throw new Exception('No player found in this game');
+                    if ($this->get_language() == Language::FR) {
+                        throw new Exception('Aucun joueur trouvé dans ce jeu');
+                    } else {
+                        throw new Exception('No player found in this game');
+                    }
                 }
             } catch (Exception $e) {
-                throw new Exception('No player found in this game');
+                if ($this->get_language() == Language::FR) {
+                    throw new Exception('Aucun joueur trouvé dans ce jeu');
+                } else {
+                    throw new Exception('No player found in this game');
+                }
             }
         }
         $arguments = [];
@@ -216,7 +250,7 @@ class App implements App_Interface {
     private function create_characters($row) {
         $col = 1;
         global $DB;
-        $sql = "select playerkeyword from {app} where "
+        $sql = "select playerkeyword from {stg_app} where "
         . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $playerkeyword = $DB->get_field_sql($sql, ['id' => $this->id]);
         while (array_key_exists($col, $this->csvdata[$row]) && $this->csvdata[$row][$col] != null) {
@@ -231,10 +265,20 @@ class App implements App_Interface {
                     try {
                         $item = Item::get_instance_from_parent_id($item->get_id());
                     } catch (Exception $e) {
-                        throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
+                        if ($this->get_language() == Language::FR) {
+                                throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . "
+                                et la colonne: " . $col ."");
+                        } else {
+                            throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
+                        }
                     }
                 } else {
-                    throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
+                    if ($this->get_language() == Language::FR) {
+                            throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . " et
+                             la colonne: " . $col ."");
+                    } else {
+                        throw new Exception($itemname . " is not an item with the row: " . $row . " and the col: " . $col ."");
+                    }
                 }
                 array_push($items, $item);
             }
@@ -260,12 +304,22 @@ class App implements App_Interface {
                     try {
                         $item = Item::get_instance_from_parent_id($item->get_id());
                     } catch (Exception $e) {
+                        if ($this->get_language() == Language::FR) {
+                            throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . "
+                            et la colonne: " . $col ."");
+                        } else {
+                            throw new Exception($itemname . "is not an item and here is the row: "
+                            . $row . " and the col: " . $col ."");
+                        }
+                    }
+                } else {
+                    if ($this->get_language() == Language::FR) {
+                        throw new Exception($itemname . " n'est pas un objet avec la ligne: " . $row . " et la
+                         colonne: " . $col ."");
+                    } else {
                         throw new Exception($itemname . "is not an item and here is the row: "
                         . $row . " and the col: " . $col ."");
                     }
-                } else {
-                    throw new Exception($itemname . "is not an item and here is the row: "
-                    . $row . " and the col: " . $col ."");
                 }
                 array_push($items, $item);
             }
@@ -287,10 +341,18 @@ class App implements App_Interface {
                 try {
                     $location = Location::get_instance_from_parent_id($location->get_id());
                 } catch (Exception $e) {
-                    throw new Exception($locationname . "is not a location");
+                    if ($this->get_language() == Language::FR) {
+                        throw new Exception($locationname . " n'est pas un lieu");
+                    } else {
+                        throw new Exception($locationname . "is not a location");
+                    }
                 }
             } else {
-                throw new Exception($locationname . "is not a location");
+                if ($this->get_language() == Language::FR) {
+                    throw new Exception($locationname . " n'est pas un lieu");
+                } else {
+                    throw new Exception($locationname . "is not a location");
+                }
             }
             $character = $this->get_startentity($name);
             $characternames = $this->get_cell_array_string($row + 3, $col);
@@ -300,10 +362,18 @@ class App implements App_Interface {
                     try {
                         $character = Character::get_instance_from_parent_id($character->get_id());
                     } catch (Exception $e) {
-                        throw new Exception($name . " is not a character");
+                        if ($this->get_language() == Language::FR) {
+                            throw new Exception($name . " n'est pas un personnage");
+                        } else {
+                            throw new Exception($name . " is not a character");
+                        }
                     }
                 } else {
-                    throw new Exception($name . " is not a character");
+                    if ($this->get_language() == Language::FR) {
+                        throw new Exception($name . " n'est pas un personnage");
+                    } else {
+                        throw new Exception($name . " is not a character");
+                    }
                 }
                 $character->set_currentlocation($location);
             }
@@ -320,10 +390,18 @@ class App implements App_Interface {
                 try {
                     $location = Location::get_instance_from_parent_id($location->get_id());
                 } catch (Exception $e) {
-                    throw new Exception($locationname . "is not a location");
+                    if ($this->get_language() == Language::FR) {
+                        throw new Exception($locationname . " n'est pas un lieu");
+                    } else {
+                        throw new Exception($locationname . "is not a location");
+                    }
                 }
             } else {
-                throw new Exception($locationname . "is not a location");
+                if ($this->get_language() == Language::FR) {
+                    throw new Exception($locationname . " n'est pas un lieu");
+                } else {
+                    throw new Exception($locationname . "is not a location");
+                }
             }
             $actions = $this->create_column_actions($location, $col, $row + 6);
             $location->set_actions($actions);
@@ -367,8 +445,13 @@ class App implements App_Interface {
             if ($entityname != "") {
                 $entity = $this->get_startentity($entityname);
                 if ($entity == null) {
-                    throw new Exception($this->get_cell_string($row + 3, $col)
-                    . " is not an entity with the row: " . $row . " and the col: " . $col ."");
+                    if ($this->get_language() == Language::FR) {
+                        throw new Exception($entityname .
+                        " n'est pas une entité avec la ligne: " . $row . " et la colonne: " . $col ."");
+                    } else {
+                        throw new Exception($this->get_cell_string($row + 3, $col)
+                        . " is not an entity with the row: " . $row . " and the col: " . $col ."");
+                    }
                 }
 
                 $newstatuses = $this->get_cell_array_string($row + 4, $col);
@@ -383,10 +466,18 @@ class App implements App_Interface {
                         try {
                             $item = Item::get_instance_from_parent_id($item->get_id());
                         } catch (Exception $e) {
-                            throw new Exception($name . " is not an Item");
+                            if ($this->get_language() == Language::FR) {
+                                throw new Exception($name . " n'est pas un objet");
+                            } else {
+                                throw new Exception($name . " is not an Item");
+                            }
                         }
                     } else {
-                        throw new Exception($name . " is not an Item");
+                        if ($this->get_language() == Language::FR) {
+                            throw new Exception($name . " n'est pas un objet");
+                        } else {
+                            throw new Exception($name . " is not an Item");
+                        }
                     }
                     array_push($newitems, $item);
                 }
@@ -398,10 +489,18 @@ class App implements App_Interface {
                         try {
                             $item = Item::get_instance_from_parent_id($item->get_id());
                         } catch (Exception $e) {
-                            throw new Exception($name . " is not an Item");
+                            if ($this->get_language() == Language::FR) {
+                                throw new Exception($name . " n'est pas un objet");
+                            } else {
+                                throw new Exception($name . " is not an Item");
+                            }
                         }
                     } else {
-                        throw new Exception($name . " is not an Item");
+                        if ($this->get_language() == Language::FR) {
+                            throw new Exception($name . " n'est pas un objet");
+                        } else {
+                            throw new Exception($name . " is not an Item");
+                        }
                     }
                     array_push($olditems, $item);
                 }
@@ -434,10 +533,18 @@ class App implements App_Interface {
                         try {
                             $location = Location::get_instance_from_parent_id($location->get_id());
                         } catch (Exception $e) {
-                            throw new Exception($locationname . " is not a location");
+                            if ($this->get_language() == Language::FR) {
+                                throw new Exception($locationname . " n'est pas un lieu");
+                            } else {
+                                throw new Exception($locationname . " is not a location");
+                            }
                         }
                     } else {
-                        throw new Exception($locationname . " is not a location");
+                        if ($this->get_language() == Language::FR) {
+                            throw new Exception($locationname . " n'est pas un lieu");
+                        } else {
+                            throw new Exception($locationname . " is not a location");
+                        }
                     }
                 }
                 $reaction = new Character_Reaction(null, $reactiondescription,
@@ -453,7 +560,11 @@ class App implements App_Interface {
                 }
                 array_push($reactions[$action][$condition], Reaction::get_instance($reaction->get_parent_id()));
             } else {
-                throw new Exception("Only characters and locations can have reactions");
+                if ($this->get_language() == Language::FR) {
+                    throw new Exception($entityname . " n'est pas une entité");
+                } else {
+                    throw new Exception("Only characters and locations can have reactions");
+                }
             }
             $row = $row + $rowstep;
         }
@@ -515,7 +626,11 @@ class App implements App_Interface {
 
     private function build_tree($tokens) {
         if (empty($tokens)) {
-            throw new Exception("Algorithm error : tokens should not be empty");
+            if ($this->get_language() == Language::FR) {
+                throw new Exception("Erreur d'algorithme : les jetons ne doivent pas être vides");
+            } else {
+                throw new Exception("Algorithm error : tokens should not be empty");
+            }
         }
         $token = array_pop($tokens);
         if ($token != '|' && $token != '&') {
@@ -539,7 +654,11 @@ class App implements App_Interface {
                 $reactions
             );
         } else {
-            throw new Exception("Algorithm error");
+            if ($this->get_language() == Language::FR) {
+                throw new Exception("Erreur d'algorithme");
+            } else {
+                throw new Exception("Algorithm error");
+            }
         }
     }
 
@@ -561,16 +680,25 @@ class App implements App_Interface {
             }
         }
         if ($entity1 == null) {
-            throw new Exception("Wrong condition syntax : " . $condition);
+            if ($this->get_language() == Language::FR) {
+                throw new Exception("Syntaxe de condition incorrecte : " . $condition);
+            } else {
+                throw new Exception("Wrong condition syntax : " . $condition);
+            }
         }
 
         $connector .= $tokens[$connectorstart];
-
-        if ($tokens[$connectorstart + 1] == "pas") {
-            $connector .= ' ' . $tokens[$connectorstart + 1];
-            $member2start++;
+        if ($this->get_language() == Language::FR) {
+            if ($tokens[$connectorstart + 1] == "pas") {
+                $connector .= ' ' . $tokens[$connectorstart + 1];
+                $member2start++;
+            }
+        } else {
+            if ($tokens[$connectorstart + 1] == "not") {
+                $connector .= ' ' . $tokens[$connectorstart + 1];
+                $member2start++;
+            }
         }
-
         $member2 = implode(' ', array_slice($tokens, $member2start));
         $entity2 = $this->get_startentity($member2);
         $status = "";
@@ -591,7 +719,11 @@ class App implements App_Interface {
             }
         }
         if (!$foundline) {
-            throw new Exception($str . " line not found");
+            if ($this->get_language() == Language::FR) {
+                throw new Exception($str . " ligne non trouvée");
+            } else {
+                throw new Exception($str . " line not found");
+            }
         }
         return $lign;
     }
@@ -650,7 +782,7 @@ class App implements App_Interface {
     public function restart_game_from_start() {
         $game = $this->get_game();
         global $DB;
-        $DB->delete_records('game_entities', ['game' => $game->get_id()]);
+        $DB->delete_records('stg_game_entities', ['game' => $game->get_id()]);
 
         foreach ($game->get_entities() as $entity) {
             if ($entity != null) {
@@ -669,4 +801,11 @@ class App implements App_Interface {
     public function get_id() {
         return $this->id;
     }
+    public function get_save() {
+        return null;
+    }
+    public function restart_game_from_save() {
+        return null;
+    }
+
 }

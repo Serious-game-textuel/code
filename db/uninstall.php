@@ -17,16 +17,16 @@
 /**
  * Code that is executed before the tables and data are dropped during the plugin uninstallation.
  *
- * @package     mod_serioustextualgame
+ * @package     mod_stg
  * @category    upgrade
- * @copyright   2024 Your Name <serioustextualgame@gmail.com>
+ * @copyright   2024 Your Name <stg@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Custom uninstallation procedure.
  */
-function xmldb_serioustextualgame_uninstall() {
+function xmldb_stg_uninstall() {
 
     return true;
 }

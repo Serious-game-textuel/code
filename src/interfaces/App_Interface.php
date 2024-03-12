@@ -14,7 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Interface App_Interface
+ * @package mod_stg
+ */
 interface App_Interface {
+     /**
+      * @return string
+      */
+    public function get_language();
     /**
      * @return int
      */
@@ -59,6 +67,16 @@ interface App_Interface {
      * @return void
      */
     public function restart_game_from_start();
+
+     /**
+      * @return void
+      */
+    public function restart_game_from_save();
+
+     /**
+      * @return App_Interface|null
+      */
+    public function get_save();
 
 }
 

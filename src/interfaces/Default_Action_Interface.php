@@ -16,7 +16,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Action_Interface.php');
+require_once($CFG->dirroot . '/mod/stg/src/interfaces/Action_Interface.php');
+
+/**
+ * Interface Default_Action_Interface
+ * @package mod_stg
+ */
 interface Default_Action_Interface extends Action_Interface {
     /**
      * @param string $verb
