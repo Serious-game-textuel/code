@@ -45,6 +45,7 @@
         <FIELD NAME="player_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" DEFAULT="0" COMMENT="ID of the player."/>
         <FIELD NAME="defaultactionsearch_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the action."/>
         <FIELD NAME="defaultactioninteract_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the action."/>
+        <FIELD NAME="csvfilepath" TYPE="text" LENGTH="100" NOTNULL="false" SEQUENCE="false" COMMENT="Path of the csv file."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

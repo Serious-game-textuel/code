@@ -19,6 +19,7 @@
  * @package mod_stg
  */
 interface App_Interface {
+  public function init_language();
      /**
       * @return string
       */
@@ -121,7 +122,7 @@ interface App_Interface {
     /**
      * @return void
      */
-    public function restart_game_from_start();
+    public function restart_game_from_start(int $deaths,DateTime $starttimes,array $visitedlocations, int $actions);
 
      /**
       * @return void
@@ -136,6 +137,7 @@ interface App_Interface {
     public function get_current_location();
     public function do_action(string $actionname, bool $isdefault);
     public function get_player();
+    public function get_csvfilepath();
 
 }
 

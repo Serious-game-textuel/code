@@ -26,7 +26,7 @@ $tempfilepath = tempnam(sys_get_temp_dir(), 'mod_stg');
 file_put_contents($tempfilepath, $csvcontent);
 $app = App::get_instance();
 if ($app == null) {
-    $app = new App(null, $tempfilepath);
+    $app = new App(null, $tempfilepath,0,0,new DateTime(),[]);
 }
 $action = $app->do_action($_POST['inputText'], $_POST['debug']);
 if (count($action[0]) == 0) {

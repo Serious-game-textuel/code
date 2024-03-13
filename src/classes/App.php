@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core_reportbuilder\external\filters\set;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/stg/src/interfaces/App_Interface.php');
@@ -44,8 +46,9 @@ class App implements App_Interface {
     private static string $playerkeyword;
     private $id;
 
-    public function __construct(?int $id, ?string $csvfilepath) {
+    public function __construct(?int $id, ?string $csvfilepath,int $deaths, int $actions, DateTime $starttime, array $visitedlocations) {
         global $DB;
+        $this->init_language();
         if (!isset($id)) {
             $file = fopen($csvfilepath, 'r');
             if ($file !== false) {
@@ -73,11 +76,13 @@ class App implements App_Interface {
                     'studentid' => $USER->id,
                     'language_id' => $languageid,
                     'playerkeyword' => $playerkeyword,
-                    'deaths' => 0,
-                    'actions' => 0,
+                    'deaths' => $deaths,
+                    'actions' => $actions,
                     'starttime' => $starttime->getTimestamp(),
+                    'csvfilepath' => $csvfilepath,
                 ]);
                 $this->parse();
+                $this->set_visited_locations($visitedlocations);
             } else {
                 throw new Exception("File not found");
             }
@@ -94,6 +99,20 @@ class App implements App_Interface {
         }
     }
 
+    public function init_language(){
+        global $DB;
+        foreach (Language::get_all_languages() as $lang) {
+            $comparedescription = $DB->sql_compare_text('name');
+            $comparedescriptionplaceholder = $DB->sql_compare_text(':name');
+            $todogroups = $DB->record_exists_sql(
+                "SELECT id FROM {stg_language} WHERE {$comparedescription} = {$comparedescriptionplaceholder}",
+                ['name' => $lang]
+            );
+            if (!$todogroups) {
+                $DB->insert_record('stg_language', ['name' => $lang]);
+            }
+        }
+    }
     public function get_deaths() {
         global $DB;
         $sql = "select deaths from {stg_app} where ". $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
@@ -155,7 +174,7 @@ class App implements App_Interface {
         global $DB;
         $sql = "select location_id from {stg_game_visitedlocations} where "
         . $DB->sql_compare_text('game_id') . " = ".$DB->sql_compare_text(':id');
-        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->id]);
+        $ids = $DB->get_fieldset_sql($sql, ['id' => $this->get_game()->get_id()]);
         foreach ($ids as $id) {
             array_push($visitedlocations, Location::get_instance($id));
         }
@@ -168,7 +187,7 @@ class App implements App_Interface {
         $DB->delete_records('stg_game_visitedlocations', ['game_id' => $this->id]);
         foreach ($visitedlocations as $location) {
             $DB->insert_record('stg_game_visitedlocations', [
-                'game_id' => $this->id,
+                'game_id' => $this->get_game()->get_id(),
                 'location_id' => $location->get_id(),
             ]);
         }
@@ -197,7 +216,7 @@ class App implements App_Interface {
         $sql = "select id from {stg_app} where " . $DB->sql_compare_text('studentid') . " = ".$DB->sql_compare_text(':studentid');
         $id = $DB->get_field_sql($sql, ['studentid' => $USER->id]);
         if ($id > 0) {
-            return new App($id, null);
+            return new App($id, null, 0, 0, new DateTime(), []);
         } else {
             return null;
         }
@@ -208,6 +227,12 @@ class App implements App_Interface {
         $sql = "select game_id from {stg_app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
         $gameid = $DB->get_field_sql($sql, ['id' => $this->id]);
         return Game::get_instance($gameid);
+    }
+    public function get_csvfilepath() {
+        global $DB;
+        $sql = "select csvfilepath from {stg_app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
+        $csvfilepath= $DB->get_field_sql($sql, ['id' => $this->id]);
+        return $csvfilepath;
     }
 
     public function set_game(Game_Interface $game) {
@@ -959,24 +984,58 @@ class App implements App_Interface {
         $str = strtolower($str);
         return $str;
     }
-
-    public function restart_game_from_start() {
-        $game = $this->get_game();
+    public function delete_all_data() {
         global $DB;
-        $DB->delete_records('stg_game_entities', ['game' => $game->get_id()]);
-
-        foreach ($game->get_entities() as $entity) {
-            if ($entity != null) {
-                try {
-                    $entity = Player_Character::get_instance_from_parent_id($entity->get_id());
-                    if ($entity instanceof Player_Character) {
-                        $this->set_player($entity);
-                    }
-                } catch (Exception $e) {
-                    $e;
-                }
-            }
+    
+        // Liste des tables à nettoyer
+        $tables_to_clear = array(
+            'stg_language',
+            'stg_app',
+            'stg_app_startentities',
+            'stg_game',
+            'stg_game_visitedlocations',
+            'stg_game_entities',
+            'stg_entity',
+            'stg_entity_status',
+            'stg_location',
+            'stg_location_hints',
+            'stg_location_actions',
+            'stg_hint',
+            'stg_action',
+            'stg_action_conditions',
+            'stg_defaultaction',
+            'stg_condition',
+            'stg_condition_reactions',
+            'stg_nodecondition',
+            'stg_leafcondition',
+            'stg_leafcondition_status',
+            'stg_reaction',
+            'stg_reaction_oldstatus',
+            'stg_reaction_newstatus',
+            'stg_reaction_olditems',
+            'stg_reaction_newitems',
+            'stg_noentityreaction',
+            'stg_locationreaction',
+            'stg_characterreaction',
+            'stg_character',
+            'stg_npccharacter',
+            'stg_playercharacter',
+            'stg_inventory',
+            'stg_inventory_items',
+            'stg_item'
+        );
+    
+        // Parcourir les tables et supprimer les données
+        foreach ($tables_to_clear as $table) {
+            $DB->delete_records($table);
         }
+    }
+    
+
+    public function restart_game_from_start(int $deaths,DateTime $starttimes,array $visitedlocations, int $actions) {
+        $csvfilepath = $this->get_csvfilepath();
+        $this->delete_all_data();
+        new App(null, $csvfilepath, $deaths, $actions, $starttimes, $visitedlocations);
     }
 
     public function get_id() {
