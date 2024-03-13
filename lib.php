@@ -50,7 +50,6 @@ function stg_supports($feature) {
  */
 function stg_add_instance($moduleinstance, $mform = null) {
     global $DB;
-
     $moduleinstance->timecreated = time();
     $filecontent = $mform->get_file_content('userfile');
     if ($filecontent) {

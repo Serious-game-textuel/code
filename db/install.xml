@@ -36,6 +36,7 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="studentid" TYPE="text" LENGTH="6" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the student."/>
+        <FIELD NAME="activityid" TYPE="text" LENGTH="6" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the activity."/>
         <FIELD NAME="game_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the game."/>
         <FIELD NAME="language_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the language."/>
         <FIELD NAME="playerkeyword" TYPE="text" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Player name."/>
