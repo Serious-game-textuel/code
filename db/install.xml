@@ -40,6 +40,13 @@
         <FIELD NAME="game_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the game."/>
         <FIELD NAME="language_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the language."/>
         <FIELD NAME="playerkeyword" TYPE="text" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Player name."/>
+        <FIELD NAME="deaths" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of deaths"/>
+        <FIELD NAME="actions" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of actions"/>
+        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp of the beginning of the game."/>
+        <FIELD NAME="player_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" DEFAULT="0" COMMENT="ID of the player."/>
+        <FIELD NAME="defaultactionsearch_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the action."/>
+        <FIELD NAME="defaultactioninteract_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the action."/>
+        <FIELD NAME="csvfilepath" TYPE="text" LENGTH="100" NOTNULL="false" SEQUENCE="false" COMMENT="Path of the csv file."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -60,12 +67,7 @@
     <TABLE NAME="stg_game" COMMENT="Game objects">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="deaths" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of deaths"/>
-        <FIELD NAME="actions" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of actions"/>
-        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp of the beginning of the game."/>
-        <FIELD NAME="player_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the player."/>
-        <FIELD NAME="defaultactionsearch_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the action."/>
-        <FIELD NAME="defaultactioninteract_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the action."/>
+        <FIELD NAME="filler" TYPE="text" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="To avoid no field issue."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

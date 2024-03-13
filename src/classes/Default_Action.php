@@ -71,7 +71,7 @@ class Default_Action extends Action implements Default_Action_Interface {
         $app = App::get_instance();
         $game = $app->get_game();
         $language = $app->get_language();
-        $game->add_action();
+        $app->add_action();
         $tokendescription = explode('"', $this->get_description());
         $result = [];
         if ($language == 'fr') {

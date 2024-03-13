@@ -85,9 +85,9 @@ class Player_Character extends Character {
                 }
             } else if (in_array("victoire", $status)) {
                 array_push($return, "Tu as gagné!");
-                array_push($return, "Tu as fait " . App::get_instance()->get_game()->get_actions() . " actions!");
-                array_push($return, "Tu as visité " . count(App::get_instance()->get_game()->get_visited_locations()) . " lieux!");
-                array_push($return, "Tu as été tué " . App::get_instance()->get_game()->get_deaths() . " fois!");
+                array_push($return, "Tu as fait " . App::get_instance()->get_actions() . " actions!");
+                array_push($return, "Tu as visité " . count(App::get_instance()->get_visited_locations()) . " lieux!");
+                array_push($return, "Tu as été tué " . App::get_instance()->get_deaths() . " fois!");
             } else {
                 parent::set_status($status);
             }
@@ -102,14 +102,20 @@ class Player_Character extends Character {
                 }
             } else if (in_array("victory", $status)) {
                 array_push($return, "You won!");
-                array_push($return, "You did " . App::get_instance()->get_game()->get_actions() . " actions!");
+                array_push($return, "You did " . App::get_instance()->get_actions() . " actions!");
                 array_push($return, "You visited " .
-                 count(App::get_instance()->get_game()->get_visited_locations()) . " locations!");
-                array_push($return, "You were killed " . App::get_instance()->get_game()->get_deaths() . " times!");
+                 count(App::get_instance()->get_visited_locations()) . " locations!");
+                array_push($return, "You were killed " . App::get_instance()->get_deaths() . " times!");
             } else {
                 parent::set_status($status);
             }
         }
         return $return;
     }
+
+    public function set_currentlocation(Location_Interface $newlocation) {
+        parent::set_currentlocation($newlocation);
+        App::get_instance()->add_visited_location($newlocation);
+    }
+
 }

@@ -26,9 +26,9 @@ $tempfilepath = tempnam(sys_get_temp_dir(), 'mod_stg');
 file_put_contents($tempfilepath, $csvcontent);
 $app = App::get_instance();
 if ($app == null) {
-    $app = new App(null, $tempfilepath);
+    $app = new App(null, $tempfilepath, 0, 0, new DateTime(), []);
 }
-$action = $app->get_game()->do_action($_POST['inputText'], $_POST['debug']);
+$action = $app->do_action($_POST['inputText'], $_POST['debug']);
 if (count($action[0]) == 0) {
     echo '["donne une autre commande", ["'.implode('", "', $action[1]).'"]]';
 } else {
