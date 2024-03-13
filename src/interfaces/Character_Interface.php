@@ -20,6 +20,7 @@ require_once($CFG->dirroot . '/mod/stg/src/interfaces/Entity_Interface.php');
 /**
  * Interface Character_Interface
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 interface Character_Interface extends Entity_Interface {
 

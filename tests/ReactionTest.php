@@ -31,6 +31,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class ReactionTest
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class ReactionTest extends TestCase {
     /**

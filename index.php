@@ -18,7 +18,7 @@
  * Display information about all the mod_stg modules in the requested course.
  *
  * @package     mod_stg
- * @copyright   2024 Your Name <stg@gmail.com>
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

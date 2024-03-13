@@ -17,6 +17,7 @@
 /**
  * Interface Action_Interface
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 interface Action_Interface {
 

@@ -20,6 +20,7 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Condition.php');
 /**
  * Class Leaf_Condition
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Leaf_Condition extends Condition {
 

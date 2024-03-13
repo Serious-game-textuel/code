@@ -37,6 +37,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class EntityTest
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class EntityTest extends TestCase {
 

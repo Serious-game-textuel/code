@@ -21,6 +21,7 @@ require_once($CFG->dirroot . '/mod/stg/src/interfaces/Action_Interface.php');
 /**
  * Class Action
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Action implements Action_Interface {
 

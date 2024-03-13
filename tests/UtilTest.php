@@ -39,6 +39,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class UtilTest
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class UtilTest extends TestCase {
     public function test_has_array_duplicate_string() {

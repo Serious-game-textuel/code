@@ -39,6 +39,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class ConditionTest
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class ConditionTest extends TestCase {
     /**

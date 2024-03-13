@@ -18,7 +18,7 @@
  * The main mod_stg configuration form.
  *
  * @package     mod_stg
- * @copyright   2024 Your Name <stg@gmail.com>
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  * Module instance settings form.
  *
  * @package     mod_stg
- * @copyright   2024 Your Name <stg@gmail.com>
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_stg_mod_form extends moodleform_mod {

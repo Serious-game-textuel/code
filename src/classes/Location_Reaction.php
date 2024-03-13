@@ -20,6 +20,7 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Reaction.php');
 /**
  * Class Location_Reaction
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Location_Reaction extends Reaction {
 

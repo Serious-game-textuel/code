@@ -21,6 +21,7 @@ require_once($CFG->dirroot . '/mod/stg/src/interfaces/Action_Interface.php');
 /**
  * Interface Default_Action_Interface
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 interface Default_Action_Interface extends Action_Interface {
     /**

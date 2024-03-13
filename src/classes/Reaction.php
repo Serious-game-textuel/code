@@ -21,6 +21,7 @@ require_once($CFG->dirroot . '/mod/stg/src/interfaces/Reaction_Interface.php');
 /**
  * Class Reaction
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Reaction implements Reaction_Interface {
 

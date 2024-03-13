@@ -19,7 +19,12 @@ require_once(__DIR__.'/lib.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 
-
+/**
+ * External services for mod_stg.
+ * @package     mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 $csvcontent = $_POST['csvcontent'];
 $tempfilepath = tempnam(sys_get_temp_dir(), 'mod_stg');

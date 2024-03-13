@@ -21,6 +21,7 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Item.php');
 /**
  * Interface Inventory_Interface
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 interface Inventory_Interface {
 

@@ -20,6 +20,7 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Condition.php');
 /**
  * Class Node_Condition
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Node_Condition extends Condition {
 

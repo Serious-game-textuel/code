@@ -40,6 +40,7 @@ use function PHPUnit\Framework\isInstanceOf;
 /**
  * Class InventoryTest
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class InventoryTest extends TestCase {
     /**

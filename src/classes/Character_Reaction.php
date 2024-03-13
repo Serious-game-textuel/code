@@ -20,6 +20,7 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Reaction.php');
 /**
  * Class Character_Reaction
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Character_Reaction extends Reaction {
 

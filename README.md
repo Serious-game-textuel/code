@@ -29,7 +29,7 @@ to complete the installation from the command line.
 
 ## License ##
 
-2024 Your Name <stg@gmail.com>
+2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

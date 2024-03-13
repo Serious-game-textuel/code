@@ -21,6 +21,7 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Inventory.php');
 /**
  * Class Character
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Character extends Entity implements Character_Interface {
 

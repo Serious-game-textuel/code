@@ -22,6 +22,7 @@ require_once($CFG->dirroot . '/mod/stg/src/interfaces/Condition_Interface.php');
 /**
  * Class Condition
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Condition implements Condition_Interface {
 

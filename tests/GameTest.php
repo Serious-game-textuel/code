@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class GameTest
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class GameTest extends TestCase {
     /**

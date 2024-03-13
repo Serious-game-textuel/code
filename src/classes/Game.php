@@ -20,6 +20,7 @@ require_once($CFG->dirroot . '/mod/stg/src/interfaces/Game_Interface.php');
 /**
  * Class Game
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Game implements Game_Interface {
 

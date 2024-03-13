@@ -17,7 +17,7 @@
 /**
  * External services for mod_stg.
  * @package     mod_stg
- * @copyright   2024 Your Name
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();

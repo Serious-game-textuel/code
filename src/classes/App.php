@@ -40,6 +40,7 @@ require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 /**
  * Class App
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class App implements App_Interface {
 

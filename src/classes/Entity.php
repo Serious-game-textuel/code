@@ -20,6 +20,7 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Util.php');
 /**
  * Class Entity
  * @package mod_stg
+ * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
  */
 class Entity implements Entity_Interface {
 
