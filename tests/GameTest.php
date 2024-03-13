@@ -26,11 +26,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class GameTest
-<<<<<<< HEAD
  * @package mod_stg
-=======
- * @package mod_serioustextualgame
->>>>>>> exceptions
  */
 class GameTest extends TestCase {
     /**

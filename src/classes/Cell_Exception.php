@@ -16,7 +16,7 @@
 
 /**
  * Class Cell_Exception
- * @package mod_serioustextualgame
+ * @package mod_stg
  */
 
 class Cell_Exception extends Exception {
