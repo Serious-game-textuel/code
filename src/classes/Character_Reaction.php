@@ -160,7 +160,8 @@ class Character_Reaction extends Reaction {
                                 $time = $interval->format('%H:%I:%S');
                                 $lieux = $app->get_visited_locations();
                                 array_push($return, ["Vous avez gagné en " . $time . " avec " . $deaths
-                                . " morts et " .$actions . " actions et " . count($lieux) . " lieux visités et vous pouvez recommencer."]);
+                                . " morts et " .$actions . " actions et " . count($lieux) .
+                                " lieux visités et vous pouvez recommencer."]);
                                 $app->restart_game_from_start(0, new DateTime(), [], 0);
                             }
                         } else {
@@ -183,7 +184,8 @@ class Character_Reaction extends Reaction {
                                 $time = $interval->format('%H:%I:%S');
                                 $locations = $app->get_visited_locations();
                                 array_push($return, ["You won in " . $time . " with " . $deaths
-                                . " deaths and " . $actions . " actions and " . count($locations) . " locations visited and you can restart."]);
+                                . " deaths and " .
+                                $actions . " actions and " . count($locations) . " locations visited and you can restart."]);
                                 $app->restart_game_from_start(0, new DateTime(), [], 0);
                             }
                         }

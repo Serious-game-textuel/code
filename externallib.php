@@ -42,7 +42,7 @@ class mod_stg_external extends external_api {
             $content = $file->get_content();
             $tempfilepath = tempnam(sys_get_temp_dir(), 'mod_stg');
             file_put_contents($tempfilepath, $content);
-            $app= new App(null, $tempfilepath, 0, 0, new DateTime(), []);
+            $app = new App(null, $tempfilepath, 0, 0, new DateTime(), []);
             $app->delete_all_data();
             return "fichier upload";
         }

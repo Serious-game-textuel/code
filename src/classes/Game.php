@@ -25,7 +25,7 @@ class Game implements Game_Interface {
 
     private int $id;
 
-    public function __construct(?int $id, array $visitedlocations,array $entities) {
+    public function __construct(?int $id, array $visitedlocations, array $entities) {
         global $DB;
         if (!isset($id)) {
             $app = App::get_instance();

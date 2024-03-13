@@ -19,7 +19,7 @@
  * @package mod_stg
  */
 interface App_Interface {
-  public function init_language();
+    public function init_language();
      /**
       * @return string
       */
@@ -122,7 +122,7 @@ interface App_Interface {
     /**
      * @return void
      */
-    public function restart_game_from_start(int $deaths,DateTime $starttimes,array $visitedlocations, int $actions);
+    public function restart_game_from_start(int $deaths, DateTime $starttimes, array $visitedlocations, int $actions);
 
      /**
       * @return void

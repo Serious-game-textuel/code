@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-<<<<<<< HEAD
 require_once($CFG->dirroot . '/mod/stg/src/interfaces/Condition_Interface.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Leaf_Condition.php');
@@ -35,38 +34,13 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Id_Class.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Hint.php');
 require_once($CFG->dirroot . '/mod/stg/src/Language.php');
-=======
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Condition_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Node_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Leaf_Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Condition.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Entity_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Character_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Location_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Item.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Character_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Location_Reaction.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Inventory_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Action.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/interfaces/Default_Action_Interface.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Id_Class.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/App.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/classes/Hint.php');
-require_once($CFG->dirroot . '/mod/serioustextualgame/src/Language.php');
->>>>>>> exceptions
 
 use core\check\check;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class LocationENTest
-<<<<<<< HEAD
  * @package mod_stg
-=======
- * @package mod_serioustextualgame
->>>>>>> exceptions
  */
 class LocationENTest extends TestCase {
     /**
@@ -74,19 +48,11 @@ class LocationENTest extends TestCase {
      */
     public function testdoconditions() {
         global $CFG;
-<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
         $game = $app->get_game();
 
         // Prendre la canne a peche dans la hutte.
         $currentlocation = $game->get_current_location();
-=======
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv');
-        $game = $app->get_game();
-
-        // Prendre la canne a peche dans la hutte.
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         $action = $currentlocation->check_actions("Take Fishing rod");
         $player = $game->get_player();
         $canneapeche = $game->get_entity("fishing rod");
@@ -113,11 +79,7 @@ class LocationENTest extends TestCase {
         $action = $currentlocation->check_actions("search");
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("go royal gardens");
-<<<<<<< HEAD
         $currentlocation = $game->get_current_location();
-=======
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         $this->assertEquals("royal gardens", $currentlocation->get_name());
         $this->assertNotEquals("hut", $currentlocation->get_name());
         $statuscurrentlocation = $currentlocation->get_status();
@@ -128,11 +90,7 @@ class LocationENTest extends TestCase {
 
         // Aller dans l'etang.
         $action = $currentlocation->check_actions("go pond");
-<<<<<<< HEAD
         $currentlocation = $game->get_current_location();
-=======
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         $this->assertEquals("pond", $currentlocation->get_name());
 
         // Utiliser la canne a peche.
@@ -142,11 +100,7 @@ class LocationENTest extends TestCase {
 
         // Aller dans les jardins royaux.
         $action = $currentlocation->check_actions("go royal gardens");
-<<<<<<< HEAD
         $currentlocation = $game->get_current_location();
-=======
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         // Sentir les roses.
         $action = $currentlocation->check_actions("smell rose");
         $this->assertTrue(in_array("the rose smell good", $action));
@@ -162,20 +116,12 @@ class LocationENTest extends TestCase {
 
         // Aller sentier sinueux.
         $action = $currentlocation->check_actions("go winding path");
-<<<<<<< HEAD
         $currentlocation = $game->get_current_location();
-=======
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         $this->assertEquals("winding path", $currentlocation->get_name());
 
         // Aller au pont levis.
         $action = $currentlocation->check_actions("go Drawbridge");
-<<<<<<< HEAD
         $currentlocation = $game->get_current_location();
-=======
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         $this->assertEquals("drawbridge", $currentlocation->get_name());
         // Attaquer Troll.
 
@@ -191,11 +137,7 @@ class LocationENTest extends TestCase {
         $this->assertTrue(in_array("open", $currentstatus));
         // Aller Cour.
         $action = $currentlocation->check_actions("go Court");
-<<<<<<< HEAD
         $currentlocation = $game->get_current_location();
-=======
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         $this->assertEquals("court", $currentlocation->get_name());
 
         // Voir la description de la cour.
@@ -204,15 +146,9 @@ class LocationENTest extends TestCase {
 
     public function test_description() {
         global $CFG;
-<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
-=======
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv');
-        $game = $app->get_game();
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
 
         // La description est demandable en permanance plusieurs fois.
         $action = $currentlocation->check_actions("description");
@@ -230,11 +166,7 @@ class LocationENTest extends TestCase {
 
         // La description est demandable dans n'importe quel lieu.
         $action = $currentlocation->check_actions("go royal gardens");
-<<<<<<< HEAD
         $currentlocation = $game->get_current_location();
-=======
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         $action = $currentlocation->check_actions("description");
         $this->assertTrue(in_array(
             "you are in the royal gardens, their vegetation is luxuriant. there are roses. you also see a hut."
@@ -243,15 +175,9 @@ class LocationENTest extends TestCase {
 
     public function test_deplacements() {
         global $CFG;
-<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
-=======
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv');
-        $game = $app->get_game();
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
 
         // On test d'aller à un endroit pas accessible d'ici (trop loin).
         $action = $currentlocation->check_actions("go court");
@@ -261,7 +187,6 @@ class LocationENTest extends TestCase {
 
         // On test d'aller à un endroit fermé.
         $currentlocation->check_actions("go royal gardens");
-<<<<<<< HEAD
         $currentlocation = $game->get_current_location();
         $currentlocation->check_actions("go winding path");
         $currentlocation = $game->get_current_location();
@@ -270,30 +195,14 @@ class LocationENTest extends TestCase {
         $this->assertTrue($currentlocation->get_name() === "drawbridge");
         $currentlocation->check_actions("go Court");
         $currentlocation = $game->get_current_location();
-=======
-        $currentlocation = $game->get_currentlocation();
-        $currentlocation->check_actions("go winding path");
-        $currentlocation = $game->get_currentlocation();
-        $currentlocation->check_actions("go Drawbridge");
-        $currentlocation = $game->get_currentlocation();
-        $this->assertTrue($currentlocation->get_name() === "drawbridge");
-        $currentlocation->check_actions("go Court");
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
         $this->assertTrue($currentlocation->get_name() !== "court");
     }
 
     public function test_objets() {
         global $CFG;
-<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
         $game = $app->get_game();
         $currentlocation = $game->get_current_location();
-=======
-        $app = new App($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv');
-        $game = $app->get_game();
-        $currentlocation = $game->get_currentlocation();
->>>>>>> exceptions
 
         // On test qu'on peut récupérer un objet qu'une seule fois.
         $action = $currentlocation->check_actions("Take fishing rod");

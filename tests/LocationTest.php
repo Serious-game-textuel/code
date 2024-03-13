@@ -39,11 +39,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class LocationTest
-<<<<<<< HEAD
  * @package mod_stg
-=======
- * @package mod_serioustextualgame
->>>>>>> exceptions
  */
 class LocationTest extends TestCase {
     /**
@@ -51,11 +47,7 @@ class LocationTest extends TestCase {
      */
     public function testdoconditions() {
         global $CFG;
-<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
-=======
-        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'));
->>>>>>> exceptions
         $game = $app->get_game();
 
         // Prendre la canne a peche dans la hutte.
@@ -153,11 +145,7 @@ class LocationTest extends TestCase {
 
     public function test_description() {
         global $CFG;
-<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
-=======
-        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'));
->>>>>>> exceptions
         $game = $app->get_game();
         $currentlocation = $game->get_currentlocation();
 
@@ -186,11 +174,7 @@ class LocationTest extends TestCase {
 
     public function test_deplacements() {
         global $CFG;
-<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
-=======
-        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'));
->>>>>>> exceptions
         $game = $app->get_game();
         $currentlocation = $game->get_currentlocation();
 
@@ -215,11 +199,7 @@ class LocationTest extends TestCase {
 
     public function test_objets() {
         global $CFG;
-<<<<<<< HEAD
         $app = new App($CFG->dirroot . '/mod/stg/tests/Template_PFE_Sheet5.csv');
-=======
-        $app = new App(file_get_contents($CFG->dirroot . '/mod/serioustextualgame/tests/Template_PFE_Sheet5.csv'));
->>>>>>> exceptions
         $game = $app->get_game();
         $currentlocation = $game->get_currentlocation();
 

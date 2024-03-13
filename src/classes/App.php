@@ -43,11 +43,12 @@ require_once($CFG->dirroot . '/mod/stg/src/Language.php');
  */
 class App implements App_Interface {
 
-    private array $csvdata ;
+    private array $csvdata;
     private static string $playerkeyword;
     private $id;
 
-    public function __construct(?int $id, ?string $csvfilepath,int $deaths, int $actions, DateTime $starttime, array $visitedlocations) {
+    public function __construct(?int $id, ?string $csvfilepath, int $deaths, int $actions,
+    DateTime $starttime, array $visitedlocations) {
         global $DB;
         $this->init_language();
         if (!isset($id)) {
@@ -106,7 +107,7 @@ class App implements App_Interface {
         }
     }
 
-    public function init_language(){
+    public function init_language() {
         global $DB;
         foreach (Language::get_all_languages() as $lang) {
             $comparedescription = $DB->sql_compare_text('name');
@@ -239,7 +240,7 @@ class App implements App_Interface {
     public function get_csvfilepath() {
         global $DB;
         $sql = "select csvfilepath from {stg_app} where " . $DB->sql_compare_text('id') . " = ".$DB->sql_compare_text(':id');
-        $csvfilepath= $DB->get_field_sql($sql, ['id' => $this->id]);
+        $csvfilepath = $DB->get_field_sql($sql, ['id' => $this->id]);
         return $csvfilepath;
     }
 
@@ -381,7 +382,7 @@ class App implements App_Interface {
             'defaultactionsearch_id' => $fouillerdefaut->get_id(),
             'defaultactioninteract_id' => $interactiondefaut->get_id(),
         ]);
-        new Game(null,[], $this->get_startentities());
+        new Game(null, [], $this->get_startentities());
     }
 
     private function create_action_defaut($row) {
@@ -402,7 +403,7 @@ class App implements App_Interface {
             $statuses = $this->get_cell_array_string($row + 2, $col);
             if ($name != null && strlen($name) > 0) {
                 try {
-                    new Item(null,$description, $name, $statuses);
+                    new Item(null, $description, $name, $statuses);
                 } catch (Exception $e) {
                     throw new Cell_Exception($e->getMessage(), $row, $col);
                 }
@@ -454,7 +455,7 @@ class App implements App_Interface {
                 $nplayers++;
             } else {
                 try {
-                new Npc_Character(null, $description, $name, $statuses, $items, null);
+                    new Npc_Character(null, $description, $name, $statuses, $items, null);
                 } catch (Exception $e) {
                     throw new Cell_Exception($e->getMessage(), $row, $col);
                 }
@@ -507,7 +508,7 @@ class App implements App_Interface {
                 }
             }
             try {
-            new Location(null, $name, $statuses, $items, $hints, [], 0);
+                new Location(null, $name, $statuses, $items, $hints, [], 0);
             } catch (Exception $e) {
                 throw new Cell_Exception($e->getMessage(), $row, $col);
             }
@@ -741,32 +742,32 @@ class App implements App_Interface {
             } else if ($entity instanceof Character_Interface) {
                     $locationname = $this->get_cell_string($row + 8, $col);
                     $location = null;
-                    if ($locationname != "") {
-                        $location = $this->get_startentity($locationname);
-                        if ($location != null) {
-                            try {
-                                $location = Location::get_instance_from_parent_id($location->get_id());
-                            } catch (Exception $e) {
-                                if ($this->get_language() == Language::FR) {
-                                    throw new Exception($locationname . " n'est pas un lieu");
-                                } else {
-                                    throw new Exception($locationname . " is not a location");
-                                }
-                            }
-                        } else {
+                if ($locationname != "") {
+                    $location = $this->get_startentity($locationname);
+                    if ($location != null) {
+                        try {
+                            $location = Location::get_instance_from_parent_id($location->get_id());
+                        } catch (Exception $e) {
                             if ($this->get_language() == Language::FR) {
                                 throw new Exception($locationname . " n'est pas un lieu");
                             } else {
                                 throw new Exception($locationname . " is not a location");
                             }
                         }
+                    } else {
+                        if ($this->get_language() == Language::FR) {
+                            throw new Exception($locationname . " n'est pas un lieu");
+                        } else {
+                            throw new Exception($locationname . " is not a location");
+                        }
                     }
-                    $reaction = new Character_Reaction(null, $reactiondescription,
-                    $oldstatuses, $newstatuses, $olditems, $newitems, $entity, $location);
-                    if (!isset($reactions[$action][$condition])) {
-                        $reactions[$action][$condition] = [];
-                    }
-                    array_push($reactions[$action][$condition], Reaction::get_instance($reaction->get_parent_id()));
+                }
+                $reaction = new Character_Reaction(null, $reactiondescription,
+                $oldstatuses, $newstatuses, $olditems, $newitems, $entity, $location);
+                if (!isset($reactions[$action][$condition])) {
+                    $reactions[$action][$condition] = [];
+                }
+                array_push($reactions[$action][$condition], Reaction::get_instance($reaction->get_parent_id()));
             } else if ($entityname == "") {
                 $reaction = new No_Entity_Reaction(null, $reactiondescription);
                 if (!isset($reactions[$action][$condition])) {
@@ -994,9 +995,7 @@ class App implements App_Interface {
     }
     public function delete_all_data() {
         global $DB;
-    
-        // Liste des tables à nettoyer
-        $tables_to_clear = array(
+        $tablestoclear = [
             'stg_language',
             'stg_app',
             'stg_app_startentities',
@@ -1030,17 +1029,14 @@ class App implements App_Interface {
             'stg_playercharacter',
             'stg_inventory',
             'stg_inventory_items',
-            'stg_item'
-        );
-    
-        // Parcourir les tables et supprimer les données
-        foreach ($tables_to_clear as $table) {
+            'stg_item',
+        ];
+        foreach ($tablestoclear as $table) {
             $DB->delete_records($table);
         }
     }
-    
 
-    public function restart_game_from_start(int $deaths,DateTime $starttimes,array $visitedlocations, int $actions) {
+    public function restart_game_from_start(int $deaths, DateTime $starttimes, array $visitedlocations, int $actions) {
         $csvfilepath = $this->get_csvfilepath();
         $this->delete_all_data();
         new App(null, $csvfilepath, $deaths, $actions, $starttimes, $visitedlocations);
