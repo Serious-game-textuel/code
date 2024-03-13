@@ -32,18 +32,6 @@ $id = optional_param('id', 0, PARAM_INT);
 // Activity instance id.
 $s = optional_param('s', 0, PARAM_INT);
 
-foreach (Language::get_all_languages() as $lang) {
-    $comparedescription = $DB->sql_compare_text('name');
-    $comparedescriptionplaceholder = $DB->sql_compare_text(':name');
-    $todogroups = $DB->record_exists_sql(
-        "SELECT id FROM {stg_language} WHERE {$comparedescription} = {$comparedescriptionplaceholder}",
-        ['name' => $lang]
-    );
-    if (!$todogroups) {
-        $DB->insert_record('stg_language', ['name' => $lang]);
-    }
-}
-
 if ($id) {
     $cm = get_coursemodule_from_id('stg', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
@@ -104,11 +92,13 @@ if ($file) {
         <?php if ($element === 'FR'): ?>
             Avoir des indices = indices <br>
             Connaître les sorties = sortie <br>
+            Sauvegarder une partie = sauvegarder <br>
             Fouiller un endroit = fouiller [nom de l'endroit] <br>
             Connaître son inventaire = inventaire <br>
         <?php else: ?>
             Get hints = hints <br>
             Know the exits = exit <br>
+            Save a game = save <br>
             Search a place = search [place name] <br>
             Know your inventory = inventory <br>
         <?php endif; ?>

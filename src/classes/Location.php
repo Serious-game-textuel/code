@@ -178,7 +178,7 @@ class Location extends Entity implements Location_Interface {
             if (strpos($actionname, $defaultactionname) === 0) {
                 $entityname = substr($actionname, strlen($defaultactionname) + 1);
                 if ($game->get_entity($entityname) !== null) {
-                    $defaultactionsearch = $game->get_default_action_search();
+                    $defaultactionsearch = $app->get_default_action_search();
                     if ($defaultactionsearch !== null) {
                         array_push($debug, "utilisation de l'action fouiller par défaut");
                         $result = $defaultactionsearch->do_conditions_verb($defaultactionname);
@@ -188,7 +188,7 @@ class Location extends Entity implements Location_Interface {
                         array_push($return, "je n'ai pas compris ce que tu voulais ".$defaultactionname);
                     }
                 } else {
-                    $defaultactioninteract = $game->get_default_action_interact();
+                    $defaultactioninteract = $app->get_default_action_interact();
                     if ($defaultactioninteract !== null) {
                         array_push($debug, "utilisation de l'action intéragir par défaut");
                         $result = $defaultactioninteract->do_conditions_verb($defaultactionname);
@@ -214,11 +214,11 @@ class Location extends Entity implements Location_Interface {
                 array_push($return, $this->get_exit());
             } else if ($actionname == "inventaire") {
                 array_push($debug, "utilisation de l'action prédéfinie inventaire");
-                array_push($return, $game->get_player()->get_inventory()->__toString());
+                array_push($return, $app->get_player()->get_inventory()->__toString());
             } else {
                 array_push($debug, "utilisation de l'action intéragir par défaut");
                 $firstword = explode(' ', $actionname)[0];
-                $defaultactioninteract = $game->get_default_action_interact();
+                $defaultactioninteract = $app->get_default_action_interact();
                 if ($defaultactioninteract !== null) {
                     $result = $defaultactioninteract->do_conditions_verb($firstword);
                     $return = array_merge($result[0], $return);
@@ -233,7 +233,7 @@ class Location extends Entity implements Location_Interface {
             if (strpos($actionname, $defaultactionname) === 0) {
                 $entityname = substr($actionname, strlen($defaultactionname) + 1);
                 if ($game->get_entity($entityname) !== null) {
-                    $defaultactionsearch = $game->get_default_action_search();
+                    $defaultactionsearch = $app->get_default_action_search();
                     if ($defaultactionsearch !== null) {
                         array_push($debug, "using default search action");
                         $result = $defaultactionsearch->do_conditions_verb($defaultactionname);
@@ -243,7 +243,7 @@ class Location extends Entity implements Location_Interface {
                         array_push($return, "I don't understand what you want to ".$defaultactionname);
                     }
                 } else {
-                    $defaultactioninteract = $game->get_default_action_interact();
+                    $defaultactioninteract = $app->get_default_action_interact();
                     if ($defaultactioninteract !== null) {
                         array_push($debug, "using default interact action");
                         $result = $defaultactioninteract->do_conditions_verb($defaultactionname);
@@ -269,11 +269,11 @@ class Location extends Entity implements Location_Interface {
                 array_push($return, $this->get_exit());
             } else if ($actionname == "inventory") {
                 array_push($debug, "using default inventory action");
-                array_push($return, $game->get_player()->get_inventory()->__toString());
+                array_push($return, $app->get_player()->get_inventory()->__toString());
             } else {
                 array_push($debug, "using default interact action");
                 $firstword = explode(' ', $actionname)[0];
-                $defaultactioninteract = $game->get_default_action_interact();
+                $defaultactioninteract = $app->get_default_action_interact();
                 if ($defaultactioninteract !== null) {
                     $result = $defaultactioninteract->do_conditions_verb($firstword);
                     $return = array_merge($result[0], $return);
@@ -282,7 +282,6 @@ class Location extends Entity implements Location_Interface {
                     array_push($return, $actionname.'? You can\'t do that.');
                 }
             }
-
         }
         return [$return, $debug];
     }
@@ -338,7 +337,7 @@ class Location extends Entity implements Location_Interface {
         $app = App::get_instance();
         $language = $app->get_language();
         $game = $app->get_game();
-        $player = $game->get_player();
+        $player = $app->get_player();
         $inventory = $player->get_inventory();
         $items = $inventory->get_items();
         if ($language == "fr") {
