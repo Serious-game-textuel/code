@@ -35,6 +35,7 @@ require_once($CFG->dirroot . '/mod/stg/src/classes/Util.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Node_Condition.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Hint.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/Cell_Exception.php');
+require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 
 /**
  * Class App
@@ -82,7 +83,12 @@ class App implements App_Interface {
                     'csvfilepath' => $csvfilepath,
                     'activityid' => intval($_POST['module']),
                 ]);
-                $this->parse();
+                try {
+                    $this->parse();
+                } catch (Exception $e) {
+                    $this->delete_all_data();
+                    throw $e;
+                }
                 $this->set_visited_locations($visitedlocations);
             } else {
                 throw new Exception("File not found");
