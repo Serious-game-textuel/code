@@ -150,7 +150,6 @@ class Character_Reaction extends Reaction {
                                 $actions = $app->get_actions();
                                 array_push($return, ["Vous avez échoué. Vous recommencez."]);
                                 $app->restart_game_from_start($deaths, $starttime, $visitedlocations, $actions);
-                                array_push($return, $app->do_action("description", false)[0]);
                             }
                             if ($status == "victoire") {
                                 $deaths = $app->get_deaths();
@@ -161,8 +160,8 @@ class Character_Reaction extends Reaction {
                                 $time = $interval->format('%H:%I:%S');
                                 $lieux = $app->get_visited_locations();
                                 array_push($return, ["Vous avez gagné en " . $time . " avec " . $deaths
-                                . " morts et " .$actions . " actions et " . count($lieux) . " lieux visités."]);
-                                array_push($return, $app->do_action("description", false)[0]);
+                                . " morts et " .$actions . " actions et " . count($lieux) . " lieux visités et vous pouvez recommencer."]);
+                                $app->restart_game_from_start(0, new DateTime(), [], 0);
                             }
                         } else {
                             if ($status == "dead") {
@@ -173,7 +172,6 @@ class Character_Reaction extends Reaction {
                                 $actions = $app->get_actions();
                                 array_push($return, ["You failed. You restart."]);
                                 $app->restart_game_from_start($deaths, $starttime, $visitedlocations, $actions);
-                                array_push($return, $app->do_action("description", false)[0]);
 
                             }
                             if ($status == "victory") {
@@ -185,8 +183,8 @@ class Character_Reaction extends Reaction {
                                 $time = $interval->format('%H:%I:%S');
                                 $locations = $app->get_visited_locations();
                                 array_push($return, ["You won in " . $time . " with " . $deaths
-                                . " deaths and " . $actions . " actions and " . count($locations) . " locations visited."]);
-                                array_push($return, $app->do_action("description", false)[0]);
+                                . " deaths and " . $actions . " actions and " . count($locations) . " locations visited and you can restart."]);
+                                $app->restart_game_from_start(0, new DateTime(), [], 0);
                             }
                         }
                     }
