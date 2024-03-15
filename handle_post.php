@@ -19,7 +19,7 @@ require_once(__DIR__.'/lib.php');
 require_once($CFG->dirroot . '/mod/stg/src/classes/App.php');
 require_once($CFG->dirroot . '/mod/stg/src/Language.php');
 
-/**
+/*
  * External services for mod_stg.
  * @package     mod_stg
  * @copyright   2024 Paul Grandhomme, Loric Gallier, Benjamin Bracquier, Mathis Courant
